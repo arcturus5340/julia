@@ -1,8 +1,14 @@
+@font-face {
+    font-family: "JetBrains Mono";
+    src: url(../woff2/JetBrainsMono-Regular.woff2);
+}
+
 body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
-    background: #231747;
+    font-family: "JetBrains Mono";
+    background: white;
+    /*background: black;*/
     overflow: hidden;
 }
 
@@ -18,55 +24,68 @@ body {
     display: block;
     margin: 20px auto;
     text-align: center;
-    border: 2px solid #7666A3;
+    border: 2px solid black;
+    /*border: 2px solid white;*/
     padding: 10px 10px;
     width: 21em;
     height: 2.7em;
     outline: none;
-    color: white;
+    /*color: white;*/
+    color: black;
     border-radius: 24px;
     transition: 0.25s;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: rgba(255, 255, 255, .5);
+    /*color: rgba(255, 255, 255, .8);*/
+    color: rgba(0, 0, 0, .8);
     opacity: 1; /* Firefox */
 }
 
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: rgba(255, 255, 255, .5);
+    /*color: rgba(255, 255, 255, .8);*/
+    color: rgba(0, 0, 0, .8);
 }
 
 ::-ms-input-placeholder { /* Microsoft Edge */
-    color: rgba(255, 255, 255, .5);
+    /*color: rgba(255, 255, 255, .8);*/
+    color: rgba(0, 0, 0, .8);
 }
 
 .box input[type="text"]:focus,
 .box input[type="password"]:focus {
     width: 20em;
-    border-color: #11072E
+    /*border-color: white;*/
+    border-color: black;
 }
 
-.box .login-button {
-    background: rgba(0, 0, 0, .5);
-    /*background: #11072E;*/
-    display: block;
-    margin: 20px auto;
-    text-align: center;
-    border: none;
-    padding: 14px 40px;
-    outline: none;
-    color: rgba(255, 255, 255, .9);
-    border-radius: 24px;
-    transition: 0.5s;
-    width: 21em;
-    height: 2.7em;
-    cursor: pointer
-}
+/*.box .login-button {*/
+/*    !*background: rgba(0, 0, 0, .5);*!*/
+/*    background: rgba(255, 255, 255, .5);*/
+/*    display: block;*/
+/*    margin: 20px auto;*/
+/*    text-align: center;*/
+/*    !*border: 2px solid white;*!*/
+/*    border: 2px solid black;*/
+/*    padding: 14px 40px;*/
+/*    outline: none;*/
+/*    !*color: rgba(255, 255, 255, .9);*!*/
+/*    color: rgba(0, 0, 0, .9);*/
+/*    border-radius: 24px;*/
+/*    transition: 0.5s;*/
+/*    width: 21em;*/
+/*    height: 2.7em;*/
+/*    cursor: pointer;*/
+/*    vertical-align: middle;*/
+/*}*/
 
-.box .login-button:hover {
-    background: #7666A3
-}
+/*.box .login-button:hover {*/
+/*    !*background: white;*!*/
+/*    background: black;*/
+/*    !*color: black;*!*/
+/*    color: white;*/
+/*    width: 20em;*/
+/*}*/
 
 ul.social-network {
     list-style: none;
@@ -78,15 +97,6 @@ ul.social-network {
 ul.social-network li {
     display: inline;
     margin: 0 5px
-}
-
-.social-network a.icoGitHub:hover i {
-    color: rgba(0, 0, 0, .8);
-}
-
-a.socialIcon:hover,
-.socialHoverClass {
-    color: #44BCDD
 }
 
 .social-circle li a {
@@ -109,10 +119,11 @@ a.socialIcon:hover,
 .social-circle li a:hover i,
 .triggeredHover {
     transform: rotate(360deg);
-    transition: all 0.2s
+    transition: all .4s
 }
 
 .social-circle i {
-    color: #fff;
-    transition: all 0.8s;
+    /*color: white;*/
+    color: black;
+    transition: all .8s;
 }
