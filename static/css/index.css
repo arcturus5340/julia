@@ -131,3 +131,20 @@ ul.social-network li {
     color: black;
     transition: all .8s;
 }
+
+
+.nav .nav-link {
+    background-color: white;
+    color: black;
+}
+
+.nav-link .nav-link.active {
+    background-color: black;
+    color: white;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    color: white;
+    background-color: black;
+}
