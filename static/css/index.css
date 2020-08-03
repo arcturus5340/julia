@@ -6,17 +6,7 @@ body {
     overflow: hidden;
 }
 
-.muted {
-    color: rgba(255, 255, 255, .5);
-}
-
 .box {
-    width: 500px;
-    padding: 40px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    background: #231747;
     text-align: center;
     transition: 0.25s;
     margin-top: 100px
@@ -24,53 +14,58 @@ body {
 
 .box input[type="text"],
 .box input[type="password"] {
-    border: 0;
     background: none;
     display: block;
     margin: 20px auto;
     text-align: center;
     border: 2px solid #7666A3;
     padding: 10px 10px;
-    width: 400px;
-    height: 45px;
+    width: 21em;
+    height: 2.7em;
     outline: none;
     color: white;
     border-radius: 24px;
     transition: 0.25s;
 }
 
-.box h1 {
-    color: white;
-    font-weight: 500
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgba(255, 255, 255, .5);
+    opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: rgba(255, 255, 255, .5);
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: rgba(255, 255, 255, .5);
 }
 
 .box input[type="text"]:focus,
 .box input[type="password"]:focus {
-    width: 380px;
+    width: 20em;
     border-color: #11072E
 }
 
-.box input[type="submit"] {
-    border: 0;
-    background: #11072E;
+.box .login-button {
+    background: rgba(0, 0, 0, .5);
+    /*background: #11072E;*/
     display: block;
     margin: 20px auto;
     text-align: center;
-    border: 2px solid none;
+    border: none;
     padding: 14px 40px;
     outline: none;
-    color: white;
-    border-radius: 20px;
+    color: rgba(255, 255, 255, .9);
+    border-radius: 24px;
     transition: 0.5s;
+    width: 21em;
+    height: 2.7em;
     cursor: pointer
 }
 
-.box input[type="submit"]:hover {
+.box .login-button:hover {
     background: #7666A3
-}
-
-.forgot {
-    text-decoration: underline
 }
 
 ul.social-network {
@@ -85,12 +80,8 @@ ul.social-network li {
     margin: 0 5px
 }
 
-.social-network a.icoicoGitHub:hover {
-    background-color: #3B5998
-}
-
 .social-network a.icoGitHub:hover i {
-    color: #fff
+    color: rgba(0, 0, 0, .8);
 }
 
 a.socialIcon:hover,
@@ -104,9 +95,9 @@ a.socialIcon:hover,
     margin: 0 auto 0 auto;
     border-radius: 50%;
     text-align: center;
-    width: 50px;
-    height: 50px;
-    font-size: 20px
+    width: 40px;
+    height: 40px;
+    font-size: 30px
 }
 
 .social-circle li i {
@@ -124,5 +115,4 @@ a.socialIcon:hover,
 .social-circle i {
     color: #fff;
     transition: all 0.8s;
-    transition: all 0.8s
 }
