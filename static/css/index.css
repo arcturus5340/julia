@@ -3,23 +3,27 @@
     src: url(../woff2/JetBrainsMono-Regular.woff2);
 }
 
-html{
-    scroll-behavior: smooth;
-    overflow: hidden;
-}
-
-body {
+html, body {
     margin: 0;
     padding: 0;
     font-family: "JetBrains Mono";
     background: white;
     /*background: black;*/
+    scroll-behavior: smooth;
+    overflow: hidden;
+    height: 100%;
+}
+
+.center-container {
+    align-items: center;
+    display: flex;
+    min-height: 100%;
 }
 
 .box {
     text-align: center;
     transition: 0.25s;
-    margin-top: 100px
+    transform: translateY(50%);
 }
 
 .box input[type="text"],
@@ -63,47 +67,46 @@ body {
     border-color: black;
 }
 
-/*.box .login-button {*/
-/*    !*background: rgba(0, 0, 0, .5);*!*/
-/*    background: rgba(255, 255, 255, .5);*/
-/*    display: block;*/
-/*    margin: 20px auto;*/
-/*    text-align: center;*/
-/*    !*border: 2px solid white;*!*/
-/*    border: 2px solid black;*/
-/*    padding: 14px 40px;*/
-/*    outline: none;*/
-/*    !*color: rgba(255, 255, 255, .9);*!*/
-/*    color: rgba(0, 0, 0, .9);*/
-/*    border-radius: 24px;*/
-/*    transition: 0.5s;*/
-/*    width: 21em;*/
-/*    height: 2.7em;*/
-/*    cursor: pointer;*/
-/*    vertical-align: middle;*/
-/*}*/
+.box .login-button {
+    /*background: rgba(0, 0, 0, .5);*/
+    background: rgba(255, 255, 255, .5);
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    /*border: 2px solid white;*/
+    border: 2px solid black;
+    outline: none;
+    /*color: rgba(255, 255, 255, .9);*/
+    color: rgba(0, 0, 0, .9);
+    border-radius: 24px;
+    transition: 0.5s;
+    width: 21em;
+    height: 2.7em;
+    cursor: pointer;
+    vertical-align: middle;
+}
 
-/*.box .login-button:hover {*/
-/*    !*background: white;*!*/
-/*    background: black;*/
-/*    !*color: black;*!*/
-/*    color: white;*/
-/*    width: 20em;*/
-/*}*/
+.box .login-button:hover {
+    /*background: white;*/
+    background: black;
+    /*color: black;*/
+    color: white;
+    width: 20em;
+}
 
-ul.social-network {
+.social-network {
     list-style: none;
     display: inline;
     margin-left: 0 !important;
     padding: 0
 }
 
-ul.social-network li {
+.social-network {
     display: inline;
     margin: 0 5px
 }
 
-.social-circle li a {
+.social-circle {
     display: inline-block;
     position: relative;
     margin: 0 auto 0 auto;
@@ -114,13 +117,13 @@ ul.social-network li {
     font-size: 30px
 }
 
-.social-circle li i {
+.social-circle i {
     margin: 0;
     line-height: 50px;
     text-align: center
 }
 
-.social-circle li a:hover i,
+.social-circle:hover i,
 .triggeredHover {
     transform: rotate(360deg);
     transition: all .4s
@@ -147,4 +150,9 @@ ul.social-network li {
 .nav-pills .show > .nav-link {
     color: white;
     background-color: black;
+}
+
+.welcome {
+    text-align: center;
+    width: 100%;
 }
