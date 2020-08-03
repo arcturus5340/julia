@@ -3,6 +3,16 @@
     src: url(../woff2/JetBrainsMono-Regular.woff2);
 }
 
+::-moz-selection { /* Code for Firefox */
+    color: black;
+    background: yellow;
+}
+
+::selection {
+    color: black;
+    background: yellow;
+}
+
 html, body {
     margin: 0;
     padding: 0;
