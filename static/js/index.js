@@ -35,21 +35,25 @@ registration =
     "</div>\n" +
     "<a href=\"https://github.com/arcturus5340/julia\" class=\"social-circle icoGitHub\" title=\"GitHub\"><i class=\"fab fa-github\"></i></a>"
 
-$('#registration').on('click', function () {
-    console.log("Changed to registration form.");
-    $('#main-form').html(registration);
-})
-
 $('#reset-password').on('click', function () {
     console.log("Changed to reset password form.");
+    $('#main-form').css('transform', 'translateY(65%)');
     $('#main-form').html(reset_password);
+})
+
+$('#registration').on('click', function () {
+    console.log("Changed to registration form.");
+    $('#main-form').css('transform', 'translateY(30%)');
+    $('#main-form').html(registration);
 })
 
 $(document).on('click', '#login',function () {
     console.log("Changed to login form.");
     $('#main-form').html(login);
+    $('#main-form').css('transform', 'translateY(50%)');
     $(document).on('click', '#reset-password',function () {
         console.log("Changed to login form.");
+        $('#main-form').css('transform', 'translateY(65%)');
         $('#main-form').html(reset_password);
     })
 })
@@ -59,6 +63,7 @@ $(document).on('click', '#login',function () {
     $('#main-form').html(login);
     $(document).on('click', '#registration',function () {
         console.log("Changed to login form.");
+        $('#main-form').css('transform', 'translateY(30%)');
         $('#main-form').html(registration);
     })
 })
@@ -70,10 +75,12 @@ $(document).keyup(function(e) {
     if (e.keyCode === 27) {
         $('#main-form').html(login);$(document).on('click', '#reset-password',function () {
             console.log("Changed to login form.");
+            $('#main-form').css('transform', 'translateY(30%)');
             $('#main-form').html(reset_password);
         });
         $(document).on('click', '#registration',function () {
             console.log("Changed to login form.");
+            $('#main-form').css('transform', 'translateY(30%)');
             $('#main-form').html(registration);
         })
     };
