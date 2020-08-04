@@ -85,7 +85,7 @@ a:hover {
     border-color: black;
 }
 
-.box .login-button {
+.box .major-button {
     /*background: rgba(0, 0, 0, .5);*/
     background: rgba(255, 255, 255, .5);
     display: block;
@@ -104,7 +104,7 @@ a:hover {
     vertical-align: middle;
 }
 
-.box .login-button:hover {
+.box .major-button:hover {
     /*background: white;*/
     background: black;
     /*color: black;*/
@@ -121,7 +121,7 @@ a:hover {
     display: table;
 }
 
-.forgot-password,
+.reset-password,
 .registration {
     display: table-cell;
 }
@@ -130,14 +130,14 @@ a:hover {
     cursor: context-menu;
 }
 
-.forgot-password:hover,
+.reset-password:hover,
 .registration:hover,
 .back-to-login:hover{
     text-decoration: underline;
     cursor: pointer;
 }
 
-.forgot-password {
+.reset-password {
     padding-right: .5em;
 }
 
