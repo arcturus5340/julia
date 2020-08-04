@@ -3,7 +3,7 @@ login =
     "<div class=\"login-info\">Tell me your username and password.</div>\n" +
     "<input type=\"text\" name=\"Username\" id=\"username\" placeholder=\"Username\">\n" +
     "<input type=\"password\" name=\"Password\" id=\"password\" placeholder=\"Password\" autocomplete=\"on\">\n" +
-    "<button class=\"major-button\" type=\"button\" name=\"Login\" value=\"Login\" href=\"#\">Login</button>\n" +
+    "<button class=\"major-button\" type=\"button\" name=\"Login\" value=\"Login\">Login</button>\n" +
     "<div class=\"unusual-actions\">\n" +
     "    <div class=\"reset-password\"><span id=\"reset-password\">I forgot my password.</a></div>\n" +
     "    <div class=\"unusual-actions-sep\">||</div>\n" +
@@ -16,7 +16,7 @@ reset_password =
     "<div class=\"login-info\">Tell me your username or e-mail.</div>\n" +
     "<div class=\"login-info\">I'll send you a link to get back into your account.</div>\n" +
     "<input type=\"text\" name=\"UsernameOrEmail\" id=\"UsernameOrEmail\" placeholder=\"Username or e-mail\">\n" +
-    "<button class=\"major-button\" type=\"button\" name=\"Send\" value=\"Send\" href=\"#\">Send</button>\n" +
+    "<button class=\"major-button\" type=\"button\" name=\"Send\" value=\"Send\" >Send</button>\n" +
     "<div class=\"back-to-login\">\n" +
     "    <span id=\"login\">I remembered my password.</a>\n" +
     "</div>\n" +
@@ -35,56 +35,60 @@ registration =
     "</div>\n" +
     "<a href=\"https://github.com/arcturus5340/julia\" class=\"social-circle icoGitHub\" title=\"GitHub\"><i class=\"fab fa-github\"></i></a>"
 
+main_form = $('#main-form')
+
+
 $('#reset-password').on('click', function () {
-    console.log("Changed to reset password form.");
-    $('#main-form').css('transform', 'translateY(65%)');
-    $('#main-form').html(reset_password);
+    main_form.css('transform', 'translateY(65%)');
+    main_form.html(reset_password);
 })
+
 
 $('#registration').on('click', function () {
-    console.log("Changed to registration form.");
-    $('#main-form').css('transform', 'translateY(30%)');
-    $('#main-form').html(registration);
+    main_form.css('transform', 'translateY(30%)');
+    main_form.html(registration);
 })
 
+
 $(document).on('click', '#login',function () {
-    console.log("Changed to login form.");
-    $('#main-form').html(login);
-    $('#main-form').css('transform', 'translateY(50%)');
+    main_form.css('transform', 'translateY(50%)');
+    main_form.html(login);
     $(document).on('click', '#reset-password',function () {
-        console.log("Changed to login form.");
-        $('#main-form').css('transform', 'translateY(65%)');
-        $('#main-form').html(reset_password);
+        main_form.css('transform', 'translateY(65%)');
+        main_form.html(reset_password);
     })
 })
 
+
 $(document).on('click', '#login',function () {
-    console.log("Changed to login form.");
-    $('#main-form').html(login);
+    main_form.css('transform', 'translateY(50%)');
+    main_form.html(login);
     $(document).on('click', '#registration',function () {
-        console.log("Changed to login form.");
-        $('#main-form').css('transform', 'translateY(30%)');
-        $('#main-form').html(registration);
+        main_form.css('transform', 'translateY(30%)');
+        main_form.html(registration);
     })
 })
+
 
 $(document).keyup(function(e) {
     if (e.keyCode === 13) {
         $('.major-button').click();
     }
+
     if (e.keyCode === 27) {
-        $('#main-form').html(login);$(document).on('click', '#reset-password',function () {
-            console.log("Changed to login form.");
-            $('#main-form').css('transform', 'translateY(30%)');
-            $('#main-form').html(reset_password);
+        main_form.css('transform', 'translateY(50%)');
+        main_form.html(login);
+        $(document).on('click', '#reset-password',function () {
+            main_form.css('transform', 'translateY(65%)');
+            main_form.html(reset_password);
         });
         $(document).on('click', '#registration',function () {
-            console.log("Changed to login form.");
-            $('#main-form').css('transform', 'translateY(30%)');
-            $('#main-form').html(registration);
+            main_form.css('transform', 'translateY(30%)');
+            main_form.html(registration);
         })
-    };
+    }
 })
+
 
 $('.major-button').on('click',function () {
     console.log("Major button has been clicked.");
