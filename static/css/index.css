@@ -134,6 +134,11 @@ a:hover {
     padding-left: .5em;
 }
 
+.back-to-login {
+    padding-bottom: .5em;
+    font-size: .9em;
+}
+
 .social-network {
     list-style: none;
     display: inline;
