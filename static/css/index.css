@@ -126,6 +126,17 @@ a:hover {
     display: table-cell;
 }
 
+.unusual-actions-sep {
+    cursor: context-menu;
+}
+
+.forgot-password:hover,
+.registration:hover,
+.back-to-login:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .forgot-password {
     padding-right: .5em;
 }
