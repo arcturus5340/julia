@@ -41,7 +41,7 @@ a:hover {
 .box {
     text-align: center;
     transition: 0.25s;
-    transform: translateY(30%);
+    transform: translateY(50%);
 }
 
 .box input[type="text"],
