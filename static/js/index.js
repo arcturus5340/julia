@@ -62,3 +62,23 @@ $(document).on('click', '#login',function () {
         $('#main-form').html(registration);
     })
 })
+
+$(document).keyup(function(e) {
+    if (e.keyCode === 13) {
+        $('.major-button').click();
+    }
+    if (e.keyCode === 27) {
+        $('#main-form').html(login);$(document).on('click', '#reset-password',function () {
+            console.log("Changed to login form.");
+            $('#main-form').html(reset_password);
+        });
+        $(document).on('click', '#registration',function () {
+            console.log("Changed to login form.");
+            $('#main-form').html(registration);
+        })
+    };
+})
+
+$('.major-button').on('click',function () {
+    console.log("Major button has been clicked.");
+})
