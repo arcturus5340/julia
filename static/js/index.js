@@ -1,29 +1,41 @@
+login =
+    "<h2>Hi, I'm Julia.</h2>\n" +
+    "<div class=\"login-info\">Tell me your username and password.</div>\n" +
+    "<input type=\"text\" name=\"Username\" id=\"username\" placeholder=\"Username\">\n" +
+    "<input type=\"password\" name=\"Password\" id=\"password\" placeholder=\"Password\">\n" +
+    "<button class=\"login-button\" type=\"button\" name=\"Login\" value=\"Login\" href=\"#\">Login</button>\n" +
+    "<div class=\"unusual-actions\">\n" +
+    "    <div class=\"forgot-password\"><span id=\"forgot-password\">I forgot my password.</a></div>\n" +
+    "    <div class=\"unusual-actions-sep\">||</div>\n" +
+    "    <div class=\"registration\"><span id=\"registration\">We're not acquainted.</a></div>\n" +
+    "</div>\n" +
+    "<a href=\"https://github.com/arcturus5340/julia\" class=\"social-circle icoGitHub\" title=\"GitHub\"><i class=\"fab fa-github\"></i></a>\n"
+
+
 registration =
-    "<form class='box' name='login-form'> \
-        <h2>Let's get acquainted!</h2> \
-        <div class='login-info'>I need your future username,</div> \
-        <div class='login-info'>your e-mail & your future password.</div> \
-        <input type='text' name='reg-Username' id='reg-username' placeholder='Username'> \
-        <input type='text' name='reg-E-mail' id='reg-e-mail' placeholder='E-mail'> \
-        <input type='password' name='reg-Password' id='reg-password' placeholder='Password'> \
-        <button class='login-button' type='button' name='Login' value='Login'>Sign Up</button> \
-        <div class='back-to-login'>\
-            <a href='#' id='back-to-login'>We're already acquainted.</a>\
-        </div>\
-        <a href='https://github.com/arcturus5340/julia' class='social-circle icoGitHub' title='GitHub'><i class='fab fa-github'></i></a>\
-    </form>"
+    "<h2>Let's get acquainted!</h2> \n" +
+    "<div class='login-info'>I need your future username,</div> \n" +
+    "<div class='login-info'>your e-mail & your future password.</div> \n" +
+    "<input type='text' name='reg-Username' id='reg-username' placeholder='Username'> \n" +
+    "<input type='text' name='reg-E-mail' id='reg-e-mail' placeholder='E-mail'> \n" +
+    "<input type='password' name='reg-Password' id='reg-password' placeholder='Password'> \n" +
+    "<button class='login-button' type='button' name='Login' value='Login'>Sign Up</button> \n" +
+    "<div class='back-to-login'>\n" +
+    "    <span id='login'>We're already acquainted.</a>\n" +
+    "</div>\n" +
+    "<a href='https://github.com/arcturus5340/julia' class='social-circle icoGitHub' title='GitHub'><i class='fab fa-github'></i></a>"
 
-function compare_inputs(){
-    if (($('#Username').val() == $('#Password').val()) &&
-        ($('#Username').val()) && ($('#Username').val())) {
-        console.log('true');
-    }
-}
-
-$('#username').keyup(compare_inputs);
-
-$('#password').keyup(compare_inputs);
-
-$('#registration').click(function () {
-    $('#login-form').html(registration)
+$('#registration').on('click', function () {
+    console.log("Changed to registration form.");
+    $('#main-form').html(registration);
 })
+
+$(document).on('click', '#login',function () {
+    console.log("Changed to login form.");
+    $('#main-form').html(login);
+    $(document).on('click', '#registration',function () {
+        console.log("Changed to login form.");
+        $('#main-form').html(registration);
+    })
+})
+
