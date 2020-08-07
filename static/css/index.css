@@ -13,6 +13,22 @@
     background: yellow;
 }
 
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    /*color: rgba(255, 255, 255, .8);*/
+    color: rgba(0, 0, 0, .8);
+    opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    /*color: rgba(255, 255, 255, .8);*/
+    color: rgba(0, 0, 0, .8);
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    /*color: rgba(255, 255, 255, .8);*/
+    color: rgba(0, 0, 0, .8);
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -45,76 +61,72 @@ label {
 .box {
     text-align: center;
     transition: 0.25s;
-    transform: translateY(50%);
 }
 
-.box input[type="text"],
-.box input[type="password"] {
-    background: none;
-    display: block;
-    margin: 1em auto;
-    text-align: center;
-    border: 2px solid black;
-    /*border: 2px solid white;*/
-    /*padding: 10px 10px;*/
-    width: 21em;
-    height: 2.7em;
-    outline: none;
-    /*color: white;*/
-    color: black;
-    border-radius: 24px;
-    transition: 0.25s;
-}
+    .box .login-form {
+        transform: translateY(50%);
+    }
 
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    /*color: rgba(255, 255, 255, .8);*/
-    color: rgba(0, 0, 0, .8);
-    opacity: 1; /* Firefox */
-}
+    .box .reset-form {
+        transform: translateY(65%);
+    }
 
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-    /*color: rgba(255, 255, 255, .8);*/
-    color: rgba(0, 0, 0, .8);
-}
+    .box .registration-form {
+        transform: translateY(30%);
+    }
 
-::-ms-input-placeholder { /* Microsoft Edge */
-    /*color: rgba(255, 255, 255, .8);*/
-    color: rgba(0, 0, 0, .8);
-}
+    .box input[type="text"],
+    .box input[type="password"] {
+        background: none;
+        display: block;
+        margin: 1em auto;
+        text-align: center;
+        border: 2px solid black;
+        /*border: 2px solid white;*/
+        /*padding: 10px 10px;*/
+        width: 21em;
+        height: 2.7em;
+        outline: none;
+        /*color: white;*/
+        color: black;
+        border-radius: 24px;
+        transition: 0.25s;
+    }
 
-.box input[type="text"]:focus,
-.box input[type="password"]:focus {
-    width: 20em;
-    /*border-color: white;*/
-    border-color: black;
-}
 
-.box .major-button {
-    /*background: rgba(0, 0, 0, .5);*/
-    background: rgba(255, 255, 255, .5);
-    display: block;
-    margin: 1em auto;
-    text-align: center;
-    /*border: 2px solid white;*/
-    border: 2px solid black;
-    outline: none;
-    /*color: rgba(255, 255, 255, .9);*/
-    color: rgba(0, 0, 0, .9);
-    border-radius: 24px;
-    transition: 0.5s;
-    width: 21em;
-    height: 2.7em;
-    cursor: pointer;
-    vertical-align: middle;
-}
+    .box input[type="text"]:focus,
+    .box input[type="password"]:focus {
+        width: 20em;
+        /*border-color: white;*/
+        border-color: black;
+    }
 
-.box .major-button:hover {
-    /*background: white;*/
-    background: black;
-    /*color: black;*/
-    color: white;
-    width: 20em;
-}
+    .box .major-button {
+        /*background: rgba(0, 0, 0, .5);*/
+        background: rgba(255, 255, 255, .5);
+        display: block;
+        margin: 1em auto;
+        text-align: center;
+        /*border: 2px solid white;*/
+        border: 2px solid black;
+        outline: none;
+        /*color: rgba(255, 255, 255, .9);*/
+        color: rgba(0, 0, 0, .9);
+        border-radius: 24px;
+        transition: 0.5s;
+        width: 21em;
+        height: 2.7em;
+        cursor: pointer;
+        vertical-align: middle;
+    }
+
+    .box .major-button:hover {
+        /*background: white;*/
+        background: black;
+        /*color: black;*/
+        color: white;
+        width: 20em;
+    }
 
 .unusual-actions {
     padding-bottom: .5em;
