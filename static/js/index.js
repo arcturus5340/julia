@@ -1,3 +1,5 @@
+
+// Delete this:
 login =
     "<div class=\"login-form\">\n" +
     "    <h2>Hi, I'm Julia.</h2>\n" +
@@ -44,25 +46,98 @@ registration =
     "</div>"
 
 
+// Not this:
 function reset_password_handler () {
+
+    // Delete this:
     main_form = $('#main-form')
     $(document).on('click', '#reset-password', function () {
         main_form.html(reset_password);
     })
+
+    // Not this:
+    // Твое задание:
+    //     - Элемент с id main_form заменить на HTML-файл reset_password_form.html
+    //     - Возвращать красивый response
+    $(document).on('click', '#reset-password', function () {
+        $.ajax({
+            url: '',
+            type: 'POST',
+            data: {
+                action: 'reset-password',
+                // csrfmiddlewaretoken: csrfmiddlewaretoken, // он здесь же не нужен...
+            },
+            success: function(response){
+                console.log(response)
+            },
+            error: function(){
+                console.log('internal error.')
+            },
+        });
+    })
 }
 
+
 function registration_handler () {
+
+    // Delete this:
     main_form = $('#main-form')
     $(document).on('click', '#registration', function () {
         main_form.html(registration);
+    })
+
+    // Not this:
+    // Твое задание:
+    //     - Элемент с id main_form заменить на HTML-файл registration_form.html
+    //     - Возвращать красивый response
+    $(document).on('click', '#registration', function () {
+        $.ajax({
+            url: '',
+            type: 'POST',
+            data: {
+                action: 'registration',
+                // csrfmiddlewaretoken: csrfmiddlewaretoken, // и здесь тоже не нужен...
+            },
+            success: function(response){
+                console.log(response)
+            },
+            error: function(){
+                console.log('internal error.')
+            },
+        });
     })
 }
 
 
 function login_handler () {
+
+    // Delete this:
     $(document).on('click', '#login', function () {
         main_form = $('#main-form')
         main_form.html(login);
+        reset_password_handler()
+        registration_handler()
+    })
+
+    // Not this:
+    // Твое задание:
+    //     - Элемент с id main_form заменить на HTML-файл login_form.html
+    //     - Возвращать красивый response
+    $(document).on('click', '#login', function () {
+        $.ajax({
+            url: '',
+            type: 'POST',
+            data: {
+                action: 'login',
+                // csrfmiddlewaretoken: csrfmiddlewaretoken, // и здесь тоже не нужен...
+            },
+            success: function (response) {
+                console.log(response)
+            },
+            error: function () {
+                console.log('internal error.')
+            },
+        })
         reset_password_handler()
         registration_handler()
     })
@@ -80,43 +155,4 @@ $(document).keyup(function(e) {
     } else if (e.keyCode === 27) {
         $('#login').click()
     }
-})
-
-
-$('#reset-password').on('click', function () {
-    $.ajax({
-        url: '',
-        type: 'POST',
-        data: {
-            action: 'reset',
-            // csrfmiddlewaretoken: csrfmiddlewaretoken, он здесь же не нужен...
-        },
-        success: function(response){
-            console.log(response)
-        },
-        error: function(){
-            console.log('internal error.')
-        },
-    });
-    // Твое задание:
-    // Элемент с id main_form заменить на HTML-код в переменной reset_password
-})
-
-$('#registration').on('click', function () {
-    $.ajax({
-        url: '',
-        type: 'POST',
-        data: {
-            action: 'registration',
-            // csrfmiddlewaretoken: csrfmiddlewaretoken, и здесь тоже не нужен...
-        },
-        success: function(response){
-            console.log(response)
-        },
-        error: function(){
-            console.log('internal error.')
-        },
-    });
-    // Твое задание:
-    // Элемент с id main_form заменить на HTML-код в переменной registration
 })
