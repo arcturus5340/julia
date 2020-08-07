@@ -1,6 +1,6 @@
 @font-face {
     font-family: "JetBrains Mono";
-    src: url(../jet_brains_web/woff2/JetBrainsMono-Regular.woff2);
+    src: url(../fonts/JetBrains_Mono/woff2/JetBrainsMono-Regular.woff2);
 }
 
 ::-moz-selection { /* Code for Firefox */
