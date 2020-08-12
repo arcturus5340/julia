@@ -16,6 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+import contest.views
+import auth.views
+
+
 urlpatterns = [
+    path('', contest.views.index),
+    path('login/', auth.views.login),
     path('admin/', admin.site.urls),
 ]
