@@ -7,26 +7,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/FontAwesome_Free/css/all.min.css' %}">
 </head>
 <body>
     <div class="container-fluid ">
         <div class="row">
             <div class="align-content-center col-12">
                 <form class="box" name="main-form" id="main-form">
-                    <h2>Hi, I'm Julia.</h2>
-                    <div class="login-info">Tell me your username and password.</div>
-                    <input type="text" name="Username" id="username" placeholder="Username">
-                    <input type="password" name="Password" id="password" placeholder="Password">
-                    <button class="login-button" type="button" name="Login" value="Login" href="#">Login</button>
-
-                    <div class="unusual-actions">
-                        <div class="forgot-password"><span id="forgot-password">I forgot my password.</span></div>
-                        <div class="unusual-actions-sep">||</div>
-                        <div class="registration"><span id="registration">We're not acquainted.</span></div>
+                    <div class="login-form">
+                        <h2>Hi, I'm Julia.</h2>
+                        <div class="login-info">Tell me your username and password.</div>
+                        <label for="username"></label>
+                        <input type="text" name="Username" id="username" placeholder="Username">
+                        <label for="password"></label>
+                        <input type="password" name="Password" id="password" placeholder="Password" autocomplete="on">
+                        <button class="major-button" type="button" name="Login" value="Login">Login</button>
+                        <div class="unusual-actions">
+                            <div class="reset-password"><span id="reset-password">I forgot my password.</span></div>
+                            <div class="unusual-actions-sep">||</div>
+                            <div class="registration"><span id="registration">We're not acquainted.</span></div>
+                        </div>
+                        <a href="https://github.com/arcturus5340/julia" class="social-circle icoGitHub" title="GitHub"><i class="fab fa-github"></i></a>
                     </div>
-
-                    <a href="https://github.com/arcturus5340/julia" class="social-circle icoGitHub" title="GitHub"><i class="fab fa-github"></i></a>
                 </form>
             </div>
         </div>
