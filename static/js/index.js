@@ -10,9 +10,9 @@ login =
     "    <input type=\"password\" name=\"Password\" id=\"password\" placeholder=\"Password\" autocomplete=\"on\">\n" +
     "    <button class=\"major-button\" type=\"button\" name=\"Login\" value=\"Login\">Login</button>\n" +
     "    <div class=\"unusual-actions\">\n" +
-    "        <div class=\"reset-password\"><span id=\"reset-password\">I forgot my password.</span></div>\n" +
+    "        <div class=\"reset-password\"><span id=\"change-to-reset-password-form\">I forgot my password.</span></div>\n" +
     "        <div class=\"unusual-actions-sep\">||</div>\n" +
-    "        <div class=\"registration\"><span id=\"registration\">We're not acquainted.</span></div>\n" +
+    "        <div class=\"registration\"><span id=\"change-to-registration-form\">We're not acquainted.</span></div>\n" +
     "    </div>\n" +
     "    <a href=\"https://github.com/arcturus5340/julia\" class=\"social-circle icoGitHub\" title=\"GitHub\"><i class=\"fab fa-github\"></i></a>\n" +
     "</div>"
@@ -25,7 +25,7 @@ reset_password =
     "    <input type=\"text\" name=\"UsernameOrEmail\" id=\"UsernameOrEmail\" placeholder=\"Username or e-mail\">\n" +
     "    <button class=\"major-button\" type=\"button\" name=\"Send\" value=\"Send\" >Send</button>\n" +
     "    <div class=\"back-to-login\">\n" +
-    "        <span id=\"login\">I remembered my password.</a>\n" +
+    "        <span id=\"change-to-login-form\">I remembered my password.</a>\n" +
     "    </div>\n" +
     "    <a href=\"https://github.com/arcturus5340/julia\" class=\"social-circle icoGitHub\" title=\"GitHub\"><i class=\"fab fa-github\"></i></a>\n" +
     "</div>"
@@ -40,7 +40,7 @@ registration =
     "    <input type=\"password\" name=\"reg-Password\" id=\"reg-password\" placeholder=\"Password\" autocomplete=\"on\"> \n" +
     "    <button class=\"major-button\" type=\"button\" name=\"Login\" value=\"Login\">Sign Up</button> \n" +
     "    <div class=\"back-to-login\">\n" +
-    "        <span id=\"login\">We're already acquainted.</a>\n" +
+    "        <span id=\"change-to-login-form\">We're already acquainted.</a>\n" +
     "    </div>\n" +
     "    <a href=\"https://github.com/arcturus5340/julia\" class=\"social-circle icoGitHub\" title=\"GitHub\"><i class=\"fab fa-github\"></i></a>" +
     "</div>"
@@ -51,7 +51,7 @@ function reset_password_handler () {
 
     // Delete this:
     main_form = $('#main-form')
-    $(document).on('click', '#reset-password', function () {
+    $(document).on('click', '#change-to-reset-password-form', function () {
         main_form.html(reset_password);
     })
 
@@ -59,7 +59,7 @@ function reset_password_handler () {
     // Твое задание:
     //     - Элемент с id main_form заменить на HTML-файл reset_password_form.html
     //     - Возвращать красивый response
-    $(document).on('click', '#reset-password', function () {
+    $(document).on('click', '#change-to-reset-password-form', function () {
         $.ajax({
             url: '',
             type: 'POST',
@@ -82,7 +82,7 @@ function registration_handler () {
 
     // Delete this:
     main_form = $('#main-form')
-    $(document).on('click', '#registration', function () {
+    $(document).on('click', '#change-to-registration-form', function () {
         main_form.html(registration);
     })
 
@@ -90,7 +90,7 @@ function registration_handler () {
     // Твое задание:
     //     - Элемент с id main_form заменить на HTML-файл registration_form.html
     //     - Возвращать красивый response
-    $(document).on('click', '#registration', function () {
+    $(document).on('click', '#change-to-registration-form', function () {
         $.ajax({
             url: '',
             type: 'POST',
@@ -112,7 +112,7 @@ function registration_handler () {
 function login_handler () {
 
     // Delete this:
-    $(document).on('click', '#login', function () {
+    $(document).on('click', '#change-to-login-form', function () {
         main_form = $('#main-form')
         main_form.html(login);
         reset_password_handler()
@@ -123,7 +123,7 @@ function login_handler () {
     // Твое задание:
     //     - Элемент с id main_form заменить на HTML-файл login_form.html
     //     - Возвращать красивый response
-    $(document).on('click', '#login', function () {
+    $(document).on('click', '#change-to-login-form', function () {
         $.ajax({
             url: '',
             type: 'POST',
@@ -153,6 +153,6 @@ $(document).keyup(function(e) {
     if (e.keyCode === 13) {
         $('.major-button').click();
     } else if (e.keyCode === 27) {
-        $('#login').click()
+        $('#change-to-login-form').click()
     }
 })
