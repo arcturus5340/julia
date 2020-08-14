@@ -24,4 +24,9 @@ urlpatterns = [
     path('', contest.views.index),
     path('login/', auth.views.login),
     path('admin/', admin.site.urls),
+
+    path('login/login-handler/', auth.views.login_handler),
+    path('login/registration-handler/', auth.views.registration_handler),
+    path('login/reset-password-handler/', auth.views.reset_password_handler),
+
 ]
