@@ -63,11 +63,6 @@ function login_handler () {
 }
 
 
-reset_password_handler()
-registration_handler()
-login_handler()
-
-
 $(document).keyup(function(e) {
     if (e.keyCode === 13) {
         $('.major-button').click();
@@ -75,3 +70,38 @@ $(document).keyup(function(e) {
         $('#change-to-login-form').click()
     }
 })
+
+
+function login_button_handler () {
+
+    $(document).on('click', '#login-button', function () {
+        let username = $('#username').val();
+        let password = $('#password').val();
+        if((username !== "") && (password !== "")){
+            $.ajax({
+                url: '/',
+                type: 'POST',
+                data: {
+                    action: 'login-to-system',
+                    username: username,
+                    password: password,
+                    csrfmiddlewaretoken: Cookies.get('csrftoken'),
+                },
+                success: function(response){
+                    $('body').html(response)
+                },
+                error: function(){
+                    console.log('internal error.')
+                },
+            });
+        } else {
+            console.log("missing username or password.")
+        }
+    })
+}
+
+
+reset_password_handler()
+registration_handler()
+login_handler()
+login_button_handler()
