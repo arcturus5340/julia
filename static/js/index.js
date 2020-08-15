@@ -122,7 +122,7 @@ function registration_handler () {
                 url: '/',
                 type: 'POST',
                 data: {
-                    action: 'login-to-system',
+                    action: 'sign-up-in-system',
                     username: username,
                     email: email,
                     password: password,
