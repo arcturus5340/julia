@@ -1,3 +1,7 @@
+$(document).on('animationend webkitAnimationEnd onAnimationEnd', '#form-info', function () {
+    $('#form-info').removeClass('shake');
+})
+
 function change_to_reset_form () {
 
     $(document).on('click', '#change-to-reset-password-form', function () {
@@ -95,11 +99,13 @@ function login_handler () {
                 },
             });
         } else {
-            if( form_info.hasClass('shake') ) {
-                form_info.removeClass('shake');
-            }
+            let forgotten_form = [];
+            if (username === '')
+                forgotten_form.push('username');
+            if (password === '')
+                forgotten_form.push('password');
+            form_info.html('Sorry, you forgot to enter your ' + forgotten_form.join(' & ') + '.');
             form_info.addClass('shake');
-            console.log("missing username or password.")
         }
     })
 }
@@ -108,7 +114,7 @@ function login_handler () {
 function registration_handler () {
     $(document).on('click', '#sign-up-button', function () {
         let username = $('#reg-username').val();
-        let email = $('#reg-e-mail')
+        let email = $('#reg-e-mail').val();
         let password = $('#reg-password').val();
         let form_info = $('#form-info');
         if((username !== "") && (password !== "") && (email !== "")){
@@ -130,12 +136,21 @@ function registration_handler () {
                 },
             });
         } else {
-
-            if( form_info.hasClass('shake') ) {
-                form_info.removeClass('shake');
-            }
+            let forgotten_form = [];
+            if (username === '')
+                forgotten_form.push('username');
+            if (email === '')
+                forgotten_form.push('e-mail')
+            if (password === '')
+                forgotten_form.push('password');
+            let answer;
+            if (forgotten_form.length === 3)
+                answer = forgotten_form.shift() + ', <br>' + forgotten_form.join(' & ')
+            else
+                answer = forgotten_form.join(' & ')
+            console.log(forgotten_form.length);
+            form_info.html('Sorry, you forgot to enter your ' + answer + '.');
             form_info.addClass('shake');
-            console.log("missing username or password.")
         }
     })
 }
