@@ -16,12 +16,12 @@
                 <form class="box" name="main-form" id="main-form">
                     <div class="login-form">
                         <h2>Hi, I'm Julia.</h2>
-                        <div class="login-info">Tell me your username and password.</div>
+                        <div class="form-info" id="form-info">Tell me your username and password.</div>
                         <label for="username"></label>
                         <input type="text" name="Username" id="username" placeholder="Username">
                         <label for="password"></label>
                         <input type="password" name="Password" id="password" placeholder="Password" autocomplete="on">
-                        <button class="major-button" type="button" name="Login" value="Login">Login</button>
+                        <button class="major-button" type="button" name="Login" value="Login" id="login-button">Login</button>
                         <div class="unusual-actions">
                             <div class="reset-password"><span id="change-to-reset-password-form">I forgot my password.</span></div>
                             <div class="unusual-actions-sep">||</div>
@@ -35,6 +35,10 @@
     </div>
     <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/js.cookie.min.js' %}"></script>
     <script src="{% static 'js/index.js' %}"></script>
+    <script>
+        Cookies.set('csrftoken', "{{ csrf_token }}")
+    </script>
 </body>
 </html>
