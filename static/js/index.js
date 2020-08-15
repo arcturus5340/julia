@@ -1,4 +1,4 @@
-function reset_password_handler () {
+function change_to_reset_form () {
 
     $(document).on('click', '#change-to-reset-password-form', function () {
         $.ajax({
@@ -19,7 +19,7 @@ function reset_password_handler () {
 }
 
 
-function registration_handler () {
+function change_to_registration_form () {
 
     $(document).on('click', '#change-to-registration-form', function () {
         $.ajax({
@@ -40,7 +40,7 @@ function registration_handler () {
 }
 
 
-function login_handler () {
+function change_to_login_form () {
 
     $(document).on('click', '#change-to-login-form', function () {
         $.ajax({
@@ -57,8 +57,8 @@ function login_handler () {
                 console.log('internal error.')
             },
         })
-        reset_password_handler()
-        registration_handler()
+        change_to_reset_form()
+        change_to_registration_form()
     })
 }
 
@@ -72,11 +72,11 @@ $(document).keyup(function(e) {
 })
 
 
-function login_button_handler () {
-
+function login_handler () {
     $(document).on('click', '#login-button', function () {
         let username = $('#username').val();
         let password = $('#password').val();
+        let form_info = $('#form-info');
         if((username !== "") && (password !== "")){
             $.ajax({
                 url: '/',
@@ -95,13 +95,54 @@ function login_button_handler () {
                 },
             });
         } else {
+            if( form_info.hasClass('shake') ) {
+                form_info.removeClass('shake');
+            }
+            form_info.addClass('shake');
             console.log("missing username or password.")
         }
     })
 }
 
 
-reset_password_handler()
-registration_handler()
+function registration_handler () {
+    $(document).on('click', '#sign-up-button', function () {
+        let username = $('#reg-username').val();
+        let email = $('#reg-e-mail')
+        let password = $('#reg-password').val();
+        let form_info = $('#form-info');
+        if((username !== "") && (password !== "") && (email !== "")){
+            $.ajax({
+                url: '/',
+                type: 'POST',
+                data: {
+                    action: 'login-to-system',
+                    username: username,
+                    email: email,
+                    password: password,
+                    csrfmiddlewaretoken: Cookies.get('csrftoken'),
+                },
+                success: function(response){
+                    $('body').html(response)
+                },
+                error: function(){
+                    console.log('internal error.')
+                },
+            });
+        } else {
+
+            if( form_info.hasClass('shake') ) {
+                form_info.removeClass('shake');
+            }
+            form_info.addClass('shake');
+            console.log("missing username or password.")
+        }
+    })
+}
+
+
+change_to_reset_form()
+change_to_registration_form()
+change_to_login_form()
 login_handler()
-login_button_handler()
+registration_handler()
