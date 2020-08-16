@@ -6,14 +6,16 @@ function change_to_reset_form () {
 
     $(document).on('click', '#change-to-reset-password-form', function () {
         $.ajax({
-            url: 'reset-password-handler/',
+            url: '/login/change-to-reset-form/',
             type: 'POST',
             data: {
                 action: 'reset-password',
                 csrfmiddlewaretoken: Cookies.get('csrftoken'),
             },
             success: function(response){
-                $('#main-form').html(response)
+                if (response['status'] === 'ok') {
+                    $('#main-form').html(response['content']);
+                }
             },
             error: function(){
                 console.log('internal error.')
@@ -27,14 +29,16 @@ function change_to_registration_form () {
 
     $(document).on('click', '#change-to-registration-form', function () {
         $.ajax({
-            url: 'registration-handler/',
+            url: '/login/change-to-registration-form/',
             type: 'POST',
             data: {
                 action: 'registration',
                 csrfmiddlewaretoken: Cookies.get('csrftoken'),
             },
             success: function(response){
-                $('#main-form').html(response)
+                if (response['status'] === 'ok') {
+                    $('#main-form').html(response['content']);
+                }
             },
             error: function(){
                 console.log('internal error.')
@@ -48,14 +52,16 @@ function change_to_login_form () {
 
     $(document).on('click', '#change-to-login-form', function () {
         $.ajax({
-            url: 'login-handler/',
+            url: '/login/change-to-login-form/',
             type: 'POST',
             data: {
                 action: 'login',
                 csrfmiddlewaretoken: Cookies.get('csrftoken'),
             },
             success: function (response) {
-                $('#main-form').html(response)
+                if (response['status'] === 'ok') {
+                    $('#main-form').html(response['content']);
+                }
             },
             error: function () {
                 console.log('internal error.')
@@ -83,16 +89,17 @@ function login_handler () {
         let form_info = $('#form-info');
         if((username !== "") && (password !== "")){
             $.ajax({
-                url: '/',
+                url: 'login/',
                 type: 'POST',
                 data: {
-                    action: 'login-to-system',
                     username: username,
                     password: password,
                     csrfmiddlewaretoken: Cookies.get('csrftoken'),
                 },
                 success: function(response){
-                    $('body').html(response)
+                    if (response['status'] === 'ok') {
+                        $('body').html(response['content'])
+                    }
                 },
                 error: function(){
                     console.log('internal error.')
@@ -119,17 +126,18 @@ function registration_handler () {
         let form_info = $('#form-info');
         if((username !== "") && (password !== "") && (email !== "")){
             $.ajax({
-                url: '/',
+                url: 'registration/',
                 type: 'POST',
                 data: {
-                    action: 'sign-up-in-system',
                     username: username,
                     email: email,
                     password: password,
                     csrfmiddlewaretoken: Cookies.get('csrftoken'),
                 },
                 success: function(response){
-                    $('body').html(response)
+                    if (response['status'] === 'ok') {
+                        $('#main-form').html(response['content']);
+                    }
                 },
                 error: function(){
                     console.log('internal error.')
