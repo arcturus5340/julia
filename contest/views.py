@@ -1,7 +1,14 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+
+from contest.models import Task
 
 
-@login_required(login_url='/login/')
 def index(request):
-    return render(request, 'contest.html', {})
+    if request.user.is_anonymous:
+        return render(request, 'index.html')
+
+    context = {
+        'Tasks': Task.objects.all(),
+    }
+
+    return render(request, 'contest.html', context)

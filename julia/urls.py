@@ -22,11 +22,14 @@ import auth.views
 
 urlpatterns = [
     path('', contest.views.index),
-    path('login/', auth.views.login),
     path('admin/', admin.site.urls),
 
-    path('login/login-handler/', auth.views.login_handler),
-    path('login/registration-handler/', auth.views.registration_handler),
-    path('login/reset-password-handler/', auth.views.reset_password_handler),
+    path('login/', auth.views.login),
+    path('logout/', auth.views.logout),
+    path('registration/', auth.views.registration),
+
+    path('login/change-to-login-form/', auth.views.change_to_login_form),
+    path('login/change-to-registration-form/', auth.views.change_to_registration_form),
+    path('login/change-to-reset-form/', auth.views.change_to_reset_form),
 
 ]
