@@ -156,7 +156,6 @@ function registration_handler () {
                 answer = forgotten_form.shift() + ', <br>' + forgotten_form.join(' & ')
             else
                 answer = forgotten_form.join(' & ')
-            console.log(forgotten_form.length);
             form_info.html('Sorry, you forgot to enter your ' + answer + '.');
             form_info.addClass('shake');
         }
