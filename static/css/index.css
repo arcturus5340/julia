@@ -69,6 +69,7 @@ a:hover {
 
 label {
     display: none;
+    margin-bottom: 0px;
 }
 
 .center-container {
@@ -255,8 +256,8 @@ label {
 }
 
 .upload-solution {
-    width: 0.1px;
-    height: 0.1px;
+    width: 1px;
+    height: 1px;
     opacity: 0;
     overflow: hidden;
     position: absolute;
@@ -285,12 +286,14 @@ label {
     background-color: black;
     display: inline-block;
     width: 65%;
+    transition: color .4s ease-in-out, background-color .4s ease-in-out;
 }
 
 .language-select {
     display: block;
     padding: .375rem .75rem;
     margin-left: 50%;
+    margin-top: 1em;
     transform: translateX(-60%);
     width: 65%;
     text-align-last: center;
@@ -306,4 +309,28 @@ label {
     -webkit-appearance: none;
     appearance:none;
     outline: 0;
+}
+
+.send-solution-button {
+    background: rgba(255, 255, 255, .5);
+    display: block;
+    margin-top: 1em;
+    line-height: 1.5;
+    text-align: center;
+    border: 2px solid black;
+    outline: 0;
+    padding: .375rem .75rem;
+    margin-left: 50%;
+    transform: translateX(-60%);
+    width: 65%;
+    color: rgba(0, 0, 0, .9);
+    border-radius: 24px;
+    transition: 0.5s;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.send-solution-button:hover {
+    background: black;
+    color: white;
 }
