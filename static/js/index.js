@@ -164,8 +164,38 @@ function registration_handler () {
 }
 
 
+function reset_password_handler () {
+    $(document).on('click', '#reset-password-button', function () {
+        let user_key = $('#user-key').val();
+        let form_info = $('#form-info');
+        if(user_key !== ""){
+            $.ajax({
+                url: 'reset-password/',
+                type: 'POST',
+                data: {
+                    user_key: user_key,
+                    csrfmiddlewaretoken: Cookies.get('csrftoken'),
+                },
+                success: function(response){
+                    if (response['status'] === 'ok') {
+                        $('#main-form').html(response['content']);
+                    }
+                },
+                error: function(){
+                    console.log('internal error.')
+                },
+            });
+        } else {
+            form_info.html('Sorry, I can read neither neither your username nor e-mail.');
+            form_info.addClass('shake');
+        }
+    })
+}
+
+
 change_to_reset_form()
 change_to_registration_form()
 change_to_login_form()
 login_handler()
 registration_handler()
+reset_password_handler()
