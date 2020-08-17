@@ -2,6 +2,12 @@ $(document).on('animationend webkitAnimationEnd onAnimationEnd', '#form-info', f
     $('#form-info').removeClass('shake');
 })
 
+
+$(".upload-program").on("change", function() {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings(".upload-program").addClass("selected").html(fileName);
+});
+
 function change_to_reset_form () {
 
     $(document).on('click', '#change-to-reset-password-form', function () {
