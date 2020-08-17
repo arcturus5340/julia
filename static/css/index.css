@@ -286,3 +286,24 @@ label {
     display: inline-block;
     width: 65%;
 }
+
+.language-select {
+    display: block;
+    padding: .375rem .75rem;
+    margin-left: 50%;
+    transform: translateX(-60%);
+    width: 65%;
+    text-align-last: center;
+    text-align: center;
+    line-height: 1.5;
+    color: black;
+    background-color: white;
+    background-clip: padding-box;
+    border: 2px solid black;
+    border-radius: 24px;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance:none;
+    outline: 0;
+}
