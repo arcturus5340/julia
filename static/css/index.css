@@ -254,7 +254,35 @@ label {
     background-color: black;
 }
 
-input[type=file] {
+.upload-solution {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.upload-solution + label {
     border: 2px solid black;
     border-radius: 24px;
+    margin-top: 1em;
+    margin-left: 50%;
+    transform: translateX(-60%);
+    color: black;
+    display: inline-block;
+    width: 65%
+}
+
+.upload-solution:hover + label,
+.upload-solution + label:hover {
+    border: 2px solid black;
+    border-radius: 24px;
+    margin-top: 1em;
+    margin-left: 50%;
+    transform: translateX(-60%);
+    color: white;
+    background-color: black;
+    display: inline-block;
+    width: 65%;
 }

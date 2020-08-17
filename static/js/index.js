@@ -3,9 +3,9 @@ $(document).on('animationend webkitAnimationEnd onAnimationEnd', '#form-info', f
 })
 
 
-$(".upload-program").on("change", function() {
+$(".upload-solution").on("change", function() {
     var fileName = $(this).val().split("\\").pop();
-    $(this).siblings(".upload-program").addClass("selected").html(fileName);
+    $(this).siblings(".upload-solution-label").addClass("selected").html(fileName);
 });
 
 function change_to_reset_form () {
