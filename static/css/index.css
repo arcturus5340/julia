@@ -226,6 +226,17 @@ label {
     transition: all .8s;
 }
 
+/* Julia Main Contest Page */
+.contest-container {
+    position: relative;
+    height: 100%;
+}
+
+.contest-row {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
 
 .nav .nav-link {
     background-color: white;
@@ -243,7 +254,7 @@ label {
     background-color: black;
 }
 
-.welcome {
-    text-align: center;
-    width: 100%;
+input[type=file] {
+    border: 2px solid black;
+    border-radius: 24px;
 }
