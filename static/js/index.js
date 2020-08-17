@@ -4,8 +4,12 @@ $(document).on('animationend webkitAnimationEnd onAnimationEnd', '#form-info', f
 
 
 $(".upload-solution").on("change", function() {
-    var fileName = $(this).val().split("\\").pop();
-    $(this).siblings(".upload-solution-label").addClass("selected").html(fileName);
+    var file_name = $(this).val().split("\\").pop();
+    if (file_name !== '')
+        $(this).siblings(".upload-solution-label").addClass("selected").html(file_name)
+    else
+        $(this).siblings(".upload-solution-label").addClass("selected").html("You haven't choose a file, try again!")
+
 });
 
 function change_to_reset_form () {
