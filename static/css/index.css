@@ -304,6 +304,26 @@ a.btn-customized.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     box-shadow: none;
 }
 
+.sidebar-dismiss {
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transition: all .3s;
+    background: #444;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 35px;
+    cursor: pointer;
+}
+
+.sidebar-dismiss:hover,
+.sidebar-dismiss:focus {
+    background: #555;
+    color: #fff;
+}
+
 .contest-container {
     position: relative;
     height: 100%;
