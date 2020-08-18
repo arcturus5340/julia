@@ -69,7 +69,7 @@ a:hover {
 
 label {
     display: none;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .center-container {
@@ -318,7 +318,6 @@ label {
     line-height: 1.5;
     text-align: center;
     border: 2px solid black;
-    outline: 0;
     padding: .375rem .75rem;
     margin-left: 50%;
     transform: translateX(-60%);
@@ -328,9 +327,21 @@ label {
     transition: 0.5s;
     cursor: pointer;
     vertical-align: middle;
+    outline: 0;
 }
 
 .send-solution-button:hover {
     background: black;
     color: white;
+    appearance:none;
+    outline: 0;
+}
+
+.send-solution-button:focus {
+    appearance:none;
+    outline: 0;
+    line-height: 1.5;
+    text-align: center;
+    border: 2px solid black;
+    padding: .375rem .75rem;
 }
