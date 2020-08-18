@@ -13,6 +13,16 @@ $(".upload-solution").on("change", function() {
 });
 
 
+$('.sidebar-dismiss').on('click', function() {
+    $('.sidebar').removeClass('active');
+});
+
+$('.open-menu').on('click', function() {
+    // e.preventDefault();
+    $('.sidebar').addClass('active');
+});
+
+
 function change_to_reset_form () {
 
     $(document).on('click', '#change-to-reset-password-form', function () {
