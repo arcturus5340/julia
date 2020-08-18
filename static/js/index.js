@@ -15,11 +15,12 @@ $(".upload-solution").on("change", function() {
 
 $('.sidebar-dismiss').on('click', function() {
     $('.sidebar').removeClass('active');
+    $('.content').css('left', '-=255px');
 });
 
 $('.open-menu').on('click', function() {
-    // e.preventDefault();
     $('.sidebar').addClass('active');
+    $('.content').css('left', '+=255px');
 });
 
 

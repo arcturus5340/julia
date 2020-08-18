@@ -250,8 +250,12 @@ label {
 }
 
 .content {
+    position: fixed;
     width: 100%;
     transition: all 0.3s;
+    padding-left: 8em;
+    padding-top: 3em;
+    left: 0;
 }
 
 .open-menu {
