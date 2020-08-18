@@ -239,10 +239,9 @@ label {
     top: 0;
     left: -255px;
     z-index: 999;
-    background: #333;
-    color: #fff;
+    background: white;
+    color: black;
     transition: all .3s;
-    box-shadow: 3px 3px 3px rgba(51, 51, 51, 0.5);
     text-align: left;
 }
 
@@ -273,8 +272,6 @@ label {
 .open-menu.btn-customized.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     box-shadow: 3px 3px 3px rgba(51, 51, 51, 0.2);
 }
-
-/* Style for all buttons with the class btn-customized */
 
 a.btn-customized {
     margin-left: 5px;

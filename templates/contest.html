@@ -19,20 +19,12 @@
         <div class="logo">
             <h3><a href="index.html">Julia</a></h3>
         </div>
-        <ul class="list-unstyled menu-elements">
-            <li class="active">
-                <a class="scroll-link" href="#top-content"><i class="fas fa-code"></i> Task A </a>
-            </li>
-            <li>
-                <a class="scroll-link" href="#section-1"><i class="fas fa-code"></i>  Task B </a>
-            </li>
-            <li>
-                <a class="scroll-link" href="#section-2"><i class="fas fa-code"></i> Task C </a>
-            </li>
-            <li>
-                <a class="scroll-link" href="#section-4"><i class="fas fa-code"></i>  Task D </a>
-            </li>
-        </ul>
+        <div class="nav flex-column nav-pills" id="problem-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="problem-1-tab" data-toggle="pill" href="#problem-1-content" role="tab" aria-controls="problem-1-content" aria-selected="true">Problem I</a>
+            <a class="nav-link" id="problem-2-tab" data-toggle="pill" href="#problem-2-content" role="tab" aria-controls="problem-2-content" aria-selected="false">Problem II</a>
+            <a class="nav-link" id="problem-3-tab" data-toggle="pill" href="#problem-3-content" role="tab" aria-controls="problem-3-content" aria-selected="false">Problem III</a>
+            <a class="nav-link" id="problem-4-tab" data-toggle="pill" href="#problem-4-content" role="tab" aria-controls="problem-4-content" aria-selected="false">Problem IV</a>
+        </div>
     </nav>
     <div class="content">
         <a class="btn btn-primary btn-customized open-menu" href="#" role="button">
@@ -43,15 +35,6 @@
 
 <div class="container contest-container">
     <div class="row contest-row">
-        <div class="col-sm-12 col-md-3 col-lg-3">
-            <div class="nav flex-column nav-pills" id="problem-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-link active" id="problem-1-tab" data-toggle="pill" href="#problem-1-content" role="tab" aria-controls="problem-1-content" aria-selected="true">Problem I</a>
-                <a class="nav-link" id="problem-2-tab" data-toggle="pill" href="#problem-2-content" role="tab" aria-controls="problem-2-content" aria-selected="false">Problem II</a>
-                <a class="nav-link" id="problem-3-tab" data-toggle="pill" href="#problem-3-content" role="tab" aria-controls="problem-3-content" aria-selected="false">Problem III</a>
-                <a class="nav-link" id="problem-4-tab" data-toggle="pill" href="#problem-4-content" role="tab" aria-controls="problem-4-content" aria-selected="false">Problem IV</a>
-            </div>
-        </div>
-
         <div class="col-sm-12 col-md-9 col-lg-9">
             <div class="tab-content" id="problem-content">
                 <div class="tab-pane fade show active" id="problem-1-content" role="tabpanel" aria-labelledby="problem-1-tab">
