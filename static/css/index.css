@@ -286,8 +286,7 @@ a.sidebar-button {
     padding: .75rem 1.5rem;
     background: none;
     border: 0;
-    border-radius: 4px;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: 300;
     color: black;
     box-shadow: none;
@@ -309,14 +308,21 @@ a.sidebar-button.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
 }
 
 .sidebar-dismiss {
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: .75rem 1.5rem;
+    background: none;
+    border: 0;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: 300;
+    color: black;
+    box-shadow: none;
     width: 35px;
     height: 35px;
     position: absolute;
-    top: 10px;
+    top: 45vh;
     right: 10px;
-    transition: all .3s;
-    background: #444;
-    border-radius: 4px;
     text-align: center;
     line-height: 35px;
     cursor: pointer;
@@ -324,8 +330,13 @@ a.sidebar-button.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
 
 .sidebar-dismiss:hover,
 .sidebar-dismiss:focus {
-    background: #555;
-    color: #fff;
+    top: 45vh;
+    outline: 0;
+    border: 0;
+    background: none;
+    color: black;
+    font-size: 2em;
+    box-shadow: none;
 }
 
 .contest-container {
