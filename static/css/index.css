@@ -233,16 +233,16 @@ label {
 }
 
 .sidebar {
-    width: 250px;
+    width: 300px;
     height: 100vh;
     position: fixed;
-    top: 0;
+    padding-top: 10px;
     left: -255px;
     z-index: 999;
     background: white;
     color: black;
     transition: all .3s;
-    text-align: left;
+    text-align: center;
 }
 
 .sidebar.active {
