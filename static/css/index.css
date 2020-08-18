@@ -262,7 +262,7 @@ label {
 
 .open-menu {
     position: fixed;
-    top: 45vh;
+    top: 46vh;
     left: 0;
     z-index: 997;
 }
@@ -275,7 +275,7 @@ a.open-menu.active:focus,
 a.open-menu.btn.btn-primary:not(:disabled):not(.disabled):active,
 a.open-menu.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     position: fixed;
-    top: 43.5vh;
+    top: 44.5vh;
     left: 0;
     z-index: 997;
 }
