@@ -15,12 +15,12 @@ $(".upload-solution").on("change", function() {
 
 $('.sidebar-dismiss').on('click', function() {
     $('.sidebar').removeClass('active');
-    $('.content').css('left', '-=150px');
+    $('.content').removeClass('sidebar-is-active');
 });
 
-$('.open-menu').on('click', function() {
+$('.sidebar-open').on('click', function() {
     $('.sidebar').addClass('active');
-    $('.content').css('left', '+=150px');
+    $('.content').addClass('sidebar-is-active');
 });
 
 
@@ -96,17 +96,14 @@ function change_to_login_form () {
 
 
 $(document).keyup(function(e) {
-    if (e.keyCode === 13) {
-        $('.major-button').click();
-    } else if (e.keyCode === 27) {
+    if (e.keyCode === 13)
+        $('.major-button').click()
+    else if (e.keyCode === 27)
         $('#change-to-login-form').click()
-    } else if (e.keyCode === 37) {
-        $('.sidebar').removeClass('active');
-        $('.content').css('left', '-=150px');
-    } else if (e.keyCode === 39) {
-        $('.sidebar').addClass('active');
-        $('.content').css('left', '+=150px');
-    }
+    else if (e.keyCode === 37)
+        $('.sidebar-dismiss').click()
+    else if (e.keyCode === 39)
+        $('.sidebar-open').click()
 })
 
 
