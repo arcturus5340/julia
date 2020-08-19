@@ -72,6 +72,7 @@ label {
     margin-bottom: 0;
 }
 
+
 .center-container {
     align-items: center;
     display: flex;
@@ -272,7 +273,7 @@ a.sidebar-open {
     line-height: 35px;
     text-align: center;
     top: 45vh;
-    left: 0;
+    left: 15px;
     z-index: 997;
 }
 
@@ -344,6 +345,24 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
 .nav-pills .show > .nav-link {
     color: white;
     background-color: black;
+}
+
+.io-table {
+    width: 100%;
+    margin-bottom: 2rem;
+    color: black;
+    margin-top: 2rem;
+}
+
+.io-table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid black;
+}
+
+.io-table td, .io-table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid black;
 }
 
 .upload-solution {
