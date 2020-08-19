@@ -233,11 +233,11 @@ label {
 }
 
 .sidebar {
-    width: 256px;
+    width: 300px;
     height: 100vh;
     position: fixed;
     padding-top: 10px;
-    left: -256px;
+    left: -305px;
     z-index: 999;
     background: white;
     color: black;
@@ -260,45 +260,30 @@ label {
 }
 
 
-.open-menu {
-    position: fixed;
-    top: 46vh;
-    left: 0;
-    z-index: 997;
+.content.sidebar-is-active {
+    left: 150px;
 }
 
-a.open-menu:hover,
-a.open-menu:active,
-a.open-menu:focus,
-a.open-menu:active:focus,
-a.open-menu.active:focus,
-a.open-menu.btn.btn-primary:not(:disabled):not(.disabled):active,
-a.open-menu.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
-    position: fixed;
-    top: 44.5vh;
-    left: 0;
-    z-index: 997;
-}
-
-a.sidebar-button {
-    margin-left: 5px;
-    margin-right: 5px;
-    padding: .75rem 1.5rem;
+a.sidebar-open {
     background: none;
     border: 0;
-    font-size: 1em;
-    font-weight: 300;
     color: black;
-    box-shadow: none;
+    position: absolute;
+    line-height: 35px;
+    text-align: center;
+    top: 45vh;
+    left: 0;
+    z-index: 997;
 }
 
-a.sidebar-button:hover,
-a.sidebar-button:active,
-a.sidebar-button:focus,
-a.sidebar-button:active:focus,
-a.sidebar-button.active:focus,
-a.sidebar-button.btn.btn-primary:not(:disabled):not(.disabled):active,
-a.sidebar-button.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
+a.sidebar-open:hover,
+a.sidebar-open:active,
+a.sidebar-open:focus,
+a.sidebar-open:active:focus,
+a.sidebar-open.active:focus,
+a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active,
+a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
+    top: 45vh;
     outline: 0;
     border: 0;
     background: none;
@@ -307,22 +292,12 @@ a.sidebar-button.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     box-shadow: none;
 }
 
+
 .sidebar-dismiss {
-    margin-left: 5px;
-    margin-right: 5px;
-    padding: .75rem 1.5rem;
-    background: none;
-    border: 0;
-    border-radius: 4px;
-    font-size: 1em;
-    font-weight: 300;
-    color: black;
-    box-shadow: none;
     width: 35px;
-    height: 35px;
     position: absolute;
     top: 45vh;
-    right: 10px;
+    right: 260px;
     text-align: center;
     line-height: 35px;
     cursor: pointer;
@@ -330,7 +305,6 @@ a.sidebar-button.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
 
 .sidebar-dismiss:hover,
 .sidebar-dismiss:focus {
-    top: 45vh;
     outline: 0;
     border: 0;
     background: none;
@@ -348,6 +322,12 @@ a.sidebar-button.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+}
+
+.nav {
+    padding-top: 13em;
+    width: 280px;
+    padding-left: 40px;
 }
 
 .nav .nav-link {
