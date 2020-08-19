@@ -72,6 +72,9 @@ label {
     margin-bottom: 0;
 }
 
+code {
+    color: darkred;
+}
 
 .center-container {
     align-items: center;
@@ -256,7 +259,7 @@ label {
     transition: all 0.3s;
     padding-left: 20vw;
     padding-right: 20vw;
-    padding-top: 3em;
+    padding-top: 9vw;
     left: 0;
 }
 
@@ -347,6 +350,10 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     background-color: black;
 }
 
+.header {
+    margin-bottom: 1.5rem;
+}
+
 .io-table {
     width: 100%;
     margin-bottom: 2rem;
@@ -365,46 +372,10 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     border-top: 1px solid black;
 }
 
-.upload-solution {
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
-}
-
-.upload-solution + label {
-    border: 2px solid black;
-    border-radius: 24px;
-    margin-top: 1em;
-    margin-left: 50%;
-    transform: translateX(-60%);
-    color: black;
-    display: inline-block;
-    width: 65%
-}
-
-.upload-solution:hover + label,
-.upload-solution + label:hover {
-    border: 2px solid black;
-    border-radius: 24px;
-    margin-top: 1em;
-    margin-left: 50%;
-    transform: translateX(-60%);
-    color: white;
-    background-color: black;
-    display: inline-block;
-    width: 65%;
-    transition: color .4s ease-in-out, background-color .4s ease-in-out;
-}
-
-.language-select {
+.select-language {
     display: block;
     padding: .375rem .75rem;
-    margin-left: 50%;
-    margin-top: 1em;
-    transform: translateX(-60%);
+    margin: .5em auto;
     width: 65%;
     text-align-last: center;
     text-align: center;
@@ -421,16 +392,44 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     outline: 0;
 }
 
+.upload-solution {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    margin: 0 auto;
+    z-index: -1;
+}
+
+.upload-solution + label {
+    border: 2px solid black;
+    border-radius: 24px;
+    margin: .5em auto;
+    color: black;
+    display: inline-block;
+    width: 65%
+}
+
+.upload-solution:hover + label,
+.upload-solution + label:hover {
+    color: white;
+    background-color: black;
+    transition: color .4s ease-in-out, background-color .4s ease-in-out;
+}
+
+.upload-solution-form {
+    text-align: center;
+}
+
 .send-solution-button {
     background: rgba(255, 255, 255, .5);
     display: block;
-    margin-top: 1em;
     line-height: 1.5;
     text-align: center;
     border: 2px solid black;
     padding: .375rem .75rem;
-    margin-left: 50%;
-    transform: translateX(-60%);
+    margin: .5em auto;
     width: 65%;
     color: rgba(0, 0, 0, .9);
     border-radius: 24px;
