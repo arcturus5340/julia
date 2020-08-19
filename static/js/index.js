@@ -15,12 +15,12 @@ $(".upload-solution").on("change", function() {
 
 $('.sidebar-dismiss').on('click', function() {
     $('.sidebar').removeClass('active');
-    $('.content').css('left', '-=127px');
+    $('.content').css('left', '-=150px');
 });
 
 $('.open-menu').on('click', function() {
     $('.sidebar').addClass('active');
-    $('.content').css('left', '+=127px');
+    $('.content').css('left', '+=150px');
 });
 
 
@@ -100,6 +100,12 @@ $(document).keyup(function(e) {
         $('.major-button').click();
     } else if (e.keyCode === 27) {
         $('#change-to-login-form').click()
+    } else if (e.keyCode === 37) {
+        $('.sidebar').removeClass('active');
+        $('.content').css('left', '-=150px');
+    } else if (e.keyCode === 39) {
+        $('.sidebar').addClass('active');
+        $('.content').css('left', '+=150px');
     }
 })
 
