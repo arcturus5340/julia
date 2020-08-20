@@ -350,6 +350,12 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     background-color: black;
 }
 
+.send-solution-forms {
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+}
+
 .header {
     margin-bottom: 1.5rem;
 }
@@ -376,7 +382,7 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     display: block;
     padding: .375rem .75rem;
     margin: .5em auto;
-    width: 85%;
+    width: 16.4em;
     text-align-last: center;
     text-align: center;
     line-height: 1.5;
@@ -411,7 +417,7 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     margin: .5em auto;
     color: black;
     display: inline-block;
-    width: 85%
+    width: 16.4em
 }
 
 .upload-solution:hover + label,
@@ -433,7 +439,7 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     border: 2px solid black;
     padding: .375rem .75rem;
     margin: .5em auto;
-    width: 85%;
+    width: 16.4em;
     color: rgba(0, 0, 0, .9);
     border-radius: 24px;
     transition: 0.5s;
