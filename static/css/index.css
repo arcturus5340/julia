@@ -254,12 +254,10 @@ code {
 }
 
 .content {
-    position: fixed;
-    width: 100%;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
     transition: all 0.3s;
-    padding-left: 20vw;
-    padding-right: 20vw;
-    padding-top: 9vw;
     left: 0;
 }
 
@@ -296,6 +294,12 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     box-shadow: none;
 }
 
+.tab-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 
 .sidebar-dismiss {
     width: 35px;
