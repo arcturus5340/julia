@@ -21,6 +21,29 @@
             <a class="nav-link" id="problem-3-tab" data-toggle="pill" href="#problem-3-content" role="tab" aria-controls="problem-3-content" aria-selected="false">Problem III</a>
             <a class="nav-link" id="problem-4-tab" data-toggle="pill" href="#problem-4-content" role="tab" aria-controls="problem-4-content" aria-selected="false">Problem IV</a>
         </div>
+
+        <div class="send-solution-forms">
+            <form class="upload-solution-form">
+                <label for="select-language-ID">
+                </label>
+                <select class="select-language" id="select-language-ID">
+                    <option value="" disabled selected hidden>Select Language</option>
+                    <option value="C">C</option>
+                    <option value="C++">C++</option>
+                    <option value="C#">C#</option>
+                    <option value="Java">Java</option>
+                    <option value="NASM">NASM</option>
+                    <option value="PascalABC">PascalABC</option>
+                    <option value="PHP">PHP</option>
+                    <option value="Python 3">Python 3</option>
+                    <option value="Python 2">Python 2</option>
+                </select>
+                <input class="upload-solution" type="file" id="upload-solution-ID">
+                <label class="btn upload-solution-label" for="upload-solution-ID">Select Program</label>
+            </form>
+            <button class="send-solution-button" type="button" name="send-solution-ID" value="Send_Solution" id="send-solution-ID">Send Solution</button>
+        </div>
+
     </nav>
     <div class="content">
         <a class="sidebar-open" href="#" role="button">
@@ -56,25 +79,6 @@
                     </tbody>
                 </table>
 
-                <label for="select-language-ID">
-                </label>
-                <select class="select-language" id="select-language-ID">
-                    <option value="" disabled selected hidden>Select Language</option>
-                    <option value="C">C</option
-                    <option value="C++">C++</option>
-                    <option value="C#">C#</option>
-                    <option value="Java">Java</option>
-                    <option value="NASM">NASM</option>
-                    <option value="PascalABC">PascalABC</option>
-                    <option value="PHP">PHP</option>
-                    <option value="Python 3">Python 3</option>
-                    <option value="Python 2">Python 2</option>
-                </select>
-                <form class="upload-solution-form">
-                    <input class="upload-solution" type="file" id="upload-solution-ID">
-                    <label class="btn upload-solution-label" for="upload-solution-ID">Select Program</label>
-                </form>
-                <button class="send-solution-button" type="button" name="send-solution-ID" value="Send_Solution" id="send-solution-ID">Send Solution</button>
             </div>
             <div class="tab-pane fade" id="problem-2-content" role="tabpanel" aria-labelledby="problem-2-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci blanditiis, commodi cumque deleniti dolores eos esse facere fugiat iusto natus nihil pariatur quaerat, quidem quo ratione saepe tempora? Error, quos!</div>
             <div class="tab-pane fade" id="problem-3-content" role="tabpanel" aria-labelledby="problem-3-tab">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda atque cumque illum maxime neque sapiente sint sit vero? Ab aspernatur cumque dicta ex facilis id labore nam perspiciatis quas quasi!</div>
