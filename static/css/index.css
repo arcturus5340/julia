@@ -270,7 +270,7 @@ a.sidebar-open {
     background: none;
     border: 0;
     color: black;
-    position: absolute;
+    position: fixed;
     line-height: 35px;
     text-align: center;
     top: 45vh;
