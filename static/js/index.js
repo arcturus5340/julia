@@ -216,6 +216,16 @@ function reset_password_handler () {
     })
 }
 
+$('a.nav-link').on('show.bs.tab', function (e) {
+    // console.log(e.target);
+    if ( $(e.target.getAttribute('href')).height() > $(window).height() ) {
+        setTimeout(function () {
+            $('.tab-content').css('transform', 'translate(-50%, 0%)')
+        }, 150)
+    } else {
+        $('.tab-content').css('transform', 'translate(-50%, -50%)')
+    }
+})
 
 change_to_reset_form()
 change_to_registration_form()

@@ -54,8 +54,8 @@ html, body {
     font-family: "JetBrains Mono", serif;
     background: white;
     /*background: black;*/
-    scroll-behavior: smooth;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    overflow-x: hidden;
     height: 100%;
 }
 
