@@ -312,7 +312,7 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     width: 35px;
     position: absolute;
     top: 45vh;
-    right: 260px;
+    right: -5px;
     text-align: center;
     line-height: 35px;
     cursor: pointer;
@@ -340,9 +340,9 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
 }
 
 .nav {
-    padding-top: 13em;
-    width: 280px;
-    padding-left: 40px;
+    position: absolute;
+    width: 16.4em;
+    left: 1em;
 }
 
 .nav .nav-link {
