@@ -348,6 +348,7 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
 .nav .nav-link {
     background-color: white;
     color: black;
+    margin-bottom: .2em;
 }
 
 .nav-link .nav-link.active {
@@ -359,6 +360,12 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
 .nav-pills .show > .nav-link {
     color: white;
     background-color: black;
+}
+
+.nav .nav-link:hover {
+    color: white;
+    background-color: black;
+    transition: color .4s ease-in-out, background-color .4s ease-in-out;
 }
 
 .send-solution-forms {
@@ -402,14 +409,17 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     background-clip: padding-box;
     border: 2px solid black;
     border-radius: 24px;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: color .4s ease-in-out, background-color .4s ease-in-out, border-width .0s ease-in-out;
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance:none;
     outline: 0;
 }
-
 .select-language:hover {
+    color: white;
+    background-color: black;
+    border-width: 0;
+    padding: 0.5rem 1.75rem;
 }
 
 .upload-solution {
