@@ -128,3 +128,11 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = 'code/'
 MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+
+
+# Mail server data
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'lorewood.info@gmail.com'
+EMAIL_HOST_PASSWORD = 'lorewood.info.password'
+EMAIL_PORT = 587
