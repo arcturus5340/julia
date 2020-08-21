@@ -16,6 +16,9 @@ class Task(models.Model):
     )
     content = models.TextField()
 
+    def get_samples(self):
+        return TestCase.objects.filter(task=self)[:2].values_list('input', 'output')
+
 
 class TestCase(models.Model):
     input = models.TextField()
@@ -26,4 +29,4 @@ class TestCase(models.Model):
     )
 
     class Meta:
-        db_table = 'test_case'
+        db_table = 'contest_test_case'
