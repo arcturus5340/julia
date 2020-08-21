@@ -301,6 +301,13 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     transform: translate(-50%, -50%);
 }
 
+.large {
+    padding: 9vw 20vw 1.5em;
+    top: 0;
+    left: 0;
+    transform: none;
+}
+
 .sidebar-dismiss {
     width: 35px;
     position: absolute;

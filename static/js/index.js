@@ -217,14 +217,15 @@ function reset_password_handler () {
 }
 
 $('a.nav-link').on('show.bs.tab', function (e) {
-    // console.log(e.target);
+    let tab_content = $('.tab-content')
     if ( $(e.target.getAttribute('href')).height() > $(window).height() ) {
         setTimeout(function () {
-            $('.tab-content').css('transform', 'translate(-50%, 0%)')
+            tab_content.addClass('large')
         }, 150)
     } else {
-        $('.tab-content').css('transform', 'translate(-50%, -50%)')
-    }
+        setTimeout(function () {
+            tab_content.removeClass('large')
+        }, 150)    }
 })
 
 change_to_reset_form()
