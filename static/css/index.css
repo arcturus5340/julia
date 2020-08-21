@@ -484,3 +484,12 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     border: 2px solid black;
     padding: .375rem .75rem;
 }
+
+/*Julia error page*/
+
+.error-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
