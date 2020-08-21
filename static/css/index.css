@@ -54,8 +54,8 @@ html, body {
     font-family: "JetBrains Mono", serif;
     background: white;
     /*background: black;*/
-    scroll-behavior: smooth;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    overflow-x: hidden;
     height: 100%;
 }
 
@@ -69,6 +69,11 @@ a:hover {
 
 label {
     display: none;
+    margin-bottom: 0;
+}
+
+code {
+    color: darkred;
 }
 
 .center-container {
@@ -226,10 +231,124 @@ label {
     transition: all .8s;
 }
 
+/* Julia Main Contest Page */
+.wrapper {
+    display: block;
+}
+
+.sidebar {
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    padding-top: 10px;
+    left: -305px;
+    z-index: 999;
+    background: white;
+    color: black;
+    transition: all .3s;
+    text-align: center;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.content {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    transition: all 0.3s;
+    left: 0;
+}
+
+
+.content.sidebar-is-active {
+    left: 150px;
+}
+
+a.sidebar-open {
+    background: none;
+    border: 0;
+    color: black;
+    position: absolute;
+    line-height: 35px;
+    text-align: center;
+    top: 45vh;
+    left: 15px;
+    z-index: 997;
+}
+
+a.sidebar-open:hover,
+a.sidebar-open:active,
+a.sidebar-open:focus,
+a.sidebar-open:active:focus,
+a.sidebar-open.active:focus,
+a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active,
+a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
+    top: 45vh;
+    outline: 0;
+    border: 0;
+    background: none;
+    color: black;
+    font-size: 2em;
+    box-shadow: none;
+}
+
+.tab-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.large {
+    padding: 9vw 20vw 1.5em;
+    top: 0;
+    left: 0;
+    transform: none;
+}
+
+.sidebar-dismiss {
+    width: 35px;
+    position: absolute;
+    top: 45vh;
+    right: -5px;
+    text-align: center;
+    line-height: 35px;
+    cursor: pointer;
+}
+
+.sidebar-dismiss:hover,
+.sidebar-dismiss:focus {
+    outline: 0;
+    border: 0;
+    background: none;
+    color: black;
+    font-size: 2em;
+    box-shadow: none;
+}
+
+.contest-container {
+    position: relative;
+    height: 100%;
+}
+
+.contest-row {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.nav {
+    position: absolute;
+    width: 16.4em;
+    left: 1em;
+}
 
 .nav .nav-link {
     background-color: white;
     color: black;
+    margin-bottom: .2em;
 }
 
 .nav-link .nav-link.active {
@@ -243,7 +362,134 @@ label {
     background-color: black;
 }
 
-.welcome {
-    text-align: center;
+.nav .nav-link:hover {
+    color: white;
+    background-color: black;
+    transition: color .4s ease-in-out, background-color .4s ease-in-out;
+}
+
+.send-solution-forms {
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+}
+
+.header {
+    margin-bottom: 1.5rem;
+}
+
+.io-table {
     width: 100%;
+    margin-bottom: 2rem;
+    color: black;
+    margin-top: 2rem;
+}
+
+.io-table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid black;
+}
+
+.io-table td, .io-table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid black;
+}
+
+.select-language {
+    display: block;
+    padding: .375rem .75rem;
+    margin: .5em auto;
+    width: 16.4em;
+    text-align-last: center;
+    text-align: center;
+    line-height: 1.5;
+    color: black;
+    background-color: white;
+    background-clip: padding-box;
+    border: 2px solid black;
+    border-radius: 24px;
+    transition: color .4s ease-in-out, background-color .4s ease-in-out, border-width .0s ease-in-out;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance:none;
+    outline: 0;
+}
+.select-language:hover {
+    color: white;
+    background-color: black;
+    border-width: 0;
+    padding: 0.5rem 1.75rem;
+}
+
+.upload-solution {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    margin: 0 auto;
+    z-index: -1;
+}
+
+.upload-solution + label {
+    border: 2px solid black;
+    border-radius: 24px;
+    margin: .5em auto;
+    color: black;
+    display: inline-block;
+    width: 16.4em
+}
+
+.upload-solution:hover + label,
+.upload-solution + label:hover {
+    color: white;
+    background-color: black;
+    transition: color .4s ease-in-out, background-color .4s ease-in-out;
+}
+
+.upload-solution-form {
+    text-align: center;
+}
+
+.send-solution-button {
+    background: rgba(255, 255, 255, .5);
+    display: block;
+    line-height: 1.5;
+    text-align: center;
+    border: 2px solid black;
+    padding: .375rem .75rem;
+    margin: .5em auto;
+    width: 16.4em;
+    color: rgba(0, 0, 0, .9);
+    border-radius: 24px;
+    transition: 0.5s;
+    cursor: pointer;
+    vertical-align: middle;
+    outline: 0;
+}
+
+.send-solution-button:hover {
+    background: black;
+    color: white;
+    appearance:none;
+    outline: 0;
+}
+
+.send-solution-button:focus {
+    appearance:none;
+    outline: 0;
+    line-height: 1.5;
+    text-align: center;
+    border: 2px solid black;
+    padding: .375rem .75rem;
+}
+
+/*Julia error page*/
+
+.error-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
