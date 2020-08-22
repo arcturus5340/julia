@@ -24,13 +24,17 @@ urlpatterns = [
     path('', contest.views.index),
     path('admin/', admin.site.urls),
 
-    path('login/', auth.views.login),
-    path('logout/', auth.views.logout),
-    path('registration/', auth.views.registration),
-    path('reset-password/', auth.views.reset_password),
+    path('auth/login/', auth.views.login),
+    path('auth/logout/', auth.views.logout),
+    path('auth/registration/', auth.views.registration),
+    path('auth/reset-password/', auth.views.reset_password),
 
-    path('login/change-to-login-form/', auth.views.change_to_login_form),
-    path('login/change-to-registration-form/', auth.views.change_to_registration_form),
-    path('login/change-to-reset-form/', auth.views.change_to_reset_form),
+    path('auth/get-login-form/', auth.views.change_to_login_form),
+    path('auth/get-registration-form/', auth.views.change_to_registration_form),
+    path('auth/get-reset-form/', auth.views.change_to_reset_form),
+
+    path('activate/<str:username>/<str:key>', auth.views.activate),
+
+    path('check-solution/', contest.views.check_solution),
 
 ]
