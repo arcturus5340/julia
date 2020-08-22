@@ -1,3 +1,6 @@
+const tab_content = $('.tab-content');
+
+
 $(document).on('animationend webkitAnimationEnd onAnimationEnd', '#form-info', function () {
     $('#form-info').removeClass('shake');
 })
@@ -216,16 +219,26 @@ function reset_password_handler () {
     })
 }
 
+if ( tab_content.height() > Math.ceil($(window).height() * .8) ) {
+    setTimeout(function () {
+        tab_content.addClass('large')
+    }, 150)
+} else {
+    setTimeout(function () {
+        tab_content.removeClass('large')
+    }, 150)
+}
+
 $('a.nav-link').on('show.bs.tab', function (e) {
-    let tab_content = $('.tab-content')
-    if ( $(e.target.getAttribute('href')).height() > $(window).height() ) {
+    if ( $(e.target.getAttribute('href')).height() > Math.ceil($(window).height() * .8) ) {
         setTimeout(function () {
             tab_content.addClass('large')
         }, 150)
     } else {
         setTimeout(function () {
             tab_content.removeClass('large')
-        }, 150)    }
+        }, 150)
+    }
 })
 
 change_to_reset_form()
