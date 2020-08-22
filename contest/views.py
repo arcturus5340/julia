@@ -11,7 +11,7 @@ from checker.core import Checker
 
 def index(request):
     if request.user.is_anonymous:
-        return render(request, 'index.html')
+        return render(request, 'auth.html')
 
     return render(request, 'contest.html', {
         'Tasks': Task.objects.all(),
