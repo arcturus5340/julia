@@ -1,4 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
+
+
+class Code(models.Model):
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    file = models.FileField()
 
 
 class Task(models.Model):
@@ -6,6 +15,9 @@ class Task(models.Model):
         max_length=64
     )
     content = models.TextField()
+
+    def get_samples(self):
+        return TestCase.objects.filter(task=self)[:2].values_list('input', 'output')
 
 
 class TestCase(models.Model):
@@ -17,4 +29,4 @@ class TestCase(models.Model):
     )
 
     class Meta:
-        db_table = 'test_case'
+        db_table = 'contest_test_case'
