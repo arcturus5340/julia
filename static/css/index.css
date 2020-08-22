@@ -54,8 +54,8 @@ html, body {
     font-family: "JetBrains Mono", serif;
     background: white;
     /*background: black;*/
-    scroll-behavior: smooth;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    overflow-x: hidden;
     height: 100%;
 }
 
@@ -70,6 +70,10 @@ a:hover {
 label {
     display: none;
     margin-bottom: 0;
+}
+
+code {
+    color: darkred;
 }
 
 .center-container {
@@ -228,6 +232,104 @@ label {
 }
 
 /* Julia Main Contest Page */
+.wrapper {
+    display: block;
+}
+
+.sidebar {
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    padding-top: 10px;
+    left: -305px;
+    z-index: 999;
+    background: white;
+    color: black;
+    transition: all .3s;
+    text-align: center;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.content {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    transition: all 0.3s;
+    left: 0;
+}
+
+
+.content.sidebar-is-active {
+    left: 150px;
+}
+
+a.sidebar-open {
+    background: none;
+    border: 0;
+    color: black;
+    position: fixed;
+    line-height: 35px;
+    text-align: center;
+    top: 45vh;
+    left: 15px;
+    z-index: 997;
+}
+
+a.sidebar-open:hover,
+a.sidebar-open:active,
+a.sidebar-open:focus,
+a.sidebar-open:active:focus,
+a.sidebar-open.active:focus,
+a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active,
+a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
+    top: 45vh;
+    outline: 0;
+    border: 0;
+    background: none;
+    color: black;
+    font-size: 2em;
+    box-shadow: none;
+}
+
+.tab-content {
+    position: absolute;
+    width: 100%;
+    padding: 0 20vw 1.5em;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.large {
+    padding: 9vw 20vw 1.5em;
+    top: 0;
+    left: 0;
+    transform: none;
+}
+
+.sidebar-dismiss {
+    width: 35px;
+    position: absolute;
+    top: 45vh;
+    right: -5px;
+    text-align: center;
+    line-height: 35px;
+    cursor: pointer;
+}
+
+.sidebar-dismiss:hover,
+.sidebar-dismiss:focus {
+    outline: 0;
+    border: 0;
+    background: none;
+    color: black;
+    font-size: 2em;
+    box-shadow: none;
+}
+
 .contest-container {
     position: relative;
     height: 100%;
@@ -239,9 +341,16 @@ label {
     transform: translateY(-50%);
 }
 
+.nav {
+    position: absolute;
+    width: 16.4em;
+    left: 1em;
+}
+
 .nav .nav-link {
     background-color: white;
     color: black;
+    margin-bottom: .2em;
 }
 
 .nav-link .nav-link.active {
@@ -255,47 +364,54 @@ label {
     background-color: black;
 }
 
-.upload-solution {
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
+#standing-tab {
+    margin-top: 1em;
 }
 
-.upload-solution + label {
-    border: 2px solid black;
-    border-radius: 24px;
-    margin-top: 1em;
-    margin-left: 50%;
-    transform: translateX(-60%);
-    color: black;
-    display: inline-block;
-    width: 65%
-}
-
-.upload-solution:hover + label,
-.upload-solution + label:hover {
-    border: 2px solid black;
-    border-radius: 24px;
-    margin-top: 1em;
-    margin-left: 50%;
-    transform: translateX(-60%);
+.nav .nav-link:hover {
     color: white;
     background-color: black;
-    display: inline-block;
-    width: 65%;
-    transition: color .4s ease-in-out, background-color .4s ease-in-out;
+    transition: color .2s ease-in-out, background-color .2s ease-in-out;
 }
 
-.language-select {
+.send-solution-forms {
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+}
+
+.header {
+    margin-bottom: .5rem;
+}
+
+.task-parameter {
+    padding-right: 5em;
+    padding-bottom: .5em;
+}
+
+.io-table {
+    width: 100%;
+    margin-bottom: 2rem;
+    color: black;
+    margin-top: 2rem;
+}
+
+.io-table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid black;
+}
+
+.io-table td, .io-table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid black;
+}
+
+.select-language {
     display: block;
     padding: .375rem .75rem;
-    margin-left: 50%;
-    margin-top: 1em;
-    transform: translateX(-60%);
-    width: 65%;
+    margin: .5em auto;
+    width: 16.2em;
     text-align-last: center;
     text-align: center;
     line-height: 1.5;
@@ -304,24 +420,58 @@ label {
     background-clip: padding-box;
     border: 2px solid black;
     border-radius: 24px;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: color .2s ease-in-out, background-color .2s ease-in-out, border-width .0s ease-in-out;
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance:none;
     outline: 0;
 }
+.select-language:hover {
+    color: white;
+    background-color: black;
+    border-width: 0;
+    padding: 0.5rem 1.75rem;
+}
+
+.upload-solution {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    margin: 0 auto;
+    z-index: -1;
+}
+
+.upload-solution + label {
+    border: 2px solid black;
+    border-radius: 24px;
+    margin: .5em auto;
+    color: black;
+    display: inline-block;
+    width: 16.2em
+}
+
+.upload-solution:hover + label,
+.upload-solution + label:hover {
+    color: white;
+    background-color: black;
+    transition: color .2s ease-in-out, background-color .2s ease-in-out;
+}
+
+.upload-solution-form {
+    text-align: center;
+}
 
 .send-solution-button {
     background: rgba(255, 255, 255, .5);
     display: block;
-    margin-top: 1em;
     line-height: 1.5;
     text-align: center;
     border: 2px solid black;
     padding: .375rem .75rem;
-    margin-left: 50%;
-    transform: translateX(-60%);
-    width: 65%;
+    margin: .5em auto;
+    width: 16.4em;
     color: rgba(0, 0, 0, .9);
     border-radius: 24px;
     transition: 0.5s;
@@ -344,4 +494,24 @@ label {
     text-align: center;
     border: 2px solid black;
     padding: .375rem .75rem;
+}
+
+/*Julia standings table*/
+
+.standings-table {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: black;
+}
+
+.standings-table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid black;
+}
+
+.standings-table td, .standings-table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid black;
 }
