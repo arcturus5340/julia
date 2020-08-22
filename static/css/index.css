@@ -297,7 +297,7 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
 .tab-content {
     position: absolute;
     width: 100%;
-    padding: 0vw 20vw 1.5em;
+    padding: 0 20vw 1.5em;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -364,10 +364,14 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     background-color: black;
 }
 
+#standing-tab {
+    margin-top: 1em;
+}
+
 .nav .nav-link:hover {
     color: white;
     background-color: black;
-    transition: color .4s ease-in-out, background-color .4s ease-in-out;
+    transition: color .2s ease-in-out, background-color .2s ease-in-out;
 }
 
 .send-solution-forms {
@@ -407,7 +411,7 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     display: block;
     padding: .375rem .75rem;
     margin: .5em auto;
-    width: 16.4em;
+    width: 16.2em;
     text-align-last: center;
     text-align: center;
     line-height: 1.5;
@@ -416,7 +420,7 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     background-clip: padding-box;
     border: 2px solid black;
     border-radius: 24px;
-    transition: color .4s ease-in-out, background-color .4s ease-in-out, border-width .0s ease-in-out;
+    transition: color .2s ease-in-out, background-color .2s ease-in-out, border-width .0s ease-in-out;
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance:none;
@@ -445,14 +449,14 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
     margin: .5em auto;
     color: black;
     display: inline-block;
-    width: 16.4em
+    width: 16.2em
 }
 
 .upload-solution:hover + label,
 .upload-solution + label:hover {
     color: white;
     background-color: black;
-    transition: color .4s ease-in-out, background-color .4s ease-in-out;
+    transition: color .2s ease-in-out, background-color .2s ease-in-out;
 }
 
 .upload-solution-form {
@@ -496,6 +500,7 @@ a.sidebar-open.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
 
 .standings-table {
     width: 100%;
+    text-align: center;
     margin-bottom: 1rem;
     color: black;
 }
