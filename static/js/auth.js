@@ -8,10 +8,9 @@ $(function () {
 
         $(document).on('click', '#change-to-reset-password-form', function () {
             $.ajax({
-                url: '/login/change-to-reset-form/',
+                url: '/auth/get-reset-password-form/',
                 type: 'POST',
                 data: {
-                    action: 'reset-password',
                     csrfmiddlewaretoken: Cookies.get('csrftoken'),
                 },
                 success: function(response){
@@ -31,10 +30,9 @@ $(function () {
 
         $(document).on('click', '#change-to-registration-form', function () {
             $.ajax({
-                url: '/login/change-to-registration-form/',
+                url: '/auth/get-registration-form/',
                 type: 'POST',
                 data: {
-                    action: 'registration',
                     csrfmiddlewaretoken: Cookies.get('csrftoken'),
                 },
                 success: function(response){
@@ -54,10 +52,9 @@ $(function () {
 
         $(document).on('click', '#change-to-login-form', function () {
             $.ajax({
-                url: '/login/change-to-login-form/',
+                url: '/auth/get-login-form/',
                 type: 'POST',
                 data: {
-                    action: 'login',
                     csrfmiddlewaretoken: Cookies.get('csrftoken'),
                 },
                 success: function (response) {
