@@ -1,27 +1,43 @@
 from django.shortcuts import render
+from django.http.response import JsonResponse
 from django.core.files.base import File
 
-from contest.models import Code, Task
+from contest.models import Code, Task, TestCase
 from django.contrib.auth.models import User
 
 from datetime import datetime
+from checker.core import Checker
 
 
 def index(request):
-    # if request.user.is_anonymous:
-    #     return render(request, 'index.html')
+    if request.user.is_anonymous:
+        return render(request, 'index.html')
 
-    context = {
+    return render(request, 'contest.html', {
         'Tasks': Task.objects.all(),
-    }
+    })
 
-    if request.method == 'POST' and request.FILES['code-file']:
-        user = User.objects.get(id=request.user.id)
-        code = request.FILES['code-file']
-        code.name = f'{user.username}_{datetime.now().strftime("%Y.%m.%d_%H.%M.%S")}'
-        Code.objects.create(
-            author=user,
-            file=File(code),
-        )
 
-    return render(request, 'contest.html', context)
+def check_solution(request):
+    code = request.FILES['file']
+    lang = request.POST['language']
+    task_id = int(request.POST['task'])
+    user = User.objects.get(id=request.user.id)
+
+    code.name = f'{user.username}_{datetime.now().strftime("%Y.%m.%d_%H.%M.%S")}'
+    code = Code.objects.create(
+        author=user,
+        file=File(code),
+    )
+
+    checker = Checker(code.file.path, lang)
+    test_cases = TestCase.objects.filter(task_id=task_id).values_list('input', 'output')
+    input, output = zip(*test_cases)
+    checker.set_test_cases(input, output)
+    response = checker.run()
+
+    return JsonResponse({
+        'status': 'ok',
+        'code': 0x00,
+        'content': response,
+    })
