@@ -248,7 +248,8 @@ $(function () {
                 tab_content.removeClass('large')
             }, 150)
         }
-    })
+    });
+
 
     change_to_reset_form()
     change_to_registration_form()
