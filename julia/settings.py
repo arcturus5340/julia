@@ -25,8 +25,8 @@ SECRET_KEY = '3+x*=5t6f5*u9ks8$2%g%9bl9tcmc!kw2c1a33j#)^v!v61@rw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
+DOMAIN = 'localhost'
 
 # Application definition
 
@@ -57,8 +57,7 @@ ROOT_URLCONF = 'julia.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -131,8 +130,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
 
 # Mail server data
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'lorewood.info@gmail.com'
-EMAIL_HOST_PASSWORD = 'lorewood.info.password'
-EMAIL_PORT = 587
+import yaml
+
+with open("julia/config.yml", "r") as yml_file:
+    config = yaml.load(yml_file, Loader=yaml.Loader)
+
+    EMAIL_USE_TLS = config['email']['use_tls']
+    EMAIL_HOST = config['email']['host']
+    EMAIL_HOST_USER = config['email']['host_user']
+    EMAIL_HOST_PASSWORD = config['email']['host_password']
+    EMAIL_PORT = config['email']['port']
