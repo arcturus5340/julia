@@ -1,9 +1,5 @@
 $(function () {
 
-    $(document).on('animationend webkitAnimationEnd onAnimationEnd', '#form-info', function () {
-        $('#form-info').removeClass('shake');
-    })
-
     function change_to_reset_form () {
 
         $(document).on('click', '#change-to-reset-password-form', function () {
@@ -78,7 +74,7 @@ $(function () {
             let form_info = $('#form-info');
             if((username !== "") && (password !== "")){
                 $.ajax({
-                    url: 'login/',
+                    url: 'auth/login/',
                     type: 'POST',
                     data: {
                         username: username,
@@ -88,6 +84,9 @@ $(function () {
                     success: function(response){
                         if (response['status'] === 'ok') {
                             $('body').html(response['content'])
+                        } else {
+                            form_info.html('.');
+                            form_info.addClass('shake');
                         }
                     },
                     error: function(){

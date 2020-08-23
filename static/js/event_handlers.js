@@ -7,4 +7,7 @@ $(document).keyup(function(e) {
         $('.sidebar-dismiss').click()
     else if (e.keyCode === 39)
         $('.sidebar-open').click()
+    $(document).on('animationend webkitAnimationEnd onAnimationEnd', '#form-info', function () {
+        $('#form-info').removeClass('shake');
+    })
 })
