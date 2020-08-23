@@ -1,4 +1,9 @@
 $(function () {
+    const error_responses = [
+        "Great! We did it!",
+        "Oh, dear, that's the wrong password. Maybe <br> we aren't just acquainted?",
+    ]
+
 
     function change_to_reset_form () {
 
@@ -67,6 +72,7 @@ $(function () {
         })
     }
 
+
     function login_handler () {
         $(document).on('click', '#login-button', function () {
             let username = $('#username').val();
@@ -85,7 +91,7 @@ $(function () {
                         if (response['status'] === 'ok') {
                             $('body').html(response['content'])
                         } else {
-                            form_info.html('.');
+                            form_info.html(error_responses[response['code']]);
                             form_info.addClass('shake');
                         }
                     },
