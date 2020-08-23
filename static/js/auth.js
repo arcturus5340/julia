@@ -196,6 +196,7 @@ $(function () {
         })
     }
 
+
     change_to_reset_form()
     change_to_registration_form()
     change_to_login_form()
