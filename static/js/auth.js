@@ -2,6 +2,11 @@ $(function () {
     const error_responses = [
         "Great! We did it!",
         "Oh, dear, that's the wrong password. Maybe <br> we aren't just acquainted?",
+        "Sorry, but this username is already used.",
+        "Excuse me, your e-mail is already in use. Try an <br> another e-mail or reset your password.",
+        "You should be very lucky, I guess. Try again please.",
+        "Wait, I couldn't send you the verify message. <br> Could you try again please?",
+        "Unfortunately, we aren't acquainted yet. Sign up please."
     ]
 
 
@@ -120,7 +125,7 @@ $(function () {
             let form_info = $('#form-info');
             if((username !== "") && (password !== "") && (email !== "")){
                 $.ajax({
-                    url: 'registration/',
+                    url: 'auth/registration/',
                     type: 'POST',
                     data: {
                         username: username,
@@ -131,6 +136,9 @@ $(function () {
                     success: function(response){
                         if (response['status'] === 'ok') {
                             $('#main-form').html(response['content']);
+                        } else {
+                            form_info.html(error_responses[response['code']]);
+                            form_info.addClass('shake');
                         }
                     },
                     error: function(){
@@ -163,7 +171,7 @@ $(function () {
             let form_info = $('#form-info');
             if(user_key !== ""){
                 $.ajax({
-                    url: 'reset-password/',
+                    url: 'auth/reset-password/',
                     type: 'POST',
                     data: {
                         user_key: user_key,
@@ -172,6 +180,9 @@ $(function () {
                     success: function(response){
                         if (response['status'] === 'ok') {
                             $('#main-form').html(response['content']);
+                        } else {
+                            form_info.html(error_responses[response['code']]);
+                            form_info.addClass('shake');
                         }
                     },
                     error: function(){
@@ -179,7 +190,7 @@ $(function () {
                     },
                 });
             } else {
-                form_info.html('Sorry, I can read neither neither your username nor e-mail.');
+                form_info.html('Sorry, I can read neither your username nor e-mail.');
                 form_info.addClass('shake');
             }
         })
