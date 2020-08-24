@@ -31,7 +31,7 @@ urlpatterns = [
 
     path('auth/get-login-form/', auth.views.change_to_login_form),
     path('auth/get-registration-form/', auth.views.change_to_registration_form),
-    path('auth/get-reset-form/', auth.views.change_to_reset_form),
+    path('auth/get-reset-password-form/', auth.views.change_to_reset_form),
 
     path('activate/<str:username>/<str:key>', auth.views.activate),
 
