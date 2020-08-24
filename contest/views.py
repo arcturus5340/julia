@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http.response import JsonResponse
 from django.core.files.base import File
 
-from contest.models import Code, Task, TestCase
+from contest.models import Task, TestCase, Solution
 from django.contrib.auth.models import User
 
 from datetime import datetime
@@ -25,7 +25,7 @@ def check_solution(request):
     user = User.objects.get(id=request.user.id)
 
     code.name = f'{user.username}_{datetime.now().strftime("%Y.%m.%d_%H.%M.%S")}'
-    code = Code.objects.create(
+    code = Solution.objects.create(
         author=user,
         file=File(code),
     )
