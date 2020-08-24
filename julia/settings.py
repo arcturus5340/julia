@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'auth.apps.AuthConfig',
     'contest.apps.ContestConfig',
     'rating.apps.RatingConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,13 @@ with open("julia/config.yml", "r") as yml_file:
     EMAIL_HOST_USER = config['email']['host_user']
     EMAIL_HOST_PASSWORD = config['email']['host_password']
     EMAIL_PORT = config['email']['port']
+
+# Django REST framework configuration
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
