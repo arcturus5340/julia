@@ -6,8 +6,6 @@ from django.conf import settings
 from django.core import mail
 from django.shortcuts import redirect
 from django.db.models import Q
-from django.http import Http404
-
 
 from auth.models import ActivationKeys
 
