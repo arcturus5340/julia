@@ -103,23 +103,7 @@ def registration(request):
     else:
         link = f'https://{settings.DOMAIN}/activation/{user.username}/{activation_key.key}'
 
-        html_message = f'''
-        Hey, that's Julia. I am glad to see that you want to sign up. Plese press this button to verify your account:
-
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td>
-              <table border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td bgcolor="#000000" style="padding: 12px 18px 12px 18px; border-radius:3px" align="center"><a href="{link}" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; display: inline-block;">Verify &rarr;</a></td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-        
-        If you don't know what I'm talking about, just ignore this message.
-        '''
+        html_message = render_to_string('email_templates/registration-message.html', {'link': link})
         fail_msg = send_message('Registration', '', html_message, user)
         if fail_msg:
             return JsonResponse({
@@ -154,23 +138,7 @@ def reset_password(request):
 
     link = f'https://{settings.DOMAIN}/activation/{user.username}/{activation_key.key}'
 
-    html_message = f'''
-    Hey, that's Julia. I am glad to see that you want to sign up. Plese press this button to verify your account:
-
-    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-      <tr>
-        <td>
-          <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-              <td bgcolor="#000000" style="padding: 12px 18px 12px 18px; border-radius:3px" align="center"><a href="{link}" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; font-weight: normal; color: #ffffff; text-decoration: none; display: inline-block;">Verify &rarr;</a></td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-    
-    If you don't know what I'm talking about, just ignore this message.
-    '''
+    html_message = render_to_string('email_templates/reset-password-message.html', {'link': link})
     fail_msg = send_message('Password reset', '', html_message, user)
     if fail_msg:
         return JsonResponse({
