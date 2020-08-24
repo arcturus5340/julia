@@ -1,42 +1,22 @@
 $(function () {
-
-    const tab_content = $('.tab-content');
-
-
-    $(document).on('animationend webkitAnimationEnd onAnimationEnd', '#form-info', function () {
-        $('#form-info').removeClass('shake');
-    })
-
-
-    $(".upload-solution").on("change", function() {
-        let file_name = $(this).val().split("\\").pop();
-        if (file_name !== '')
-            $(this).siblings(".upload-solution-label").addClass("selected").html(file_name)
-        else
-            $(this).siblings(".upload-solution-label").addClass("selected").html("You haven't choose a file, try again!")
-
-    });
-
-
-    $('.sidebar-dismiss').on('click', function() {
-        $('.sidebar').removeClass('active');
-        $('.content').removeClass('sidebar-is-active');
-    });
-
-    $('.sidebar-open').on('click', function() {
-        $('.sidebar').addClass('active');
-        $('.content').addClass('sidebar-is-active');
-    });
+    const error_responses = [
+        "Great! We did it!",
+        "Oh, dear, that's the wrong password. Maybe <br> we aren't just acquainted?",
+        "Sorry, but this username is already used.",
+        "Excuse me, your e-mail is already in use. Try an <br> another e-mail or reset your password.",
+        "You should be very lucky, I guess. Try again please.",
+        "Wait, I couldn't send you the verify message. <br> Could you try again please?",
+        "Unfortunately, we aren't acquainted yet. Sign up please."
+    ]
 
 
     function change_to_reset_form () {
 
         $(document).on('click', '#change-to-reset-password-form', function () {
             $.ajax({
-                url: '/login/change-to-reset-form/',
+                url: '/auth/get-reset-password-form/',
                 type: 'POST',
                 data: {
-                    action: 'reset-password',
                     csrfmiddlewaretoken: Cookies.get('csrftoken'),
                 },
                 success: function(response){
@@ -56,10 +36,9 @@ $(function () {
 
         $(document).on('click', '#change-to-registration-form', function () {
             $.ajax({
-                url: '/login/change-to-registration-form/',
+                url: '/auth/get-registration-form/',
                 type: 'POST',
                 data: {
-                    action: 'registration',
                     csrfmiddlewaretoken: Cookies.get('csrftoken'),
                 },
                 success: function(response){
@@ -79,10 +58,9 @@ $(function () {
 
         $(document).on('click', '#change-to-login-form', function () {
             $.ajax({
-                url: '/login/change-to-login-form/',
+                url: '/auth/get-login-form/',
                 type: 'POST',
                 data: {
-                    action: 'login',
                     csrfmiddlewaretoken: Cookies.get('csrftoken'),
                 },
                 success: function (response) {
@@ -100,18 +78,6 @@ $(function () {
     }
 
 
-    $(document).keyup(function(e) {
-        if (e.keyCode === 13)
-            $('.major-button').click()
-        else if (e.keyCode === 27)
-            $('#change-to-login-form').click()
-        else if (e.keyCode === 37)
-            $('.sidebar-dismiss').click()
-        else if (e.keyCode === 39)
-            $('.sidebar-open').click()
-    })
-
-
     function login_handler () {
         $(document).on('click', '#login-button', function () {
             let username = $('#username').val();
@@ -119,7 +85,7 @@ $(function () {
             let form_info = $('#form-info');
             if((username !== "") && (password !== "")){
                 $.ajax({
-                    url: 'login/',
+                    url: 'auth/login/',
                     type: 'POST',
                     data: {
                         username: username,
@@ -129,6 +95,9 @@ $(function () {
                     success: function(response){
                         if (response['status'] === 'ok') {
                             $('body').html(response['content'])
+                        } else {
+                            form_info.html(error_responses[response['code']]);
+                            form_info.addClass('shake');
                         }
                     },
                     error: function(){
@@ -156,7 +125,7 @@ $(function () {
             let form_info = $('#form-info');
             if((username !== "") && (password !== "") && (email !== "")){
                 $.ajax({
-                    url: 'registration/',
+                    url: 'auth/registration/',
                     type: 'POST',
                     data: {
                         username: username,
@@ -167,6 +136,9 @@ $(function () {
                     success: function(response){
                         if (response['status'] === 'ok') {
                             $('#main-form').html(response['content']);
+                        } else {
+                            form_info.html(error_responses[response['code']]);
+                            form_info.addClass('shake');
                         }
                     },
                     error: function(){
@@ -199,7 +171,7 @@ $(function () {
             let form_info = $('#form-info');
             if(user_key !== ""){
                 $.ajax({
-                    url: 'reset-password/',
+                    url: 'auth/reset-password/',
                     type: 'POST',
                     data: {
                         user_key: user_key,
@@ -208,6 +180,9 @@ $(function () {
                     success: function(response){
                         if (response['status'] === 'ok') {
                             $('#main-form').html(response['content']);
+                        } else {
+                            form_info.html(error_responses[response['code']]);
+                            form_info.addClass('shake');
                         }
                     },
                     error: function(){
@@ -215,40 +190,11 @@ $(function () {
                     },
                 });
             } else {
-                form_info.html('Sorry, I can read neither neither your username nor e-mail.');
+                form_info.html('Sorry, I can read neither your username nor e-mail.');
                 form_info.addClass('shake');
             }
         })
     }
-
-
-    if ( tab_content.height() > Math.ceil($(window).height() * .8) ) {
-        tab_content.addClass('large')
-    }
-
-    $(window).on('resize', function(){
-        if ( tab_content.height() > Math.ceil($(window).height() * .8) ) {
-            setTimeout(function () {
-                tab_content.addClass('large')
-            }, 150)
-        } else {
-            setTimeout(function () {
-                tab_content.removeClass('large')
-            }, 150)
-        }
-    });
-
-    $('a.nav-link').on('show.bs.tab', function (e) {
-        if ( $(e.target.getAttribute('href')).height() > Math.ceil($(window).height() * .8) ) {
-            setTimeout(function () {
-                tab_content.addClass('large')
-            }, 150)
-        } else {
-            setTimeout(function () {
-                tab_content.removeClass('large')
-            }, 150)
-        }
-    });
 
 
     change_to_reset_form()
@@ -257,5 +203,4 @@ $(function () {
     login_handler()
     registration_handler()
     reset_password_handler()
-
 })
