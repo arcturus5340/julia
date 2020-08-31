@@ -24,25 +24,27 @@
         </div>
 
         <div class="send-solution-forms">
-            <form class="upload-solution-form">
+            <form class="upload-solution-form" action="/check-solution/" method="post" enctype="multipart/form-data">
                 <label for="select-language-ID">
                 </label>
-                <select class="select-language" id="select-language-ID">
+                <select class="select-language" id="select-language-ID" name="language">
                     <option value="" disabled selected hidden>Select Language</option>
-                    <option value="C">C</option>
-                    <option value="C++">C++</option>
-                    <option value="C#">C#</option>
-                    <option value="Java">Java</option>
-                    <option value="NASM">NASM</option>
-                    <option value="PascalABC">PascalABC</option>
-                    <option value="PHP">PHP</option>
-                    <option value="Python 2">Python 2</option>
-                    <option value="Python 3">Python 3</option>
+                    <option value="c">C</option>
+                    <option value="cpp11">C++</option>
+{#                    <option value="C#">C#</option>#}
+                    <option value="java">Java</option>
+                    <option value="nasm">NASM</option>
+                    <option value="pabc">PascalABC</option>
+                    <option value="php">PHP</option>
+                    <option value="python2">Python 2</option>
+                    <option value="python3">Python 3</option>
                 </select>
-                <input class="upload-solution" type="file" id="upload-solution-ID">
+                <input class="upload-solution" type="file" id="upload-solution-ID" name="file">
+                <input name="task" value="1" type="hidden">
+                {% csrf_token %}
                 <label class="btn upload-solution-label" for="upload-solution-ID">Select Program</label>
+                <button class="send-solution-button" type="submit" name="send-solution-ID" value="Send_Solution" id="send-solution-ID">Send Solution</button>
             </form>
-            <button class="send-solution-button" type="button" name="send-solution-ID" value="Send_Solution" id="send-solution-ID">Send Solution</button>
         </div>
     </nav>
     <div class="content">
@@ -192,5 +194,6 @@
 <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/contest.js' %}"></script>
+<script src="{% static 'js/sidebar.js' %}"></script>
 </body>
 </html>
