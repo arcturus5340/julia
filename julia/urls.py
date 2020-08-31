@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from rest_framework.authtoken.views import obtain_auth_token
+
 import contest.views
 import auth.views
 
@@ -36,6 +38,9 @@ urlpatterns = [
     path('activate/<str:username>/<str:key>', auth.views.activate),
 
     path('api/v1/', include('api.urls')),
+    path('api/auth/', include('rest_framework.urls')),
+    path('auth-token/', obtain_auth_token, name='api_token_auth'),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
     path('check-solution/', contest.views.check_solution),
 

@@ -6,10 +6,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import renderers
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
 from api import serializers
 
-from contest.models import Contest, Task
+from contest.models import Contest, Task, Solution
 
 
 class UserList(APIView):
@@ -24,6 +25,9 @@ class UserList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_serializer_class(self):
+        return serializers.UserSerializer
 
 
 class UserDetail(APIView):
@@ -95,11 +99,11 @@ class TaskDetail(APIView):
 class ContestList(APIView):
     def get(self, request, format=None):
         contests = Contest.objects.all()
-        serializer = serializers.ContestSerializer(contests, many=True)
+        serializer = serializers.ContestSerializer(contests, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = serializers.ContestSerializer(data=request.data)
+        serializer = serializers.ContestSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -129,4 +133,30 @@ class ContestDetail(APIView):
     def delete(self, request, pk, format=None):
         contest = self.get_object(pk)
         contest.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SolutionDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Solution.objects.get(pk=pk)
+        except Solution.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        solution = self.get_object(pk)
+        serializer = serializers.SolutionSerializer(solution, context={'request': request})
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        solution = self.get_object(pk)
+        serializer = serializers.SolutionSerializer(solution, context={'request': request}, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        solution = self.get_object(pk)
+        solution.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
