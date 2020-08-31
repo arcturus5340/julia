@@ -49,6 +49,7 @@ class Solution(models.Model):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
+        related_name='solutions',
     )
     task = models.ForeignKey(
         Task,
@@ -56,5 +57,8 @@ class Solution(models.Model):
     )
     status = models.CharField(
         max_length=2,
+        blank=True,
+        null=True,
+        default=None,
     )
     file = models.FileField()

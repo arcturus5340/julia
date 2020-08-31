@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from django.contrib.auth.models import User
-from contest.models import Contest, Task
+from contest.models import Contest, Task, Solution
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -22,6 +22,17 @@ class ContestSerializer(serializers.ModelSerializer):
         read_only=True,
         view_name='task-detail'
     )
+    solutions = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='solution-detail'
+    )
     class Meta:
         model = Contest
-        fields = ['id', 'title', 'description', 'tasks']
+        fields = '__all__'
+
+
+class SolutionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Solution
+        fields = '__all__'

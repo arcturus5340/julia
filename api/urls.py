@@ -10,4 +10,6 @@ urlpatterns = [
 
     path('contests/', views.ContestList.as_view()),
     path('contests/<int:pk>', views.ContestDetail.as_view()),
+
+    path('solutions/<int:pk>', views.SolutionDetail.as_view(), name='solution-detail'),
 ]
