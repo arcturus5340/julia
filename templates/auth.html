@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/FontAwesome_Free/css/all.min.css' %}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="align-content-center col-12">
+                <form class="box" name="main-form" id="main-form">
+                    <div class="login-form">
+                        <h2>Hi, I'm Julia.</h2>
+                        <div class="form-info" id="form-info">Tell me your username and password.</div>
+                        <label for="username"></label>
+                        <input type="text" name="Username" id="username" placeholder="Username">
+                        <label for="password"></label>
+                        <input type="password" name="Password" id="password" placeholder="Password" autocomplete="on">
+                        <button class="major-button" type="button" name="Login" value="Login" id="login-button">Login</button>
+                        <div class="unusual-actions">
+                            <div class="reset-password"><span id="change-to-reset-password-form">I forgot my password.</span></div>
+                            <div class="unusual-actions-sep">||</div>
+                            <div class="registration"><span id="change-to-registration-form">We're not acquainted.</span></div>
+                        </div>
+                        <a href="https://github.com/arcturus5340/julia" class="social-circle icoGitHub" title="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/js.cookie.min.js' %}"></script>
+    <script src="{% static 'js/event_handlers.js' %}"></script>
+    <script src="{% static 'js/auth.js' %}"></script>
+    <script>
+        Cookies.set('csrftoken', "{{ csrf_token }}")
+    </script>
+</body>
+</html>

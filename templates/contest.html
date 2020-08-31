@@ -16,33 +16,35 @@
             <i class="fas fa-angle-left"></i>
         </div>
 
-        <div class="nav flex-column nav-pills" id="problem-tab" role="tablist" aria-orientation="vertical">
-            <a class="nav-link active" id="problem-1-tab" data-toggle="pill" href="#problem-1-content" role="tab" aria-controls="problem-1-content" aria-selected="true">Problem I</a>
-            <a class="nav-link" id="problem-2-tab" data-toggle="pill" href="#problem-2-content" role="tab" aria-controls="problem-2-content" aria-selected="false">Problem II</a>
-            <a class="nav-link" id="problem-3-tab" data-toggle="pill" href="#problem-3-content" role="tab" aria-controls="problem-3-content" aria-selected="false">Problem III</a>
+        <div class="nav flex-column nav-pills" id="task-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="task-1-tab" data-toggle="pill" href="#task-1-content" role="tab" aria-controls="task-1-content" aria-selected="true">task I</a>
+            <a class="nav-link" id="task-2-tab" data-toggle="pill" href="#task-2-content" role="tab" aria-controls="task-2-content" aria-selected="false">task II</a>
+            <a class="nav-link" id="task-3-tab" data-toggle="pill" href="#task-3-content" role="tab" aria-controls="task-3-content" aria-selected="false">task III</a>
             <a class="nav-link" id="standing-tab" data-toggle="pill" href="#standing-table" role="tab" aria-controls="standing-table" aria-selected="false">Standings</a>
         </div>
 
         <div class="send-solution-forms">
-            <form class="upload-solution-form">
+            <form class="upload-solution-form" action="/check-solution/" method="post" enctype="multipart/form-data">
                 <label for="select-language-ID">
                 </label>
-                <select class="select-language" id="select-language-ID">
+                <select class="select-language" id="select-language-ID" name="language">
                     <option value="" disabled selected hidden>Select Language</option>
-                    <option value="C">C</option>
-                    <option value="C++">C++</option>
-                    <option value="C#">C#</option>
-                    <option value="Java">Java</option>
-                    <option value="NASM">NASM</option>
-                    <option value="PascalABC">PascalABC</option>
-                    <option value="PHP">PHP</option>
-                    <option value="Python 2">Python 2</option>
-                    <option value="Python 3">Python 3</option>
+                    <option value="c">C</option>
+                    <option value="cpp11">C++</option>
+{#                    <option value="C#">C#</option>#}
+                    <option value="java">Java</option>
+                    <option value="nasm">NASM</option>
+                    <option value="pabc">PascalABC</option>
+                    <option value="php">PHP</option>
+                    <option value="python2">Python 2</option>
+                    <option value="python3">Python 3</option>
                 </select>
-                <input class="upload-solution" type="file" id="upload-solution-ID">
+                <input class="upload-solution" type="file" id="upload-solution-ID" name="file">
+                <input name="task" value="1" type="hidden">
+                {% csrf_token %}
                 <label class="btn upload-solution-label" for="upload-solution-ID">Select Program</label>
+                <button class="send-solution-button" type="submit" name="send-solution-ID" value="Send_Solution" id="send-solution-ID">Send Solution</button>
             </form>
-            <button class="send-solution-button" type="button" name="send-solution-ID" value="Send_Solution" id="send-solution-ID">Send Solution</button>
         </div>
     </nav>
     <div class="content">
@@ -50,8 +52,8 @@
             <i class="fas fa-angle-right"></i>
         </a>
 
-        <div class="tab-content" id="problem-content">
-            <div class="tab-pane fade show active" id="problem-1-content" role="tabpanel" aria-labelledby="problem-1-tab">
+        <div class="tab-content" id="task-content">
+            <div class="tab-pane fade show active" id="task-1-content" role="tabpanel" aria-labelledby="task-1-tab">
                 <div class="header">
                     <h1>
                         Task About the Lorem
@@ -92,7 +94,7 @@
 
             </div>
 
-            <div class="tab-pane fade" id="problem-2-content" role="tabpanel" aria-labelledby="problem-2-tab">
+            <div class="tab-pane fade" id="task-2-content" role="tabpanel" aria-labelledby="task-2-tab">
                 <div class="header">
                     <h1>
                         Task About the Lorem
@@ -140,8 +142,8 @@
                 </table>
             </div>
 
-            <div class="tab-pane fade" id="problem-3-content" role="tabpanel" aria-labelledby="problem-3-tab">
-                <div class="tab-pane fade show active" id="problem-1-content" role="tabpanel" aria-labelledby="problem-1-tab">
+            <div class="tab-pane fade" id="task-3-content" role="tabpanel" aria-labelledby="task-3-tab">
+                <div class="tab-pane fade show active" id="task-1-content" role="tabpanel" aria-labelledby="task-1-tab">
                     <div class="header">
                         <h1>
                             Task Title
@@ -184,86 +186,14 @@
             </div>
 
             <div class="tab-pane fade" id="standing-table" role="tabpanel" aria-labelledby="standing-tab">
-                <table class="standings-table table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Username</th>
-                            <th>I</th>
-                            <th>II</th>
-                            <th>III</th>
-                            <th>IV</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="number-cell">
-                                1
-                            </td>
-                            <td class="username-cell">
-                                more-suo
-                            </td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">-</td>
-                        </tr>
-                        <tr>
-                            <td class="number-cell">
-                                1
-                            </td>
-                            <td class="username-cell">
-                                more-suo
-                            </td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">-</td>
-                        </tr>
-                        <tr><td class="number-cell">
-                            1
-                        </td>
-                            <td class="username-cell">
-                                more-suo
-                            </td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">-</td>
-                        </tr>
-                        <tr>
-                            <td class="number-cell">
-                                1
-                            </td>
-                            <td class="username-cell">
-                                more-suo
-                            </td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">-</td>
-                        </tr>
-                        <tr>
-                            <td class="number-cell">
-                                1
-                            </td>
-                            <td class="username-cell">
-                                more-suo
-                            </td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">+</td>
-                            <td class="status-cell">-</td>
-                        </tr>
-                    </tbody>
-                </table>
+
             </div>
         </div>
     </div>
 </div>
 <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
-<script src="{% static 'js/jquery.nicescroll-master/jquery.nicescroll.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/index.js' %}"></script>
+<script src="{% static 'js/contest.js' %}"></script>
+<script src="{% static 'js/sidebar.js' %}"></script>
 </body>
 </html>
