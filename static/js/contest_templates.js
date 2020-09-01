@@ -1,3 +1,6 @@
+task_tab =
+    "<a class=\"nav-link\" id=\"task-${id}-tab\" data-toggle=\"pill\" href=\"#task-${id}-content\" role=\"tab\" aria-controls=\"task-${id}-content\" aria-selected=\"true\">${Title}</a>\n"
+
 task_content =
     "<div class=\"tab-pane fade show active\" id=\"task-${id}-content\" role=\"tabpanel\" aria-labelledby=\"task-${id}-tab\">\n" +
     "    <div class=\"header\">\n" +
