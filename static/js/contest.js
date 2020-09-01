@@ -9,7 +9,7 @@ $(function () {
         },
         success: function (response) {
             console.log(response[0])
-            for([_, task_url] of response[0]['tasks'].entries()){
+            for([task_id, task_url] of response[0]['tasks'].entries()){
                 $.ajax({
                     'url': task_url,
                     'type': 'GET',
