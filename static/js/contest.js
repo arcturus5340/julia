@@ -3,12 +3,26 @@ $(function () {
 
     $.ajax({
         'url': '/api/v1/contests/',
-        'type': 'POST',
+        'type': 'GET',
         'data': {
             csrfmiddlewaretoken: Cookies.get('csrftoken'),
         },
         success: function (response) {
-            console.log(response)
+            console.log(response[0])
+            for([_, task_url] of response[0]['tasks'].entries()){
+                $.ajax({
+                    'url': task_url,
+                    'type': 'GET',
+                    'data': {
+                        csrfmiddlewaretoken: Cookies.get('csrftoken'),
+                    },
+                    success: function (response) {
+                        let id = response['id']
+                        let title = response['title']
+                        console.log(id, title)
+                    }
+                })
+            }
         },
     })
 
