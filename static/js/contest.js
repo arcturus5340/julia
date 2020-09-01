@@ -19,7 +19,9 @@ $(function () {
                     success: function (response) {
                         let id = response['id']
                         let title = response['title']
-                        console.log(id, title)
+                        console.log(response)
+                        $('#contest-tabs').append(task_tab)
+                        $('#contest-content').append(task_content)
                     }
                 })
             }
