@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/arcturus5340/julia/issues"
   },
-  "homepage": "https://github.com/arcturus5340/julia#readme"
+  "homepage": "https://github.com/arcturus5340/julia#readme",
+  "dependencies": {
+    "react-dom": "^16.13.1"
+  }
 }
