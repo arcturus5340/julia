@@ -1,0 +1,19 @@
+{
+  "name": "julia",
+  "version": "1.0.0",
+  "description": "contest system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arcturus5340/julia.git"
+  },
+  "author": "arcturus5340, more-suo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arcturus5340/julia/issues"
+  },
+  "homepage": "https://github.com/arcturus5340/julia#readme"
+}
