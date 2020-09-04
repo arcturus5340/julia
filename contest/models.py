@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Contest(models.Model):
     title = models.CharField(
-        max_length=(128)
+        max_length=128,
     )
     description = models.TextField()
 
@@ -22,9 +22,19 @@ class Task(models.Model):
         on_delete=models.PROTECT,
         related_name='tasks',
     )
+    ml = models.IntegerField(
+        default=256,
+    )
+    tl = models.IntegerField(
+        default=2,
+    )
 
     def get_samples(self):
-        return TestCase.objects.filter(task=self)[:2].values_list('input', 'output')
+        test_cases = TestCase.objects.filter(task=self)[:2]
+        return {
+            'input': test_cases.values_list('input', flat=True),
+            'output': test_cases.values_list('output', flat=True),
+        }
 
 
 class TestCase(models.Model):
@@ -47,8 +57,6 @@ class Solution(models.Model):
     contest = models.ForeignKey(
         Contest,
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
         related_name='solutions',
     )
     task = models.ForeignKey(
