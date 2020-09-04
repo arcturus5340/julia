@@ -41,7 +41,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.order_by('id')
 
     def get_permissions(self):
-        if self.action == 'list':
+        if self.action in ('list', 'create'):
             permission_classes = [AllowAny]
         else:
             permission_classes = [AllowAny]
@@ -51,6 +51,14 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.request.auth:
             return serializers.UserSerializer
         return serializers.BasicUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = serializers.UserLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
     # def post(self, request, *args, **kwargs):
     #     serializer = serializers.UserSerializer(data=request.data)

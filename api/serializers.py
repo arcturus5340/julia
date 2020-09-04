@@ -15,17 +15,6 @@ class BasicUserSerializer(serializers.ModelSerializer):
             'last_login',
         ]
 
-    def create(self, validates_data):
-        if ('username', 'email', 'password') in validates_data.keys():
-            user = User.objects.create(
-                username=validates_data['username'],
-                email=validates_data['email'],
-            )
-            user.set_password(validates_data['password'])
-            user.save()
-            return user
-        return
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,17 +32,8 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'date_joined', 'last_login']
         extra_kwargs = {
             'password': {'write_only': True},
-            'email': {'write_only': True},
+            # 'email': {'write_only': True},
         }
-
-    def create(self, validates_data):
-        user = User.objects.create(
-            username=validates_data['username'],
-            email=validates_data['email'],
-        )
-        user.set_password(validates_data['password'])
-        user.save()
-        return user
 
     def update(self, instance, validated_data):
         if validated_data.get('password'):
@@ -64,11 +44,29 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-#         extra_kwargs = {
-#             'username': {'required': False},
-#             'password': {'write_only': True, 'required': False},
-#             'email': {'required': False},
-#         }
+class UserLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'username',
+            'password',
+            'email',
+        ]
+        extra_kwargs = {
+            'username': {'required': True},
+            'password': {'required': True},
+            'email': {'required': True},
+        }
+
+    def create(self, validates_data):
+        user = User.objects.create(
+            username=validates_data['username'],
+            email=validates_data['email'],
+        )
+        user.set_password(validates_data['password'])
+        user.save()
+        return user
 
 
 class TaskSerializer(serializers.ModelSerializer):
