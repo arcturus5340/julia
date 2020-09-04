@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core import mail
 from django.shortcuts import redirect
 from django.db.models import Q
-
+from django.core.exceptions import ObjectDoesNotExist
 from auth.models import ActivationKeys
 
 import smtplib
@@ -38,84 +38,6 @@ def send_message(subject: str, message: str, html_message: str, user: User):
         )
     except smtplib.SMTPException as err:
         return err.strerror
-
-
-def login(request):
-    user = auth.authenticate(
-        username=request.POST.get('username'),
-        password=request.POST.get('password'),
-    )
-    if user is not None:
-        auth.login(request, user)
-    else:
-        return JsonResponse({
-            'status': 'fail',
-            'reason': 'invalid credentials',
-            'code': 0x01,
-        })
-
-    return JsonResponse({
-        'status': 'ok',
-        'code': 0x00,
-    })
-
-
-def logout(request):
-    auth.logout(request)
-    return JsonResponse({
-        'status': 'ok',
-        'code': 0x00,
-    })
-
-
-def registration(request):
-    if User.objects.filter(username=request.POST.get('username')).exists():
-        return JsonResponse({
-            'status': 'fail',
-            'reason': 'not unique username',
-            'code': 0x02,
-        })
-    if User.objects.filter(email=request.POST.get('email')).exists():
-        return JsonResponse({
-            'status': 'fail',
-            'reason': 'not unique email',
-            'code': 0x03,
-        })
-
-    try:
-        user = User.objects.create_user(
-            username=request.POST.get('username'),
-            email=request.POST.get('email'),
-            password=request.POST.get('password'),
-        )
-        activation_key = ActivationKeys.objects.create(
-            user=user,
-            key=uuid.uuid4().hex,
-            is_email_verification=True,
-        )
-
-    except Exception as err:
-        return JsonResponse({
-            'status': 'fail',
-            'code': 0x04,
-            'reason': 'activation key error',
-        })
-    else:
-        link = f'https://{settings.DOMAIN}/activation/{user.username}/{activation_key.key}'
-
-        html_message = render_to_string('email_templates/registration-message.html', {'link': link})
-        fail_msg = send_message('Registration', '', html_message, user)
-        if fail_msg:
-            return JsonResponse({
-                'status': 'fail',
-                'code': 0x05,
-                'reason': 'verify message error',
-            })
-
-    return JsonResponse({
-        'status': 'ok',
-        'code': 0x00,
-    })
 
 
 def reset_password(request):
@@ -150,30 +72,6 @@ def reset_password(request):
     return JsonResponse({
         'status': 'ok',
         'code': 0x00,
-    })
-
-
-def change_to_login_form(request):
-    return JsonResponse({
-        'status': 'ok',
-        'code': 0x00,
-        'content': render_to_string('login_form.html'),
-    })
-
-
-def change_to_registration_form(request):
-    return JsonResponse({
-        'status': 'ok',
-        'code': 0x00,
-        'content': render_to_string('registration_form.html'),
-    })
-
-
-def change_to_reset_form(request):
-    return JsonResponse({
-        'status': 'ok',
-        'code': 0x00,
-        'content': render_to_string('reset_password_form.html'),
     })
 
 
