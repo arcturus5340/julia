@@ -22,20 +22,27 @@ import rest_framework_jwt.views
 import contest.views
 import auth.views
 
+from api import views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'users', auth.views.UserViewSet)
+# router.register(r'solutions', views.SolutionViewSet)
+# router.register(r'tasks', views.TaskViewSet)
+# router.register(r'contests', views.ContestViewSet)
 
 urlpatterns = [
-    path('', contest.views.index),
     path('admin/', admin.site.urls),
 
     # path('auth/registration/', auth.views.registration),
-    path('auth/reset-password/', auth.views.reset_password),
+    # path('auth/reset-password/', auth.views.reset_password),
 
-    path('activate/<str:username>/<str:key>', auth.views.activate),
+    # path('activate/<str:username>/<str:key>', auth.views.activate),
 
     path('api/token-auth', rest_framework_jwt.views.obtain_jwt_token),
     path('api/token-refresh', rest_framework_jwt.views.refresh_jwt_token),
 
-    path('api/v1/', include('api.urls')),
+    path('api/v1/', include(router.urls)),
     # path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
     path('check-solution/', contest.views.check_solution),
