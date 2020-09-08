@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class ActivationKeys(models.Model):
+
+class Activation(models.Model):
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
@@ -9,12 +10,14 @@ class ActivationKeys(models.Model):
     key = models.CharField(
         max_length=32,
     )
-    is_password_reset = models.BooleanField(
+    is_password_change = models.BooleanField(
         default=False,
     )
-    is_email_verification = models.BooleanField(
+    is_email_change = models.BooleanField(
         default=False,
     )
-
-    class Meta:
-        db_table = 'auth_activation_keys'
+    tmp_data = models.CharField(
+        max_length=4096,
+        blank=True,
+        null=True,
+    )
