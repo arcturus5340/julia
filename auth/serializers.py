@@ -1,26 +1,37 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
+from django.contrib import auth
+import time
 
+class TimestampField(serializers.Field):
+    def to_representation(self, value):
+        return int(time.mktime(value.timetuple()))
 
 class BasicUserSerializer(serializers.ModelSerializer):
+    date_joined_ts = TimestampField(
+        source='date_joined',
+    )
+    last_login_ts = TimestampField(
+        source='last_login',
+    )
+
     class Meta:
-        model = User
+        model = auth.get_user_model()
         fields = [
             'id',
             'username',
             'email',
             'password',
-            'date_joined',
-            'last_login',
+            'date_joined_ts',
+            'last_login_ts',
         ]
-        read_only_fields = ['id', 'date_joined', 'last_login']
+        read_only_fields = ['id', 'date_joined_ts', 'last_login']
         extra_kwargs = {
             'email': {'write_only': True},
             'password': {'write_only': True, 'required': False},
         }
 
     def create(self, validates_data):
-        user = User.objects.create(
+        user = auth.get_user_model().objects.create(
             username=validates_data['username'],
             email=validates_data['email'],
         )
