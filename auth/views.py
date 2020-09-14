@@ -1,95 +1,251 @@
-from django.contrib import auth
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group
 from django.template.loader import render_to_string
-from django.http.response import JsonResponse
-from django.conf import settings
 from django.core import mail
-from django.shortcuts import redirect
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
-from auth.models import ActivationKeys
+import django_filters.rest_framework
+from django.contrib import auth
+from django.contrib.auth.models import User
+from django.utils import timezone
 
-import smtplib
+from rest_framework import filters
+from rest_framework import permissions, status
+from rest_framework import viewsets
+from rest_framework.parsers import JSONParser, MultiPartParser
+from rest_framework.response import Response
+from rest_framework.decorators import action
+
+from auth import serializers
+from auth.models import Activation, EmailTemplates
+from auth.permissions import IsAdmin, IsOwner
+
 import uuid
+import smtplib
 
 
-# from django.contrib.auth.decorators import user_passes_test
-#
-# def group_required(*group_names):
-#     """Requires user membership in at least one of the groups passed in."""
-#     def in_groups(user):
-#         if user.is_authenticated():
-#             if bool(user.groups.filter(name__in=group_names)) | user.is_superuser:
-#                 return True
-#         return False
-#
-#     return user_passes_test(in_groups, login_url='/')
-
-
-def send_message(subject: str, message: str, html_message: str, user: User):
+def send_message(subject, html_message, user, email=None):
     from_email = settings.EMAIL_HOST_USER
     try:
         mail.send_mail(
             subject=subject,
-            message=message,
+            message='',
             html_message=html_message,
             from_email=from_email,
-            recipient_list=[user.email],
+            recipient_list=[email or user.email],
         )
     except smtplib.SMTPException as err:
         return err.strerror
 
 
-def reset_password(request):
-    user = User.objects.filter(
-        Q(username=request.POST.get('user-key')) | Q(email=request.POST.get('user-key'))
-    ).first()
+class UserViewSet(viewsets.ModelViewSet):
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend, filters.SearchFilter]
+    parser_classes = (MultiPartParser, JSONParser)
+    # queryset = auth.get_user_model().objects.order_by('id')
+    filterset_fields = ['username']
+    search_fields = ['username']
 
-    if not user:
-        return JsonResponse({
-            'status': 'fail',
-            'code': 0x06,
-            'reason': 'unregistered user',
-        })
+    def get_queryset(self):
+        return auth.get_user_model().objects.filter(groups__name='Verified Users').order_by('id')
 
-    activation_key = ActivationKeys.objects.create(
-        user=user,
-        key=uuid.uuid4().hex,
-        is_password_reset=True,
-    )
+    def get_serializer_class(self):
+        print(self.request.headers)
+        if self.request.auth:
+            return serializers.FullUserSerializer
+        return serializers.BasicUserSerializer
 
-    link = f'https://{settings.DOMAIN}/activation/{user.username}/{activation_key.key}'
+    def get_permissions(self):
+        if self.action in ('update', 'partial_update', 'destroy'):
+            permission_classes = [IsAdmin | IsOwner]
+        elif self.action in ('create', 'reset_password'):
+            permission_classes = [~permissions.IsAuthenticated]
+        else:
+            permission_classes = [permissions.AllowAny]
+        return [permission() for permission in permission_classes]
 
-    html_message = render_to_string('email_templates/reset-password-message.html', {'link': link})
-    fail_msg = send_message('Password reset', '', html_message, user)
-    if fail_msg:
-        return JsonResponse({
-            'status': 'fail',
-            'code': 0x07,
-            'reason': 'reset password message error',
-        })
+    def create(self, request, *args, **kwargs):
+        if not {'username', 'password', 'email'}.issubset(request.data):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    return JsonResponse({
-        'status': 'ok',
-        'code': 0x00,
-    })
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
 
+        try:
+            activation_key = Activation.objects.create(
+                user=user,
+                key=uuid.uuid4().hex,
+            )
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def activate(request, username, key):
-    user = User.objects.filter(username=username).first()
-    activation_key = ActivationKeys.objects.filter(key=key, user=user).first()
-    if not activation_key:
-        return JsonResponse({
-            'status': 'fail',
-            'code': 0x08,
-            'reason': 'activation_key not exists',
-        })
+        if 'email_template' not in request.data:
+            filename = 'default_email_template.html'
+        else:
+            email_template = request.FILES['email_template']
+            fs = FileSystemStorage(
+                location=settings.EMAIL_TEMPLATES_ROOT,
+                base_url=settings.EMAIL_TEMPLATES_URL,
+            )
+            filename = fs.save(email_template.name, email_template)
 
-    if activation_key.is_password_reset:
-        pass
+        link = f'https://{request.get_host()}/api/v1/users/{user.id}/activation/{activation_key.key}'
+        html_message = render_to_string(filename, {'link': link})
 
-    if activation_key.is_email_verification:
-        verified_users = Group.objects.get(name='Verified Users')
-        verified_users.user_set.add(user)
+        fail_msg = send_message('Registration', html_message, user)
+        if fail_msg:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return redirect('/')
+        headers = {'Location': f'/users/{user.id}'}
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        if 'partial' not in kwargs and not {'username', 'email'}.issubset(request.data.keys()):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        user = self.get_object()
+
+        password = request.data.pop('password', None)
+        if password:
+            if Activation.objects.filter(user=user, is_password_change=True).exists():
+                return Response(status=status.HTTP_429_TOO_MANY_REQUESTS)
+
+            try:
+                activation_key = Activation.objects.create(
+                    user=user,
+                    key=uuid.uuid4().hex,
+                    is_password_change=True,
+                    tmp_data=make_password(password),
+                )
+            except Exception:
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            if 'email_template' not in request.data:
+                filename = 'default_email_template.html'
+            else:
+                email_template = request.FILES['email_template']
+                fs = FileSystemStorage(
+                    location=settings.EMAIL_TEMPLATES_ROOT,
+                    base_url=settings.EMAIL_TEMPLATES_URL,
+                )
+                filename = fs.save(email_template.name, email_template)
+                EmailTemplates.objects.create(template=filename)
+
+            link = f'https://{request.get_host()}/api/v1/users/{user.id}/activation/{activation_key.key}'
+            html_message = render_to_string(filename, {'link': link})
+
+            fail_msg = send_message('Password Change', html_message, user)
+            if fail_msg:
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        email = request.data.pop('email', None)
+        if isinstance(email, list): email = email.pop() # QueryDict handle
+        if email:
+            if Activation.objects.filter(user=user, is_email_change=True).exists():
+                return Response(status=status.HTTP_429_TOO_MANY_REQUESTS)
+
+            try:
+                activation_key = Activation.objects.create(
+                    user=user,
+                    key=uuid.uuid4().hex,
+                    is_email_change=True,
+                    tmp_data=email,
+                )
+            except Exception:
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            if 'email_template' not in request.data:
+                filename = 'default_email_template.html'
+            else:
+                email_template = request.FILES['email_template']
+                fs = FileSystemStorage(
+                    location=settings.EMAIL_TEMPLATES_ROOT,
+                    base_url=settings.EMAIL_TEMPLATES_URL,
+                )
+                filename = fs.save(email_template.name, email_template)
+                EmailTemplates.objects.create(template=filename)
+
+            link = f'https://{request.get_host()}/api/v1/users/{user.id}/activation/{activation_key.key}'
+            html_message = render_to_string(filename, {'link': link})
+
+            fail_msg = send_message('Email Change', html_message, user, email)
+            if fail_msg:
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        response = super().update(request, *args, **kwargs)
+        if 'partial' in kwargs:
+            return response
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['POST'], detail=False)
+    def reset_password(self, request, *args, **kwargs):
+        if 'password' not in request.data or not ({'username', 'email'} & request.data.keys()):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        user = auth.get_user_model().objects.filter(
+            Q(username=request.data.get('username')) | Q(email=request.data.get('email'))
+        ).first()
+        if not user:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if Activation.objects.filter(user=user, is_password_change=True).exists():
+            return Response(status=status.HTTP_429_TOO_MANY_REQUESTS)
+
+        try:
+            activation_key = Activation.objects.create(
+                user=user,
+                key=uuid.uuid4().hex,
+                is_password_change=True,
+                tmp_data=make_password(request.data['password']),
+            )
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        if 'email_template' not in request.data:
+            filename = 'default_email_template.html'
+        else:
+            email_template = request.FILES['email_template']
+            fs = FileSystemStorage(
+                location=settings.EMAIL_TEMPLATES_ROOT,
+                base_url=settings.EMAIL_TEMPLATES_URL,
+            )
+            filename = fs.save(email_template.name, email_template)
+            EmailTemplates.objects.create(template=filename)
+
+        link = f'https://{request.get_host()}/activation/{user.username}/{activation_key.key}'
+        html_message = render_to_string(filename, {'link': link})
+
+        fail_msg = send_message('Password Change', html_message, user)
+        if fail_msg:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['POST'], detail=True, url_path='activation/(?P<key>[0-9a-f]{32})')
+    def activation(self, request, pk, key):
+        activation_obj = Activation.objects.filter(user__id=pk, key=key).first()
+        if not activation_obj:
+            return Response(status=status.HTTP_418_IM_A_TEAPOT)
+
+        user = self.get_object()
+        if activation_obj.is_email_change:
+            user.email = activation_obj.tmp_data
+            user.save()
+            activation_obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        if activation_obj.is_password_change:
+            user.password = activation_obj.tmp_data
+            user.save()
+            activation_obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        if not user.last_login:
+            user.date_joined = timezone.now()
+            user.groups.add(Group.objects.get(name='Verified Users'))
+            user.save()
+            activation_obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(status=status.HTTP_418_IM_A_TEAPOT)
+
