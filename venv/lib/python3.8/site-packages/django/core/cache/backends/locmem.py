@@ -108,14 +108,13 @@ class LocMemCache(BaseCache):
             del self._cache[key]
             del self._expire_info[key]
         except KeyError:
-            return False
-        return True
+            pass
 
     def delete(self, key, version=None):
         key = self.make_key(key, version=version)
         self.validate_key(key)
         with self._lock:
-            return self._delete(key)
+            self._delete(key)
 
     def clear(self):
         with self._lock:

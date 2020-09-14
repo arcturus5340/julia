@@ -1,7 +1,6 @@
 # This file is distributed under the same license as the Django package.
 #
 # Translators:
-# Claude Paroz <claude@2xlibre.net>, 2020
 # dekomote <dr.mote@gmail.com>, 2015
 # Jannis Leidel <jannis@leidel.info>, 2011
 # Vasil Vangelovski <vvangelovski@gmail.com>, 2016-2017
@@ -11,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 20:23+0200\n"
-"PO-Revision-Date: 2020-07-14 21:42+0000\n"
-"Last-Translator: Transifex Bot <>\n"
+"POT-Creation-Date: 2019-09-27 22:40+0200\n"
+"PO-Revision-Date: 2019-11-05 00:38+0000\n"
+"Last-Translator: Ramiro Morales\n"
 "Language-Team: Macedonian (http://www.transifex.com/django/django/language/"
 "mk/)\n"
 "MIME-Version: 1.0\n"
@@ -27,9 +26,6 @@ msgstr "Африканс"
 
 msgid "Arabic"
 msgstr "Арапски"
-
-msgid "Algerian Arabic"
-msgstr ""
 
 msgid "Asturian"
 msgstr "Астуриски"
@@ -154,9 +150,6 @@ msgstr "Интерлингва"
 msgid "Indonesian"
 msgstr "Индонезиски"
 
-msgid "Igbo"
-msgstr ""
-
 msgid "Ido"
 msgstr "Идо"
 
@@ -186,9 +179,6 @@ msgstr "Канада"
 
 msgid "Korean"
 msgstr "Корејски"
-
-msgid "Kyrgyz"
-msgstr ""
 
 msgid "Luxembourgish"
 msgstr "Луксембуршки"
@@ -274,14 +264,8 @@ msgstr "Тамил"
 msgid "Telugu"
 msgstr "Телугу"
 
-msgid "Tajik"
-msgstr ""
-
 msgid "Thai"
 msgstr "Тајландски"
-
-msgid "Turkmen"
-msgstr ""
 
 msgid "Turkish"
 msgstr "Турски"
@@ -577,9 +561,6 @@ msgstr ""
 msgid "Boolean (Either True, False or None)"
 msgstr "Логичка вредност (точно,неточно или ништо)"
 
-msgid "Positive big integer"
-msgstr ""
-
 msgid "Positive integer"
 msgstr "Позитивен цел број"
 
@@ -629,12 +610,6 @@ msgstr "Датотека"
 
 msgid "Image"
 msgstr "Слика"
-
-msgid "A JSON object"
-msgstr ""
-
-msgid "Value must be valid JSON."
-msgstr ""
 
 #, python-format
 msgid "%(model)s instance with %(field)s %(value)r does not exist."
@@ -730,9 +705,6 @@ msgstr "Внесете целосна вредност."
 msgid "Enter a valid UUID."
 msgstr "Внесете валиден UUID (единствен идентификатор)."
 
-msgid "Enter a valid JSON."
-msgstr ""
-
 #. Translators: This is the default suffix added to form field labels
 msgid ":"
 msgstr ":"
@@ -817,9 +789,17 @@ msgstr "Да"
 msgid "No"
 msgstr "Не"
 
-#. Translators: Please do not add spaces around commas.
+msgid "Year"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
 msgid "yes,no,maybe"
-msgstr "да,не,можеби"
+msgstr "да, не, можеби"
 
 #, python-format
 msgid "%(size)d byte"
@@ -1125,6 +1105,9 @@ msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d минута"
 msgstr[1] "%d минути"
+
+msgid "0 minutes"
+msgstr "0 минути"
 
 msgid "Forbidden"
 msgstr "Забрането"

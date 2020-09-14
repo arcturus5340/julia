@@ -7,15 +7,15 @@ Requires psycopg 2: https://www.psycopg.org/
 import asyncio
 import threading
 import warnings
-from contextlib import contextmanager
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db import DatabaseError as WrappedDatabaseError, connections
+from django.db import connections
 from django.db.backends.base.base import BaseDatabaseWrapper
 from django.db.backends.utils import (
     CursorDebugWrapper as BaseCursorDebugWrapper,
 )
+from django.db.utils import DatabaseError as WrappedDatabaseError
 from django.utils.asyncio import async_unsafe
 from django.utils.functional import cached_property
 from django.utils.safestring import SafeString
@@ -47,6 +47,7 @@ from .features import DatabaseFeatures                      # NOQA isort:skip
 from .introspection import DatabaseIntrospection            # NOQA isort:skip
 from .operations import DatabaseOperations                  # NOQA isort:skip
 from .schema import DatabaseSchemaEditor                    # NOQA isort:skip
+from .utils import utc_tzinfo_factory                       # NOQA isort:skip
 
 psycopg2.extensions.register_adapter(SafeString, psycopg2.extensions.QuotedString)
 psycopg2.extras.register_uuid()
@@ -86,10 +87,8 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         'BigIntegerField': 'bigint',
         'IPAddressField': 'inet',
         'GenericIPAddressField': 'inet',
-        'JSONField': 'jsonb',
         'NullBooleanField': 'boolean',
         'OneToOneField': 'integer',
-        'PositiveBigIntegerField': 'bigint',
         'PositiveIntegerField': 'integer',
         'PositiveSmallIntegerField': 'smallint',
         'SlugField': 'varchar(%(max_length)s)',
@@ -100,7 +99,6 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         'UUIDField': 'uuid',
     }
     data_type_check_constraints = {
-        'PositiveBigIntegerField': '"%(column)s" >= 0',
         'PositiveIntegerField': '"%(column)s" >= 0',
         'PositiveSmallIntegerField': '"%(column)s" >= 0',
     }
@@ -200,10 +198,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
             # Set the isolation level to the value from OPTIONS.
             if self.isolation_level != connection.isolation_level:
                 connection.set_session(isolation_level=self.isolation_level)
-        # Register dummy loads() to avoid a round trip from psycopg2's decode
-        # to json.dumps() to json.loads(), when using a custom decoder in
-        # JSONField.
-        psycopg2.extras.register_default_jsonb(conn_or_curs=connection, loads=lambda x: x)
+
         return connection
 
     def ensure_timezone(self):
@@ -234,11 +229,8 @@ class DatabaseWrapper(BaseDatabaseWrapper):
             cursor = self.connection.cursor(name, scrollable=False, withhold=self.connection.autocommit)
         else:
             cursor = self.connection.cursor()
-        cursor.tzinfo_factory = self.tzinfo_factory if settings.USE_TZ else None
+        cursor.tzinfo_factory = utc_tzinfo_factory if settings.USE_TZ else None
         return cursor
-
-    def tzinfo_factory(self, offset):
-        return self.timezone
 
     @async_unsafe
     def chunked_cursor(self):
@@ -281,25 +273,23 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         Check constraints by setting them to immediate. Return them to deferred
         afterward.
         """
-        with self.cursor() as cursor:
-            cursor.execute('SET CONSTRAINTS ALL IMMEDIATE')
-            cursor.execute('SET CONSTRAINTS ALL DEFERRED')
+        self.cursor().execute('SET CONSTRAINTS ALL IMMEDIATE')
+        self.cursor().execute('SET CONSTRAINTS ALL DEFERRED')
 
     def is_usable(self):
         try:
             # Use a psycopg cursor directly, bypassing Django's utilities.
-            with self.connection.cursor() as cursor:
-                cursor.execute('SELECT 1')
+            self.connection.cursor().execute("SELECT 1")
         except Database.Error:
             return False
         else:
             return True
 
-    @contextmanager
-    def _nodb_cursor(self):
+    @property
+    def _nodb_connection(self):
+        nodb_connection = super()._nodb_connection
         try:
-            with super()._nodb_cursor() as cursor:
-                yield cursor
+            nodb_connection.ensure_connection()
         except (Database.DatabaseError, WrappedDatabaseError):
             warnings.warn(
                 "Normally Django will use a connection to the 'postgres' database "
@@ -311,15 +301,11 @@ class DatabaseWrapper(BaseDatabaseWrapper):
             )
             for connection in connections.all():
                 if connection.vendor == 'postgresql' and connection.settings_dict['NAME'] != 'postgres':
-                    conn = self.__class__(
+                    return self.__class__(
                         {**self.settings_dict, 'NAME': connection.settings_dict['NAME']},
                         alias=self.alias,
                     )
-                    try:
-                        with conn.cursor() as cursor:
-                            yield cursor
-                    finally:
-                        conn.close()
+        return nodb_connection
 
     @cached_property
     def pg_version(self):

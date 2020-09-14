@@ -1,5 +1,4 @@
 import datetime
-import re
 
 from django.forms.utils import flatatt, pretty_name
 from django.forms.widgets import Textarea, TextInput
@@ -227,10 +226,6 @@ class BoundField:
         if self.field.disabled:
             attrs['disabled'] = True
         return attrs
-
-    @property
-    def widget_type(self):
-        return re.sub(r'widget$|input$', '', self.field.widget.__class__.__name__.lower())
 
 
 @html_safe

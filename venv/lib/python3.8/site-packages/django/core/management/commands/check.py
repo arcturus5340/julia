@@ -32,10 +32,6 @@ class Command(BaseCommand):
                 'non-zero status. Default is ERROR.'
             ),
         )
-        parser.add_argument(
-            '--database', action='append', dest='databases',
-            help='Run database related checks against these aliases.',
-        )
 
     def handle(self, *app_labels, **options):
         include_deployment_checks = options['deploy']
@@ -66,5 +62,4 @@ class Command(BaseCommand):
             display_num_errors=True,
             include_deployment_checks=include_deployment_checks,
             fail_level=getattr(checks, options['fail_level']),
-            databases=options['databases'],
         )

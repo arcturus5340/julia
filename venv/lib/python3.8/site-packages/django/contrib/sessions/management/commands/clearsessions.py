@@ -15,7 +15,5 @@ class Command(BaseCommand):
         try:
             engine.SessionStore.clear_expired()
         except NotImplementedError:
-            self.stderr.write(
-                "Session engine '%s' doesn't support clearing expired "
-                "sessions." % settings.SESSION_ENGINE
-            )
+            self.stderr.write("Session engine '%s' doesn't support clearing "
+                              "expired sessions.\n" % settings.SESSION_ENGINE)

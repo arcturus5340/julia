@@ -9,7 +9,7 @@ class DatabaseClient(BaseDatabaseClient):
     executable_name = 'psql'
 
     @classmethod
-    def runshell_db(cls, conn_params, parameters):
+    def runshell_db(cls, conn_params):
         args = [cls.executable_name]
 
         host = conn_params.get('host', '')
@@ -29,7 +29,6 @@ class DatabaseClient(BaseDatabaseClient):
         if port:
             args += ['-p', str(port)]
         args += [dbname]
-        args.extend(parameters)
 
         sigint_handler = signal.getsignal(signal.SIGINT)
         subprocess_env = os.environ.copy()
@@ -51,5 +50,5 @@ class DatabaseClient(BaseDatabaseClient):
             # Restore the original SIGINT handler.
             signal.signal(signal.SIGINT, sigint_handler)
 
-    def runshell(self, parameters):
-        self.runshell_db(self.connection.get_connection_params(), parameters)
+    def runshell(self):
+        DatabaseClient.runshell_db(self.connection.get_connection_params())

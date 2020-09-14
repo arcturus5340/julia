@@ -85,14 +85,13 @@ class TemplateCommand(BaseCommand):
         for file in options['files']:
             extra_files.extend(map(lambda x: x.strip(), file.split(',')))
         if self.verbosity >= 2:
-            self.stdout.write(
-                'Rendering %s template files with extensions: %s'
-                % (app_or_project, ', '.join(extensions))
-            )
-            self.stdout.write(
-                'Rendering %s template files with filenames: %s'
-                % (app_or_project, ', '.join(extra_files))
-            )
+            self.stdout.write("Rendering %s template files with "
+                              "extensions: %s\n" %
+                              (app_or_project, ', '.join(extensions)))
+            self.stdout.write("Rendering %s template files with "
+                              "filenames: %s\n" %
+                              (app_or_project, ', '.join(extra_files)))
+
         base_name = '%s_name' % app_or_project
         base_subdir = '%s_template' % app_or_project
         base_directory = '%s_directory' % app_or_project
@@ -163,7 +162,7 @@ class TemplateCommand(BaseCommand):
                     shutil.copyfile(old_path, new_path)
 
                 if self.verbosity >= 2:
-                    self.stdout.write('Creating %s' % new_path)
+                    self.stdout.write("Creating %s\n" % new_path)
                 try:
                     shutil.copymode(old_path, new_path)
                     self.make_writeable(new_path)
@@ -175,7 +174,7 @@ class TemplateCommand(BaseCommand):
 
         if self.paths_to_remove:
             if self.verbosity >= 2:
-                self.stdout.write('Cleaning up temporary files.')
+                self.stdout.write("Cleaning up temporary files.\n")
             for path_to_remove in self.paths_to_remove:
                 if os.path.isfile(path_to_remove):
                     os.remove(path_to_remove)
@@ -260,7 +259,7 @@ class TemplateCommand(BaseCommand):
         filename, display_url = cleanup_url(url)
 
         if self.verbosity >= 2:
-            self.stdout.write('Downloading %s' % display_url)
+            self.stdout.write("Downloading %s\n" % display_url)
         try:
             the_path, info = urlretrieve(url, os.path.join(tempdir, filename))
         except OSError as e:
@@ -314,7 +313,7 @@ class TemplateCommand(BaseCommand):
         tempdir = tempfile.mkdtemp(prefix=prefix, suffix='_extract')
         self.paths_to_remove.append(tempdir)
         if self.verbosity >= 2:
-            self.stdout.write('Extracting %s' % filename)
+            self.stdout.write("Extracting %s\n" % filename)
         try:
             archive.extract(filename, tempdir)
             return tempdir

@@ -16,7 +16,6 @@ class InsertVar:
         'IntegerField': int,
         'BigIntegerField': int,
         'SmallIntegerField': int,
-        'PositiveBigIntegerField': int,
         'PositiveSmallIntegerField': int,
         'PositiveIntegerField': int,
         'FloatField': Database.NATIVE_FLOAT,
@@ -28,14 +27,11 @@ class InsertVar:
     def __init__(self, field):
         internal_type = getattr(field, 'target_field', field).get_internal_type()
         self.db_type = self.types.get(internal_type, str)
-        self.bound_param = None
 
     def bind_parameter(self, cursor):
-        self.bound_param = cursor.cursor.var(self.db_type)
-        return self.bound_param
-
-    def get_value(self):
-        return self.bound_param.getvalue()
+        param = cursor.cursor.var(self.db_type)
+        cursor._insert_id_var = param
+        return param
 
 
 class Oracle_datetime(datetime.datetime):
@@ -62,8 +58,6 @@ class BulkInsertMapper:
     TIMESTAMP = 'TO_TIMESTAMP(%s)'
 
     types = {
-        'AutoField': NUMBER,
-        'BigAutoField': NUMBER,
         'BigIntegerField': NUMBER,
         'BinaryField': BLOB,
         'BooleanField': NUMBER,
@@ -74,10 +68,8 @@ class BulkInsertMapper:
         'FloatField': NUMBER,
         'IntegerField': NUMBER,
         'NullBooleanField': NUMBER,
-        'PositiveBigIntegerField': NUMBER,
         'PositiveIntegerField': NUMBER,
         'PositiveSmallIntegerField': NUMBER,
-        'SmallAutoField': NUMBER,
         'SmallIntegerField': NUMBER,
         'TextField': CLOB,
         'TimeField': TIMESTAMP,

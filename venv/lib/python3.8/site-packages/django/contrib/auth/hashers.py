@@ -72,11 +72,6 @@ def make_password(password, salt=None, hasher='default'):
     """
     if password is None:
         return UNUSABLE_PASSWORD_PREFIX + get_random_string(UNUSABLE_PASSWORD_SUFFIX_LENGTH)
-    if not isinstance(password, (bytes, str)):
-        raise TypeError(
-            'Password must be a string or bytes, got %s.'
-            % type(password).__qualname__
-        )
     hasher = get_hasher(hasher)
     salt = salt or hasher.salt()
     return hasher.encode(password, salt)
@@ -190,8 +185,7 @@ class BasePasswordHasher:
 
     def salt(self):
         """Generate a cryptographically secure nonce salt in ASCII."""
-        # 12 returns a 71-bit value, log_2((26+26+10)^12) =~ 71 bits
-        return get_random_string(12)
+        return get_random_string()
 
     def verify(self, password, encoded):
         """Check if the given password is correct."""
@@ -241,7 +235,7 @@ class PBKDF2PasswordHasher(BasePasswordHasher):
     safely but you must rename the algorithm if you change SHA256.
     """
     algorithm = "pbkdf2_sha256"
-    iterations = 216000
+    iterations = 180000
     digest = hashlib.sha256
 
     def encode(self, password, salt, iterations=None):

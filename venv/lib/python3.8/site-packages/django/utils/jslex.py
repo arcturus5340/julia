@@ -62,7 +62,7 @@ class Lexer:
             for match in regexes[state].finditer(text, start):
                 name = match.lastgroup
                 tok = toks[name]
-                toktext = match[name]
+                toktext = match.group(name)
                 start += len(toktext)
                 yield (tok.name, toktext)
 
@@ -192,7 +192,7 @@ def prepare_js_for_gettext(js):
     """
     def escape_quotes(m):
         """Used in a regex to properly escape double quotes."""
-        s = m[0]
+        s = m.group(0)
         if s == '"':
             return r'\"'
         else:

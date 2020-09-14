@@ -1,7 +1,6 @@
 from django import forms
 from django.conf import settings
 from django.contrib.flatpages.models import FlatPage
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext, gettext_lazy as _
 
 
@@ -39,12 +38,12 @@ class FlatpageForm(forms.ModelForm):
     def clean_url(self):
         url = self.cleaned_data['url']
         if not url.startswith('/'):
-            raise ValidationError(
+            raise forms.ValidationError(
                 gettext("URL is missing a leading slash."),
                 code='missing_leading_slash',
             )
         if self._trailing_slash_required() and not url.endswith('/'):
-            raise ValidationError(
+            raise forms.ValidationError(
                 gettext("URL is missing a trailing slash."),
                 code='missing_trailing_slash',
             )
@@ -61,7 +60,7 @@ class FlatpageForm(forms.ModelForm):
         if sites and same_url.filter(sites__in=sites).exists():
             for site in sites:
                 if same_url.filter(sites=site).exists():
-                    raise ValidationError(
+                    raise forms.ValidationError(
                         _('Flatpage with url %(url)s already exists for site %(site)s'),
                         code='duplicate_url',
                         params={'url': url, 'site': site},

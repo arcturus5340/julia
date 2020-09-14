@@ -434,7 +434,7 @@ class DiscoverRunner:
                  interactive=True, failfast=False, keepdb=False,
                  reverse=False, debug_mode=False, debug_sql=False, parallel=0,
                  tags=None, exclude_tags=None, test_name_patterns=None,
-                 pdb=False, buffer=False, **kwargs):
+                 pdb=False, **kwargs):
 
         self.pattern = pattern
         self.top_level = top_level
@@ -451,12 +451,6 @@ class DiscoverRunner:
         self.pdb = pdb
         if self.pdb and self.parallel > 1:
             raise ValueError('You cannot use --pdb with parallel tests; pass --parallel=1 to use it.')
-        self.buffer = buffer
-        if self.buffer and self.parallel > 1:
-            raise ValueError(
-                'You cannot use -b/--buffer with parallel tests; pass '
-                '--parallel=1 to use it.'
-            )
         self.test_name_patterns = None
         if test_name_patterns:
             # unittest does not export the _convert_select_pattern function
@@ -508,10 +502,6 @@ class DiscoverRunner:
         parser.add_argument(
             '--pdb', action='store_true',
             help='Runs a debugger (pdb, or ipdb if installed) on error or failure.'
-        )
-        parser.add_argument(
-            '-b', '--buffer', action='store_true',
-            help='Discard output from passing tests.',
         )
         if PY37:
             parser.add_argument(
@@ -627,13 +617,12 @@ class DiscoverRunner:
             'failfast': self.failfast,
             'resultclass': self.get_resultclass(),
             'verbosity': self.verbosity,
-            'buffer': self.buffer,
         }
 
-    def run_checks(self, databases):
+    def run_checks(self):
         # Checks are run after database creation since some checks require
         # database access.
-        call_command('check', verbosity=self.verbosity, databases=databases)
+        call_command('check', verbosity=self.verbosity)
 
     def run_suite(self, suite, **kwargs):
         kwargs = self.get_test_runner_kwargs()
@@ -695,7 +684,7 @@ class DiscoverRunner:
         old_config = self.setup_databases(aliases=databases)
         run_failed = False
         try:
-            self.run_checks(databases)
+            self.run_checks()
             result = self.run_suite(suite)
         except Exception:
             run_failed = True

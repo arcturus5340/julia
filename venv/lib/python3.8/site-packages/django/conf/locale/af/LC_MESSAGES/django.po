@@ -1,16 +1,16 @@
 # This file is distributed under the same license as the Django package.
 #
 # Translators:
-# F Wolff <friedel@translate.org.za>, 2019-2020
+# F Wolff <friedel@translate.org.za>, 2019
 # Stephen Cox <stephencoxmail@gmail.com>, 2011-2012
 # unklphil <villiers.strauss@gmail.com>, 2014,2019
 msgid ""
 msgstr ""
 "Project-Id-Version: django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 20:23+0200\n"
-"PO-Revision-Date: 2020-07-20 19:37+0000\n"
-"Last-Translator: F Wolff <friedel@translate.org.za>\n"
+"POT-Creation-Date: 2019-09-27 22:40+0200\n"
+"PO-Revision-Date: 2019-11-05 00:38+0000\n"
+"Last-Translator: Ramiro Morales\n"
 "Language-Team: Afrikaans (http://www.transifex.com/django/django/language/"
 "af/)\n"
 "MIME-Version: 1.0\n"
@@ -24,9 +24,6 @@ msgstr "Afrikaans"
 
 msgid "Arabic"
 msgstr "Arabies"
-
-msgid "Algerian Arabic"
-msgstr ""
 
 msgid "Asturian"
 msgstr "Asturies"
@@ -151,9 +148,6 @@ msgstr "Interlingua"
 msgid "Indonesian"
 msgstr "Indonesies"
 
-msgid "Igbo"
-msgstr ""
-
 msgid "Ido"
 msgstr "Ido"
 
@@ -183,9 +177,6 @@ msgstr "Kannada"
 
 msgid "Korean"
 msgstr "Koreaans"
-
-msgid "Kyrgyz"
-msgstr ""
 
 msgid "Luxembourgish"
 msgstr "Luxemburgs"
@@ -271,14 +262,8 @@ msgstr "Tamil"
 msgid "Telugu"
 msgstr "Teloegoe"
 
-msgid "Tajik"
-msgstr ""
-
 msgid "Thai"
 msgstr "Thai"
-
-msgid "Turkmen"
-msgstr ""
 
 msgid "Turkish"
 msgstr "Turks"
@@ -296,7 +281,7 @@ msgid "Urdu"
 msgstr "Oerdoe"
 
 msgid "Uzbek"
-msgstr "Oesbekies "
+msgstr ""
 
 msgid "Vietnamese"
 msgstr "Viëtnamees"
@@ -520,7 +505,7 @@ msgstr "Datum (met die tyd)"
 
 #, python-format
 msgid "“%(value)s” value must be a decimal number."
-msgstr "“%(value)s”-waarde moet ’n desimale getal wees."
+msgstr ""
 
 msgid "Decimal number"
 msgstr "Desimale getal"
@@ -549,7 +534,7 @@ msgstr "Dryfpuntgetal"
 
 #, python-format
 msgid "“%(value)s” value must be an integer."
-msgstr "“%(value)s”-waarde moet ’n heelgetal wees."
+msgstr ""
 
 msgid "Integer"
 msgstr "Heelgetal"
@@ -565,13 +550,10 @@ msgstr "IP-adres"
 
 #, python-format
 msgid "“%(value)s” value must be either None, True or False."
-msgstr "“%(value)s”-waarde moet een wees uit None, True of False."
+msgstr ""
 
 msgid "Boolean (Either True, False or None)"
 msgstr "Boole (True, False, of None)"
-
-msgid "Positive big integer"
-msgstr "Positiewe groot heelgetal"
 
 msgid "Positive integer"
 msgstr "Positiewe heelgetal"
@@ -594,8 +576,6 @@ msgid ""
 "“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
 "format."
 msgstr ""
-"“%(value)s”-waarde het ’n ongeldige formaat. Dit moet geformateer word as HH:"
-"MM[:ss[.uuuuuu]]."
 
 #, python-format
 msgid ""
@@ -614,7 +594,7 @@ msgstr "Rou binêre data"
 
 #, python-format
 msgid "“%(value)s” is not a valid UUID."
-msgstr "“%(value)s” is nie ’n geldige UUID nie."
+msgstr ""
 
 msgid "Universally unique identifier"
 msgstr "Universeel unieke identifiseerder"
@@ -624,12 +604,6 @@ msgstr "Lêer"
 
 msgid "Image"
 msgstr "Prent"
-
-msgid "A JSON object"
-msgstr "’n JSON-objek"
-
-msgid "Value must be valid JSON."
-msgstr "Waarde moet geldige JSON wees."
 
 #, python-format
 msgid "%(model)s instance with %(field)s %(value)r does not exist."
@@ -725,9 +699,6 @@ msgstr "Tik ’n volledige waarde in."
 msgid "Enter a valid UUID."
 msgstr "Tik ’n geldig UUID in."
 
-msgid "Enter a valid JSON."
-msgstr "Gee geldige JSON."
-
 #. Translators: This is the default suffix added to form field labels
 msgid ":"
 msgstr ":"
@@ -786,7 +757,7 @@ msgstr ""
 
 #, python-format
 msgid "“%(pk)s” is not a valid value."
-msgstr "“%(pk)s” is nie ’n geldige waarde nie."
+msgstr ""
 
 #, python-format
 msgid ""
@@ -812,7 +783,15 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nee"
 
-#. Translators: Please do not add spaces around commas.
+msgid "Year"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
 msgid "yes,no,maybe"
 msgstr "ja,nee,miskien"
 
@@ -1121,6 +1100,9 @@ msgid_plural "%d minutes"
 msgstr[0] "%d minuut"
 msgstr[1] "%d minute"
 
+msgid "0 minutes"
+msgstr "0 minute"
+
 msgid "Forbidden"
 msgstr "Verbode"
 
@@ -1194,7 +1176,7 @@ msgstr ""
 
 #, python-format
 msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
-msgstr "Ongeldige datumstring “%(datestr)s” gegewe die formaat “%(format)s”"
+msgstr ""
 
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
@@ -1216,7 +1198,7 @@ msgstr "Gidsindekse word nie hier toegelaat nie."
 
 #, python-format
 msgid "“%(path)s” does not exist"
-msgstr "“%(path)s” bestaan nie."
+msgstr ""
 
 #, python-format
 msgid "Index of %(directory)s"

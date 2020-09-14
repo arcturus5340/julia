@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import sys
 import tempfile
@@ -131,7 +132,7 @@ class ASGIHandler(base.BaseHandler):
 
     def __init__(self):
         super().__init__()
-        self.load_middleware(is_async=True)
+        self.load_middleware()
 
     async def __call__(self, scope, receive, send):
         """
@@ -151,14 +152,18 @@ class ASGIHandler(base.BaseHandler):
             return
         # Request is complete and can be served.
         set_script_prefix(self.get_script_prefix(scope))
-        await sync_to_async(signals.request_started.send, thread_sensitive=True)(sender=self.__class__, scope=scope)
+        await sync_to_async(signals.request_started.send)(sender=self.__class__, scope=scope)
         # Get the request and check for basic issues.
         request, error_response = self.create_request(scope, body_file)
         if request is None:
             await self.send_response(error_response, send)
             return
-        # Get the response, using the async mode of BaseHandler.
-        response = await self.get_response_async(request)
+        # Get the response, using a threadpool via sync_to_async, if needed.
+        if asyncio.iscoroutinefunction(self.get_response):
+            response = await self.get_response(request)
+        else:
+            # If get_response is synchronous, run it non-blocking.
+            response = await sync_to_async(self.get_response)(request)
         response._handler_class = self.__class__
         # Increase chunk size on file responses (ASGI servers handles low-level
         # chunking).
@@ -259,7 +264,7 @@ class ASGIHandler(base.BaseHandler):
                     'body': chunk,
                     'more_body': not last,
                 })
-        await sync_to_async(response.close, thread_sensitive=True)()
+        response.close()
 
     @classmethod
     def chunk_bytes(cls, data):

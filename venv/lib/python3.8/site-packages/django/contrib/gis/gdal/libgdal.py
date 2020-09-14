@@ -20,14 +20,10 @@ if lib_path:
     lib_names = None
 elif os.name == 'nt':
     # Windows NT shared libraries
-    lib_names = ['gdal301', 'gdal300', 'gdal204', 'gdal203', 'gdal202', 'gdal201', 'gdal20']
+    lib_names = ['gdal204', 'gdal203', 'gdal202', 'gdal201', 'gdal20']
 elif os.name == 'posix':
     # *NIX library names.
-    lib_names = [
-        'gdal', 'GDAL',
-        'gdal3.1.0', 'gdal3.0.0',
-        'gdal2.4.0', 'gdal2.3.0', 'gdal2.2.0', 'gdal2.1.0', 'gdal2.0.0',
-    ]
+    lib_names = ['gdal', 'GDAL', 'gdal2.4.0', 'gdal2.3.0', 'gdal2.2.0', 'gdal2.1.0', 'gdal2.0.0']
 else:
     raise ImproperlyConfigured('GDAL is unsupported on OS "%s".' % os.name)
 
@@ -84,19 +80,26 @@ def gdal_version():
 
 def gdal_full_version():
     "Return the full GDAL version information."
-    return _version_info(b'')
+    return _version_info('')
+
+
+version_regex = re.compile(r'^(?P<major>\d+)\.(?P<minor>\d+)(\.(?P<subminor>\d+))?')
 
 
 def gdal_version_info():
-    ver = gdal_version()
-    m = re.match(br'^(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<subminor>\d+))?', ver)
+    ver = gdal_version().decode()
+    m = version_regex.match(ver)
     if not m:
         raise GDALException('Could not parse GDAL version string "%s"' % ver)
-    major, minor, subminor = m.groups()
-    return (int(major), int(minor), subminor and int(subminor))
+    return {key: m.group(key) for key in ('major', 'minor', 'subminor')}
 
 
-GDAL_VERSION = gdal_version_info()
+_verinfo = gdal_version_info()
+GDAL_MAJOR_VERSION = int(_verinfo['major'])
+GDAL_MINOR_VERSION = int(_verinfo['minor'])
+GDAL_SUBMINOR_VERSION = _verinfo['subminor'] and int(_verinfo['subminor'])
+GDAL_VERSION = (GDAL_MAJOR_VERSION, GDAL_MINOR_VERSION, GDAL_SUBMINOR_VERSION)
+del _verinfo
 
 # Set library error handling so as errors are logged
 CPLErrorHandler = CFUNCTYPE(None, c_int, c_int, c_char_p)

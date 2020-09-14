@@ -33,7 +33,6 @@ class ForeignObjectRel(FieldCacheMixin):
     # Reverse relations are always nullable (Django can't enforce that a
     # foreign key on the related model points to this model).
     null = True
-    empty_strings_allowed = False
 
     def __init__(self, field, to, related_name=None, related_query_name=None,
                  limit_choices_to=None, parent_link=False, on_delete=None):
@@ -115,10 +114,7 @@ class ForeignObjectRel(FieldCacheMixin):
             self.related_model._meta.model_name,
         )
 
-    def get_choices(
-        self, include_blank=True, blank_choice=BLANK_CHOICE_DASH,
-        limit_choices_to=None, ordering=(),
-    ):
+    def get_choices(self, include_blank=True, blank_choice=BLANK_CHOICE_DASH, ordering=()):
         """
         Return choices with a default blank choices included, for use
         as <select> choices for this field.
@@ -126,8 +122,7 @@ class ForeignObjectRel(FieldCacheMixin):
         Analog of django.db.models.fields.Field.get_choices(), provided
         initially for utilization by RelatedFieldListFilter.
         """
-        limit_choices_to = limit_choices_to or self.limit_choices_to
-        qs = self.related_model._default_manager.complex_filter(limit_choices_to)
+        qs = self.related_model._default_manager.all()
         if ordering:
             qs = qs.order_by(*ordering)
         return (blank_choice if include_blank else []) + [

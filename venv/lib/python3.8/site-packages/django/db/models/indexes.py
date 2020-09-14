@@ -40,7 +40,7 @@ class Index:
     def _get_condition_sql(self, model, schema_editor):
         if self.condition is None:
             return None
-        query = Query(model=model, alias_cols=False)
+        query = Query(model=model)
         where = query.build_where(self.condition)
         compiler = query.get_compiler(connection=schema_editor.connection)
         sql, params = where.as_sql(compiler, schema_editor.connection)
@@ -112,6 +112,4 @@ class Index:
         )
 
     def __eq__(self, other):
-        if self.__class__ == other.__class__:
-            return self.deconstruct() == other.deconstruct()
-        return NotImplemented
+        return (self.__class__ == other.__class__) and (self.deconstruct() == other.deconstruct())

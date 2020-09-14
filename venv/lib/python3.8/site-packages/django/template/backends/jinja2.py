@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import jinja2
 
 from django.conf import settings
@@ -70,12 +68,7 @@ class Template:
             context['csrf_token'] = csrf_token_lazy(request)
             for context_processor in self.backend.template_context_processors:
                 context.update(context_processor(request))
-        try:
-            return self.template.render(context)
-        except jinja2.TemplateSyntaxError as exc:
-            new = TemplateSyntaxError(exc.args)
-            new.template_debug = get_exception_info(exc)
-            raise new from exc
+        return self.template.render(context)
 
 
 class Origin:
@@ -95,22 +88,12 @@ def get_exception_info(exception):
     """
     context_lines = 10
     lineno = exception.lineno
-    source = exception.source
-    if source is None:
-        exception_file = Path(exception.filename)
-        if exception_file.exists():
-            with open(exception_file, 'r') as fp:
-                source = fp.read()
-    if source is not None:
-        lines = list(enumerate(source.strip().split('\n'), start=1))
-        during = lines[lineno - 1][1]
-        total = len(lines)
-        top = max(0, lineno - context_lines - 1)
-        bottom = min(total, lineno + context_lines)
-    else:
-        during = ''
-        lines = []
-        total = top = bottom = 0
+    lines = list(enumerate(exception.source.strip().split("\n"), start=1))
+    during = lines[lineno - 1][1]
+    total = len(lines)
+    top = max(0, lineno - context_lines - 1)
+    bottom = min(total, lineno + context_lines)
+
     return {
         'name': exception.filename,
         'message': exception.message,

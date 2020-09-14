@@ -1,17 +1,14 @@
-import psycopg2
-
-from django.db.models import (
-    CharField, Expression, Field, FloatField, Func, Lookup, TextField, Value,
-)
-from django.db.models.expressions import CombinedExpression
+from django.db.models import CharField, Field, FloatField, TextField
+from django.db.models.expressions import CombinedExpression, Func, Value
 from django.db.models.functions import Cast, Coalesce
+from django.db.models.lookups import Lookup
 
 
 class SearchVectorExact(Lookup):
     lookup_name = 'exact'
 
     def process_rhs(self, qn, connection):
-        if not isinstance(self.rhs, (SearchQuery, CombinedSearchQuery)):
+        if not hasattr(self.rhs, 'resolve_expression'):
             config = getattr(self.lhs, 'config', None)
             self.rhs = SearchQuery(self.rhs, config=config)
         rhs, rhs_params = super().process_rhs(qn, connection)
@@ -21,7 +18,7 @@ class SearchVectorExact(Lookup):
         lhs, lhs_params = self.process_lhs(qn, connection)
         rhs, rhs_params = self.process_rhs(qn, connection)
         params = lhs_params + rhs_params
-        return '%s @@ %s' % (lhs, rhs), params
+        return '%s @@ %s = true' % (lhs, rhs), params
 
 
 class SearchVectorField(Field):
@@ -36,39 +33,12 @@ class SearchQueryField(Field):
         return 'tsquery'
 
 
-class SearchConfig(Expression):
-    def __init__(self, config):
-        super().__init__()
-        if not hasattr(config, 'resolve_expression'):
-            config = Value(config)
-        self.config = config
-
-    @classmethod
-    def from_parameter(cls, config):
-        if config is None or isinstance(config, cls):
-            return config
-        return cls(config)
-
-    def get_source_expressions(self):
-        return [self.config]
-
-    def set_source_expressions(self, exprs):
-        self.config, = exprs
-
-    def as_sql(self, compiler, connection):
-        sql, params = compiler.compile(self.config)
-        return '%s::regconfig' % sql, params
-
-
 class SearchVectorCombinable:
     ADD = '||'
 
     def _combine(self, other, connector, reversed):
-        if not isinstance(other, SearchVectorCombinable):
-            raise TypeError(
-                'SearchVector can only be combined with other SearchVector '
-                'instances, got %s.' % type(other).__name__
-            )
+        if not isinstance(other, SearchVectorCombinable) or not self.config == other.config:
+            raise TypeError('SearchVector can only be combined with other SearchVectors')
         if reversed:
             return CombinedSearchVector(other, connector, self, self.config)
         return CombinedSearchVector(self, connector, other, self.config)
@@ -78,10 +48,12 @@ class SearchVector(SearchVectorCombinable, Func):
     function = 'to_tsvector'
     arg_joiner = " || ' ' || "
     output_field = SearchVectorField()
+    config = None
 
-    def __init__(self, *expressions, config=None, weight=None):
-        super().__init__(*expressions)
-        self.config = SearchConfig.from_parameter(config)
+    def __init__(self, *expressions, **extra):
+        super().__init__(*expressions, **extra)
+        self.config = self.extra.get('config', self.config)
+        weight = self.extra.get('weight')
         if weight is not None and not hasattr(weight, 'resolve_expression'):
             weight = Value(weight)
         self.weight = weight
@@ -89,7 +61,10 @@ class SearchVector(SearchVectorCombinable, Func):
     def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         resolved = super().resolve_expression(query, allow_joins, reuse, summarize, for_save)
         if self.config:
-            resolved.config = self.config.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+            if not hasattr(self.config, 'resolve_expression'):
+                resolved.config = Value(self.config).resolve_expression(query, allow_joins, reuse, summarize, for_save)
+            else:
+                resolved.config = self.config.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return resolved
 
     def as_sql(self, compiler, connection, function=None, template=None):
@@ -102,18 +77,14 @@ class SearchVector(SearchVectorCombinable, Func):
                 Value('')
             ) for expression in clone.get_source_expressions()
         ])
-        config_sql = None
         config_params = []
         if template is None:
             if clone.config:
                 config_sql, config_params = compiler.compile(clone.config)
-                template = '%(function)s(%(config)s, %(expressions)s)'
+                template = '%(function)s({}::regconfig, %(expressions)s)'.format(config_sql.replace('%', '%%'))
             else:
                 template = clone.template
-        sql, params = super(SearchVector, clone).as_sql(
-            compiler, connection, function=function, template=template,
-            config=config_sql,
-        )
+        sql, params = super(SearchVector, clone).as_sql(compiler, connection, function=function, template=template)
         extra_params = []
         if clone.weight:
             weight_sql, extra_params = compiler.compile(clone.weight)
@@ -134,8 +105,8 @@ class SearchQueryCombinable:
     def _combine(self, other, connector, reversed):
         if not isinstance(other, SearchQueryCombinable):
             raise TypeError(
-                'SearchQuery can only be combined with other SearchQuery '
-                'instances, got %s.' % type(other).__name__
+                'SearchQuery can only be combined with other SearchQuerys, '
+                'got {}.'.format(type(other))
             )
         if reversed:
             return CombinedSearchQuery(other, connector, self, self.config)
@@ -157,38 +128,51 @@ class SearchQueryCombinable:
         return self._combine(other, self.BITAND, True)
 
 
-class SearchQuery(SearchQueryCombinable, Func):
+class SearchQuery(SearchQueryCombinable, Value):
     output_field = SearchQueryField()
     SEARCH_TYPES = {
         'plain': 'plainto_tsquery',
         'phrase': 'phraseto_tsquery',
         'raw': 'to_tsquery',
-        'websearch': 'websearch_to_tsquery',
     }
 
     def __init__(self, value, output_field=None, *, config=None, invert=False, search_type='plain'):
-        self.function = self.SEARCH_TYPES.get(search_type)
-        if self.function is None:
-            raise ValueError("Unknown search_type argument '%s'." % search_type)
-        if not hasattr(value, 'resolve_expression'):
-            value = Value(value)
-        expressions = (value,)
-        self.config = SearchConfig.from_parameter(config)
-        if self.config is not None:
-            expressions = (self.config,) + expressions
+        self.config = config
         self.invert = invert
-        super().__init__(*expressions, output_field=output_field)
+        if search_type not in self.SEARCH_TYPES:
+            raise ValueError("Unknown search_type argument '%s'." % search_type)
+        self.search_type = search_type
+        super().__init__(value, output_field=output_field)
 
-    def as_sql(self, compiler, connection, function=None, template=None):
-        sql, params = super().as_sql(compiler, connection, function, template)
+    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
+        resolved = super().resolve_expression(query, allow_joins, reuse, summarize, for_save)
+        if self.config:
+            if not hasattr(self.config, 'resolve_expression'):
+                resolved.config = Value(self.config).resolve_expression(query, allow_joins, reuse, summarize, for_save)
+            else:
+                resolved.config = self.config.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+        return resolved
+
+    def as_sql(self, compiler, connection):
+        params = [self.value]
+        function = self.SEARCH_TYPES[self.search_type]
+        if self.config:
+            config_sql, config_params = compiler.compile(self.config)
+            template = '{}({}::regconfig, %s)'.format(function, config_sql)
+            params = config_params + [self.value]
+        else:
+            template = '{}(%s)'.format(function)
         if self.invert:
-            sql = '!!(%s)' % sql
-        return sql, params
+            template = '!!({})'.format(template)
+        return template, params
+
+    def _combine(self, other, connector, reversed):
+        combined = super()._combine(other, connector, reversed)
+        combined.output_field = SearchQueryField()
+        return combined
 
     def __invert__(self):
-        clone = self.copy()
-        clone.invert = not self.invert
-        return clone
+        return type(self)(self.value, config=self.config, invert=not self.invert)
 
     def __str__(self):
         result = super().__str__()
@@ -208,77 +192,30 @@ class SearchRank(Func):
     function = 'ts_rank'
     output_field = FloatField()
 
-    def __init__(
-        self, vector, query, weights=None, normalization=None,
-        cover_density=False,
-    ):
+    def __init__(self, vector, query, **extra):
         if not hasattr(vector, 'resolve_expression'):
             vector = SearchVector(vector)
         if not hasattr(query, 'resolve_expression'):
             query = SearchQuery(query)
-        expressions = (vector, query)
-        if weights is not None:
-            if not hasattr(weights, 'resolve_expression'):
-                weights = Value(weights)
-            expressions = (weights,) + expressions
-        if normalization is not None:
-            if not hasattr(normalization, 'resolve_expression'):
-                normalization = Value(normalization)
-            expressions += (normalization,)
-        if cover_density:
-            self.function = 'ts_rank_cd'
-        super().__init__(*expressions)
-
-
-class SearchHeadline(Func):
-    function = 'ts_headline'
-    template = '%(function)s(%(expressions)s%(options)s)'
-    output_field = TextField()
-
-    def __init__(
-        self, expression, query, *, config=None, start_sel=None, stop_sel=None,
-        max_words=None, min_words=None, short_word=None, highlight_all=None,
-        max_fragments=None, fragment_delimiter=None,
-    ):
-        if not hasattr(query, 'resolve_expression'):
-            query = SearchQuery(query)
-        options = {
-            'StartSel': start_sel,
-            'StopSel': stop_sel,
-            'MaxWords': max_words,
-            'MinWords': min_words,
-            'ShortWord': short_word,
-            'HighlightAll': highlight_all,
-            'MaxFragments': max_fragments,
-            'FragmentDelimiter': fragment_delimiter,
-        }
-        self.options = {
-            option: value
-            for option, value in options.items() if value is not None
-        }
-        expressions = (expression, query)
-        if config is not None:
-            config = SearchConfig.from_parameter(config)
-            expressions = (config,) + expressions
-        super().__init__(*expressions)
+        weights = extra.get('weights')
+        if weights is not None and not hasattr(weights, 'resolve_expression'):
+            weights = Value(weights)
+        self.weights = weights
+        super().__init__(vector, query, **extra)
 
     def as_sql(self, compiler, connection, function=None, template=None):
-        options_sql = ''
-        options_params = []
-        if self.options:
-            # getquoted() returns a quoted bytestring of the adapted value.
-            options_params.append(', '.join(
-                '%s=%s' % (
-                    option,
-                    psycopg2.extensions.adapt(value).getquoted().decode(),
-                ) for option, value in self.options.items()
-            ))
-            options_sql = ', %s'
+        extra_params = []
+        extra_context = {}
+        if template is None and self.extra.get('weights'):
+            if self.weights:
+                template = '%(function)s(%(weights)s, %(expressions)s)'
+                weight_sql, extra_params = compiler.compile(self.weights)
+                extra_context['weights'] = weight_sql
         sql, params = super().as_sql(
-            compiler, connection, function=function, template=template,
-            options=options_sql,
+            compiler, connection,
+            function=function, template=template, **extra_context
         )
-        return sql, params + options_params
+        return sql, extra_params + params
 
 
 SearchVectorField.register_lookup(SearchVectorExact)

@@ -1,5 +1,6 @@
-from django.contrib.postgres.fields import ArrayField
-from django.db.models import Aggregate, JSONField, Value
+from django.contrib.postgres.fields import ArrayField, JSONField
+from django.db.models import Value
+from django.db.models.aggregates import Aggregate
 
 from .mixins import OrderableAggMixin
 
@@ -45,7 +46,7 @@ class JSONBAgg(Aggregate):
 
     def convert_value(self, value, expression, connection):
         if not value:
-            return '[]'
+            return []
         return value
 
 

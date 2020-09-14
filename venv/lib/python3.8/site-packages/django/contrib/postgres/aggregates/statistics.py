@@ -1,4 +1,5 @@
-from django.db.models import Aggregate, FloatField, IntegerField
+from django.db.models import FloatField, IntegerField
+from django.db.models.aggregates import Aggregate
 
 __all__ = [
     'CovarPop', 'Corr', 'RegrAvgX', 'RegrAvgY', 'RegrCount', 'RegrIntercept',

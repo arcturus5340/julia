@@ -8,14 +8,14 @@
 # krikulis <kristaps.kulis@gmail.com>, 2014
 # Māris Nartišs <maris.gis@gmail.com>, 2016
 # Mārtiņš Šulcs <shulcsm@gmail.com>, 2018
-# NullIsNot0 <nullisnot0@inbox.lv>, 2018-2020
+# NullIsNot0 <nullisnot0@inbox.lv>, 2018-2019
 # peterisb <pb@sungis.lv>, 2016-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: django\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 20:23+0200\n"
-"PO-Revision-Date: 2020-07-22 17:30+0000\n"
+"POT-Creation-Date: 2019-09-27 22:40+0200\n"
+"PO-Revision-Date: 2019-11-07 07:15+0000\n"
 "Last-Translator: NullIsNot0 <nullisnot0@inbox.lv>\n"
 "Language-Team: Latvian (http://www.transifex.com/django/django/language/"
 "lv/)\n"
@@ -31,9 +31,6 @@ msgstr "afrikāņu"
 
 msgid "Arabic"
 msgstr "arābu"
-
-msgid "Algerian Arabic"
-msgstr "Alžīrijas arābu"
 
 msgid "Asturian"
 msgstr "asturiešu"
@@ -158,9 +155,6 @@ msgstr "modernā latīņu valoda"
 msgid "Indonesian"
 msgstr "indonēziešu"
 
-msgid "Igbo"
-msgstr "igbo"
-
 msgid "Ido"
 msgstr "ido"
 
@@ -190,9 +184,6 @@ msgstr "kannādiešu"
 
 msgid "Korean"
 msgstr "korejiešu"
-
-msgid "Kyrgyz"
-msgstr "kirgīzu"
 
 msgid "Luxembourgish"
 msgstr "luksemburgiešu"
@@ -278,14 +269,8 @@ msgstr "tamilu"
 msgid "Telugu"
 msgstr "telugu"
 
-msgid "Tajik"
-msgstr "tadžiku"
-
 msgid "Thai"
 msgstr "taizemiešu"
-
-msgid "Turkmen"
-msgstr "turkmēņu"
 
 msgid "Turkish"
 msgstr "turku"
@@ -597,9 +582,6 @@ msgstr "“%(value)s” vērtībai ir jābūt None, True vai False."
 msgid "Boolean (Either True, False or None)"
 msgstr "Boolean (jā, nē vai neviens)"
 
-msgid "Positive big integer"
-msgstr "Liels pozitīvs vesels skaitlis"
-
 msgid "Positive integer"
 msgstr "Naturāls skaitlis"
 
@@ -653,12 +635,6 @@ msgstr "Fails"
 
 msgid "Image"
 msgstr "Attēls"
-
-msgid "A JSON object"
-msgstr "JSON objekts"
-
-msgid "Value must be valid JSON."
-msgstr "Vērtībai ir jābūt derīgam JSON."
 
 #, python-format
 msgid "%(model)s instance with %(field)s %(value)r does not exist."
@@ -753,9 +729,6 @@ msgstr "Ievadiet pilnu vērtību."
 msgid "Enter a valid UUID."
 msgstr "Ievadi derīgu UUID."
 
-msgid "Enter a valid JSON."
-msgstr "Ievadiet korektu JSON."
-
 #. Translators: This is the default suffix added to form field labels
 msgid ":"
 msgstr ":"
@@ -843,7 +816,15 @@ msgstr "Jā"
 msgid "No"
 msgstr "Nē"
 
-#. Translators: Please do not add spaces around commas.
+msgid "Year"
+msgstr "Gads"
+
+msgid "Month"
+msgstr "Mēnesis"
+
+msgid "Day"
+msgstr "Diena"
+
 msgid "yes,no,maybe"
 msgstr "jā,nē,varbūt"
 
@@ -1158,6 +1139,9 @@ msgid_plural "%d minutes"
 msgstr[0] "%d minūtes"
 msgstr[1] "%d minūte"
 msgstr[2] "%d minūtes"
+
+msgid "0 minutes"
+msgstr "0 minūšu"
 
 msgid "Forbidden"
 msgstr "Aizliegts"

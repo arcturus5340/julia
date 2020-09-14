@@ -98,8 +98,7 @@ class TranslateNode(Node):
 class BlockTranslateNode(Node):
 
     def __init__(self, extra_context, singular, plural=None, countervar=None,
-                 counter=None, message_context=None, trimmed=False, asvar=None,
-                 tag_name='blocktranslate'):
+                 counter=None, message_context=None, trimmed=False, asvar=None):
         self.extra_context = extra_context
         self.singular = singular
         self.plural = plural
@@ -108,7 +107,6 @@ class BlockTranslateNode(Node):
         self.message_context = message_context
         self.trimmed = trimmed
         self.asvar = asvar
-        self.tag_name = tag_name
 
     def render_token_list(self, tokens):
         result = []
@@ -165,8 +163,8 @@ class BlockTranslateNode(Node):
             if nested:
                 # Either string is malformed, or it's a bug
                 raise TemplateSyntaxError(
-                    '%r is unable to format string returned by gettext: %r '
-                    'using %r' % (self.tag_name, result, data)
+                    "'blocktrans' is unable to format string returned by gettext: %r using %r"
+                    % (result, data)
                 )
             with translation.override(None):
                 result = self.render(context, nested=True)
@@ -315,7 +313,6 @@ def do_get_current_language_bidi(parser, token):
     return GetCurrentLanguageBidiNode(args[2])
 
 
-@register.tag("translate")
 @register.tag("trans")
 def do_translate(parser, token):
     """
@@ -324,7 +321,7 @@ def do_translate(parser, token):
 
     Usage::
 
-        {% translate "this is a test" %}
+        {% trans "this is a test" %}
 
     This marks the string for translation so it will be pulled out by
     makemessages into the .po files and runs the string through the translation
@@ -332,7 +329,7 @@ def do_translate(parser, token):
 
     There is a second form::
 
-        {% translate "this is a test" noop %}
+        {% trans "this is a test" noop %}
 
     This marks the string for translation, but returns the string unchanged.
     Use it when you need to store values into forms that should be translated
@@ -341,19 +338,19 @@ def do_translate(parser, token):
     You can use variables instead of constant strings
     to translate stuff you marked somewhere else::
 
-        {% translate variable %}
+        {% trans variable %}
 
     This tries to translate the contents of the variable ``variable``. Make
     sure that the string in there is something that is in the .po file.
 
     It is possible to store the translated string into a variable::
 
-        {% translate "this is a test" as var %}
+        {% trans "this is a test" as var %}
         {{ var }}
 
     Contextual translations are also supported::
 
-        {% translate "this is a test" context "greeting" %}
+        {% trans "this is a test" context "greeting" %}
 
     This is equivalent to calling pgettext instead of (u)gettext.
     """
@@ -409,7 +406,6 @@ def do_translate(parser, token):
     return TranslateNode(message_string, noop, asvar, message_context)
 
 
-@register.tag("blocktranslate")
 @register.tag("blocktrans")
 def do_block_translate(parser, token):
     """
@@ -417,37 +413,37 @@ def do_block_translate(parser, token):
 
     Usage::
 
-        {% blocktranslate with bar=foo|filter boo=baz|filter %}
+        {% blocktrans with bar=foo|filter boo=baz|filter %}
         This is {{ bar }} and {{ boo }}.
-        {% endblocktranslate %}
+        {% endblocktrans %}
 
     Additionally, this supports pluralization::
 
-        {% blocktranslate count count=var|length %}
+        {% blocktrans count count=var|length %}
         There is {{ count }} object.
         {% plural %}
         There are {{ count }} objects.
-        {% endblocktranslate %}
+        {% endblocktrans %}
 
     This is much like ngettext, only in template syntax.
 
     The "var as value" legacy format is still supported::
 
-        {% blocktranslate with foo|filter as bar and baz|filter as boo %}
-        {% blocktranslate count var|length as count %}
+        {% blocktrans with foo|filter as bar and baz|filter as boo %}
+        {% blocktrans count var|length as count %}
 
     The translated string can be stored in a variable using `asvar`::
 
-        {% blocktranslate with bar=foo|filter boo=baz|filter asvar var %}
+        {% blocktrans with bar=foo|filter boo=baz|filter asvar var %}
         This is {{ bar }} and {{ boo }}.
-        {% endblocktranslate %}
+        {% endblocktrans %}
         {{ var }}
 
     Contextual translations are supported::
 
-        {% blocktranslate with bar=foo|filter context "greeting" %}
+        {% blocktrans with bar=foo|filter context "greeting" %}
             This is {{ bar }}.
-        {% endblocktranslate %}
+        {% endblocktrans %}
 
     This is equivalent to calling pgettext/npgettext instead of
     (u)gettext/(u)ngettext.
@@ -517,20 +513,19 @@ def do_block_translate(parser, token):
             break
     if countervar and counter:
         if token.contents.strip() != 'plural':
-            raise TemplateSyntaxError("%r doesn't allow other block tags inside it" % bits[0])
+            raise TemplateSyntaxError("'blocktrans' doesn't allow other block tags inside it")
         while parser.tokens:
             token = parser.next_token()
             if token.token_type in (TokenType.VAR, TokenType.TEXT):
                 plural.append(token)
             else:
                 break
-    end_tag_name = 'end%s' % bits[0]
-    if token.contents.strip() != end_tag_name:
-        raise TemplateSyntaxError("%r doesn't allow other block tags (seen %r) inside it" % (bits[0], token.contents))
+    if token.contents.strip() != 'endblocktrans':
+        raise TemplateSyntaxError("'blocktrans' doesn't allow other block tags (seen %r) inside it" % token.contents)
 
     return BlockTranslateNode(extra_context, singular, plural, countervar,
                               counter, message_context, trimmed=trimmed,
-                              asvar=asvar, tag_name=bits[0])
+                              asvar=asvar)
 
 
 @register.tag

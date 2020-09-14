@@ -5,6 +5,7 @@ from django.apps import AppConfig
 from django.apps.registry import Apps, apps as global_apps
 from django.conf import settings
 from django.db import models
+from django.db.models.fields.proxy import OrderWrt
 from django.db.models.fields.related import RECURSIVE_RELATIONSHIP_CONSTANT
 from django.db.models.options import DEFAULT_NAMES, normalize_together
 from django.db.models.utils import make_model_tuple
@@ -125,7 +126,7 @@ class ProjectState:
         # Directly related models are the models pointed to by ForeignKeys,
         # OneToOneFields, and ManyToManyFields.
         direct_related_models = set()
-        for field in model_state.fields.values():
+        for name, field in model_state.fields:
             if field.is_relation:
                 if field.remote_field.model == RECURSIVE_RELATIONSHIP_CONSTANT:
                     continue
@@ -359,13 +360,16 @@ class ModelState:
     def __init__(self, app_label, name, fields, options=None, bases=None, managers=None):
         self.app_label = app_label
         self.name = name
-        self.fields = dict(fields)
+        self.fields = fields
         self.options = options or {}
         self.options.setdefault('indexes', [])
         self.options.setdefault('constraints', [])
         self.bases = bases or (models.Model,)
         self.managers = managers or []
-        for name, field in self.fields.items():
+        # Sanity-check that fields is NOT a dict. It must be ordered.
+        if isinstance(self.fields, dict):
+            raise ValueError("ModelState.fields cannot be a dict - it must be a list of 2-tuples.")
+        for name, field in fields:
             # Sanity-check that fields are NOT already bound to a model.
             if hasattr(field, 'model'):
                 raise ValueError(
@@ -402,7 +406,7 @@ class ModelState:
         for field in model._meta.local_fields:
             if getattr(field, "remote_field", None) and exclude_rels:
                 continue
-            if isinstance(field, models.OrderWrt):
+            if isinstance(field, OrderWrt):
                 continue
             name = field.name
             try:
@@ -541,7 +545,7 @@ class ModelState:
         return self.__class__(
             app_label=self.app_label,
             name=self.name,
-            fields=dict(self.fields),
+            fields=list(self.fields),
             # Since options are shallow-copied here, operations such as
             # AddIndex must replace their option (e.g 'indexes') rather
             # than mutating it.
@@ -563,8 +567,8 @@ class ModelState:
             )
         except LookupError:
             raise InvalidBasesError("Cannot resolve one or more bases from %r" % (self.bases,))
-        # Clone fields for the body, add other bits.
-        body = {name: field.clone() for name, field in self.fields.items()}
+        # Turn fields into a dict for the body, add other bits
+        body = {name: field.clone() for name, field in self.fields}
         body['Meta'] = meta
         body['__module__'] = "__fake__"
 
@@ -572,6 +576,12 @@ class ModelState:
         body.update(self.construct_managers())
         # Then, make a Model object (apps.register_model is called in __new__)
         return type(self.name, bases, body)
+
+    def get_field_by_name(self, name):
+        for fname, field in self.fields:
+            if fname == name:
+                return field
+        raise ValueError("No field called %s on model %s" % (name, self.name))
 
     def get_index_by_name(self, name):
         for index in self.options['indexes']:
@@ -593,13 +603,8 @@ class ModelState:
             (self.app_label == other.app_label) and
             (self.name == other.name) and
             (len(self.fields) == len(other.fields)) and
-            all(
-                k1 == k2 and f1.deconstruct()[1:] == f2.deconstruct()[1:]
-                for (k1, f1), (k2, f2) in zip(
-                    sorted(self.fields.items()),
-                    sorted(other.fields.items()),
-                )
-            ) and
+            all((k1 == k2 and (f1.deconstruct()[1:] == f2.deconstruct()[1:]))
+                for (k1, f1), (k2, f2) in zip(self.fields, other.fields)) and
             (self.options == other.options) and
             (self.bases == other.bases) and
             (self.managers == other.managers)

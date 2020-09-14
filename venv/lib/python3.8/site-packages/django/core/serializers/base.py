@@ -283,12 +283,8 @@ def deserialize_m2m_values(field, field_value, using, handle_forward_references)
             return model._meta.pk.to_python(v)
 
     try:
-        pks_iter = iter(field_value)
-    except TypeError as e:
-        raise M2MDeserializationError(e, field_value)
-    try:
         values = []
-        for pk in pks_iter:
+        for pk in field_value:
             values.append(m2m_convert(pk))
         return values
     except Exception as e:

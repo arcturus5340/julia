@@ -53,12 +53,12 @@ __all__ = ('Engine', 'engines')
 
 # Public exceptions
 from .base import VariableDoesNotExist                                  # NOQA isort:skip
-from .context import Context, ContextPopException, RequestContext       # NOQA isort:skip
+from .context import ContextPopException                                # NOQA isort:skip
 from .exceptions import TemplateDoesNotExist, TemplateSyntaxError       # NOQA isort:skip
 
 # Template parts
 from .base import (                                                     # NOQA isort:skip
-    Node, NodeList, Origin, Template, Variable,
+    Context, Node, NodeList, Origin, RequestContext, Template, Variable,
 )
 
 # Library management

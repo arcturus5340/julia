@@ -8,5 +8,5 @@ class BaseDatabaseClient:
         # connection is an instance of BaseDatabaseWrapper.
         self.connection = connection
 
-    def runshell(self, parameters):
+    def runshell(self):
         raise NotImplementedError('subclasses of BaseDatabaseClient must provide a runshell() method')

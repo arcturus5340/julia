@@ -11,7 +11,7 @@ class LocaleMiddleware(MiddlewareMixin):
     """
     Parse a request and decide what translation object to install in the
     current thread context. This allows pages to be dynamically translated to
-    the language the user desires (if the language is available).
+    the language the user desires (if the language is available, of course).
     """
     response_redirect_class = HttpResponseRedirect
 

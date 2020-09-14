@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.gis.gdal import GDALException
 from django.contrib.gis.geos import GEOSException, GEOSGeometry
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from .widgets import OpenLayersWidget
@@ -48,7 +47,7 @@ class GeometryField(forms.Field):
                 except (GEOSException, ValueError, TypeError):
                     value = None
             if value is None:
-                raise ValidationError(self.error_messages['invalid_geom'], code='invalid_geom')
+                raise forms.ValidationError(self.error_messages['invalid_geom'], code='invalid_geom')
 
         # Try to set the srid
         if not value.srid:
@@ -72,14 +71,14 @@ class GeometryField(forms.Field):
         # Ensuring that the geometry is of the correct type (indicated
         # using the OGC string label).
         if str(geom.geom_type).upper() != self.geom_type and not self.geom_type == 'GEOMETRY':
-            raise ValidationError(self.error_messages['invalid_geom_type'], code='invalid_geom_type')
+            raise forms.ValidationError(self.error_messages['invalid_geom_type'], code='invalid_geom_type')
 
         # Transforming the geometry if the SRID was set.
         if self.srid and self.srid != -1 and self.srid != geom.srid:
             try:
                 geom.transform(self.srid)
             except GEOSException:
-                raise ValidationError(
+                raise forms.ValidationError(
                     self.error_messages['transform_error'], code='transform_error')
 
         return geom
@@ -90,7 +89,7 @@ class GeometryField(forms.Field):
         try:
             data = self.to_python(data)
             initial = self.to_python(initial)
-        except ValidationError:
+        except forms.ValidationError:
             return True
 
         # Only do a geographic comparison if both values are available

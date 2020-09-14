@@ -1,4 +1,4 @@
-from django.db import DatabaseError
+from django.db.utils import DatabaseError
 
 
 class AmbiguityError(Exception):
