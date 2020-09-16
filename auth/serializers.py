@@ -2,16 +2,18 @@ from rest_framework import serializers
 from django.contrib import auth
 import time
 
+
 class TimestampField(serializers.Field):
     def to_representation(self, value):
         return int(time.mktime(value.timetuple()))
 
+
 class BasicUserSerializer(serializers.ModelSerializer):
-    date_joined_ts = TimestampField(
-        source='date_joined',
+    date_joined = TimestampField(
+        required=False,
     )
-    last_login_ts = TimestampField(
-        source='last_login',
+    last_login = TimestampField(
+        required=False,
     )
 
     class Meta:
@@ -21,10 +23,10 @@ class BasicUserSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'password',
-            'date_joined_ts',
-            'last_login_ts',
+            'date_joined',
+            'last_login',
         ]
-        read_only_fields = ['id', 'date_joined_ts', 'last_login']
+        read_only_fields = ['id', 'date_joined', 'last_login']
         extra_kwargs = {
             'email': {'write_only': True},
             'password': {'write_only': True, 'required': False},
