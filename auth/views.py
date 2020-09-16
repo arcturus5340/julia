@@ -7,7 +7,6 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
 import django_filters.rest_framework
 from django.contrib import auth
-from django.contrib.auth.models import User
 from django.utils import timezone
 
 from rest_framework import filters
@@ -22,6 +21,7 @@ from auth.models import Activation, EmailTemplates
 from auth.permissions import IsAdmin, IsOwner
 
 import uuid
+import re
 import smtplib
 
 
@@ -50,7 +50,6 @@ class UserViewSet(viewsets.ModelViewSet):
         return auth.get_user_model().objects.filter(groups__name='Verified Users').order_by('id')
 
     def get_serializer_class(self):
-        print(self.request.headers)
         if self.request.auth:
             return serializers.FullUserSerializer
         return serializers.BasicUserSerializer
@@ -71,7 +70,6 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-
         try:
             activation_key = Activation.objects.create(
                 user=user,
@@ -84,11 +82,15 @@ class UserViewSet(viewsets.ModelViewSet):
             filename = 'default_email_template.html'
         else:
             email_template = request.FILES['email_template']
+            if not re.search(r'{{\s*link\s*}}' , email_template.read().decode()):
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
             fs = FileSystemStorage(
                 location=settings.EMAIL_TEMPLATES_ROOT,
                 base_url=settings.EMAIL_TEMPLATES_URL,
             )
             filename = fs.save(email_template.name, email_template)
+            EmailTemplates.objects.create(template=filename)
 
         link = f'https://{request.get_host()}/api/v1/users/{user.id}/activation/{activation_key.key}'
         html_message = render_to_string(filename, {'link': link})
@@ -101,7 +103,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
-        if 'partial' not in kwargs and not {'username', 'email'}.issubset(request.data.keys()):
+        if 'partial' not in kwargs and not {'username', 'email', 'password'}.issubset(request.data.keys()):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         user = self.get_object()
 
@@ -124,6 +126,9 @@ class UserViewSet(viewsets.ModelViewSet):
                 filename = 'default_email_template.html'
             else:
                 email_template = request.FILES['email_template']
+                if not re.search(r'{{\s*link\s*}}', email_template.read().decode()):
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+
                 fs = FileSystemStorage(
                     location=settings.EMAIL_TEMPLATES_ROOT,
                     base_url=settings.EMAIL_TEMPLATES_URL,
@@ -158,6 +163,9 @@ class UserViewSet(viewsets.ModelViewSet):
                 filename = 'default_email_template.html'
             else:
                 email_template = request.FILES['email_template']
+                if not re.search(r'{{\s*link\s*}}', email_template.read().decode()):
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+
                 fs = FileSystemStorage(
                     location=settings.EMAIL_TEMPLATES_ROOT,
                     base_url=settings.EMAIL_TEMPLATES_URL,
@@ -205,6 +213,9 @@ class UserViewSet(viewsets.ModelViewSet):
             filename = 'default_email_template.html'
         else:
             email_template = request.FILES['email_template']
+            if not re.search(r'{{\s*link\s*}}', email_template.read().decode()):
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
             fs = FileSystemStorage(
                 location=settings.EMAIL_TEMPLATES_ROOT,
                 base_url=settings.EMAIL_TEMPLATES_URL,
@@ -227,7 +238,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if not activation_obj:
             return Response(status=status.HTTP_418_IM_A_TEAPOT)
 
-        user = self.get_object()
+        user = auth.get_user_model().objects.get(id=pk)
         if activation_obj.is_email_change:
             user.email = activation_obj.tmp_data
             user.save()
@@ -247,5 +258,5 @@ class UserViewSet(viewsets.ModelViewSet):
             activation_obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-        return Response(status=status.HTTP_418_IM_A_TEAPOT)
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
