@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 import django_filters.rest_framework
-
+from django.core import exceptions
 from rest_framework import filters, permissions, status, viewsets
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
@@ -13,6 +13,7 @@ from contest.permissions import ReadOnly
 
 from checker.core import Checker
 from django.utils import timezone
+from django.contrib import auth
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -31,6 +32,20 @@ class TaskViewSet(viewsets.ModelViewSet):
             return partial_response
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_create(self, serializer):
+        task = serializer.save()
+        test_cases = self.request.data.pop('test_cases', [])
+        test_case_serializer = serializers.TestCaseSerializer(data=test_cases, many=True)
+        test_case_serializer.is_valid(raise_exception=True)
+        test_case_serializer.save(task_id=task.id)
+
+    def perform_update(self, serializer):
+        task = serializer.save()
+        test_cases = self.request.data.pop('test_cases', [])
+        test_case_serializer = serializers.TestCaseSerializer(data=test_cases, many=True)
+        test_case_serializer.is_valid(raise_exception=True)
+        test_case_serializer.save(task_id=task.id)
 
 
 class ContestViewSet(viewsets.ModelViewSet):
@@ -51,7 +66,7 @@ class ContestViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['GET'], detail=True)
-    def result(self, request, *args, **kwargs):
+    def results(self, request, *args, **kwargs):
         queryset = Result.objects.order_by('id')
 
         page = self.paginate_queryset(queryset)
@@ -72,7 +87,10 @@ class ContestViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=True)
     def tasks(self, request, *args, **kwargs):
-        queryset = self.get_object().tasks.order_by('id')
+        if self.get_object().start_time > timezone.now():
+            queryset = []
+        else:
+            queryset = self.get_object().tasks.order_by('id')
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -113,7 +131,7 @@ class SolutionViewSet(viewsets.ModelViewSet):
         return Solution.objects.order_by('id')
 
     def create(self, request, *args, **kwargs):
-        if not Task.objects.filter(contest__start_time__lte=timezone.now(), id=int(request.POST['task'])).exists():
+        if not Task.objects.filter(contest__start_time__lte=timezone.now(), id=int(request.POST.get('task'))).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if 'code' not in request.FILES:
@@ -121,7 +139,6 @@ class SolutionViewSet(viewsets.ModelViewSet):
 
         if not {'lang', 'task'}.issubset(request.data):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -129,8 +146,11 @@ class SolutionViewSet(viewsets.ModelViewSet):
         if lang not in Checker.SUPPORTED_LANGUAGES:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        task_id = int(request.POST['task'])
-        task = Task.objects.get(id=task_id)
+        try:
+            task_id = int(request.POST['task'])
+            task = Task.objects.get(id=task_id)
+        except exceptions.ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         author = request.user
 
         code = request.FILES['code']
@@ -168,10 +188,18 @@ class SolutionViewSet(viewsets.ModelViewSet):
             if obj.attempts[task._order] <= 0:
                 if serialized_solution['status'] == 'OK':
                     obj.attempts[task._order] = (-obj.attempts[task._order] or 1)
-                    delta = round((timezone.now() - task.contest.start_time).total_seconds())
-                    obj.decision_time[task._order] = '{:02}:{:02}'.format(delta // 3600, (delta % 3600) // 60)
+                    obj.decision_time[task._order] = int((timezone.now() - task.contest.start_time).total_seconds())
                 elif serialized_solution['status'] != 'CE':
                     obj.attempts[task._order] -= 1
             obj.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        contest = instance.task.contest
+        if timezone.now() < contest.start_time + contest.duration:
+            serializer = serializers.SolutionSerializer(instance)
+        else:
+            serializer = serializers.SolutionDetailSerializer(instance, context={'request': self.request})
+        return Response(serializer.data)
