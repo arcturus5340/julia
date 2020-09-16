@@ -1,12 +1,20 @@
 from django.db import models
+from django.conf import settings
+from jsonfield import JSONField
+from unixtimestampfield.fields import UnixTimeStampField
 from django.contrib.auth.models import User
-
+import itertools
+from django.core.validators import MinLengthValidator
+from django.utils import timezone
 
 class Contest(models.Model):
     title = models.CharField(
         max_length=128,
+        validators=[MinLengthValidator(3)],
     )
     description = models.TextField()
+    start_time = UnixTimeStampField(auto_now=True)
+    duration = models.DurationField(default=timezone.timedelta(hours=2))
 
     class Meta:
         db_table = 'contest'
@@ -14,7 +22,8 @@ class Contest(models.Model):
 
 class Task(models.Model):
     title = models.CharField(
-        max_length=64
+        max_length=64,
+        validators=[MinLengthValidator(3)],
     )
     content = models.TextField()
     contest = models.ForeignKey(
@@ -23,18 +32,26 @@ class Task(models.Model):
         related_name='tasks',
     )
     ml = models.IntegerField(
-        default=256,
+        default=268435456,
     )
     tl = models.IntegerField(
         default=2,
     )
+    _order = models.IntegerField()
 
     def get_samples(self):
-        test_cases = TestCase.objects.filter(task=self)[:2]
+        try:
+            test_cases = itertools.islice(TestCase.objects.filter(task=self).values_list('input', 'output'), 2)
+            input, output = zip(*test_cases)
+        except ValueError:
+            input, output = [], []
         return {
-            'input': test_cases.values_list('input', flat=True),
-            'output': test_cases.values_list('output', flat=True),
+            'input': input,
+            'output': output,
         }
+
+    class Meta:
+        unique_together = ('contest', '_order')
 
 
 class TestCase(models.Model):
@@ -51,13 +68,8 @@ class TestCase(models.Model):
 
 class Solution(models.Model):
     author = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-    )
-    contest = models.ForeignKey(
-        Contest,
-        on_delete=models.CASCADE,
-        related_name='solutions',
     )
     task = models.ForeignKey(
         Task,
@@ -65,8 +77,25 @@ class Solution(models.Model):
     )
     status = models.CharField(
         max_length=2,
-        blank=True,
-        null=True,
-        default=None,
     )
-    file = models.FileField()
+    dispatch_time = models.DateTimeField(
+        auto_now_add=True
+    )
+    details = JSONField()
+    lang = models.TextField()
+    code = models.FilePathField(
+        path=settings.CODE_URL,
+    )
+
+
+class Result(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    contest = models.ForeignKey(
+        Contest,
+        on_delete=models.CASCADE,
+    )
+    attempts = JSONField()
+    decision_time = JSONField()
