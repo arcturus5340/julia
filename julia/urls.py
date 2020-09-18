@@ -8,6 +8,7 @@ import rest_framework_jwt.views
 
 import auth.urls
 import contest.urls
+from julia.static import secure_serve
 
 
 class ExtendableRouter(routers.DefaultRouter):
@@ -26,5 +27,6 @@ urlpatterns = [
     path('api/token-refresh', rest_framework_jwt.views.refresh_jwt_token),
 
     path('api/', include(router.urls)),
+
     # path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-] + static(settings.CODE_DIR, document_root=settings.CODE_ROOT)
+] + static(settings.CODE_DIR, document_root=settings.CODE_ROOT, view=secure_serve)
