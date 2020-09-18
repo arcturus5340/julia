@@ -4,13 +4,13 @@ from jsonfield import JSONField
 from unixtimestampfield.fields import UnixTimeStampField
 from django.contrib.auth.models import User
 import itertools
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
 
 class Contest(models.Model):
     title = models.CharField(
         max_length=128,
-        validators=[MinLengthValidator(3)],
+        validators=[MinLengthValidator(3), MaxLengthValidator(64)],
     )
     description = models.TextField()
     start_time = UnixTimeStampField(auto_now=True)
@@ -23,7 +23,7 @@ class Contest(models.Model):
 class Task(models.Model):
     title = models.CharField(
         max_length=64,
-        validators=[MinLengthValidator(3)],
+        validators=[MinLengthValidator(3), MaxLengthValidator(64)],
     )
     content = models.TextField()
     contest = models.ForeignKey(
@@ -42,13 +42,9 @@ class Task(models.Model):
     def get_samples(self):
         try:
             test_cases = itertools.islice(TestCase.objects.filter(task=self).values_list('input', 'output'), 2)
-            input, output = zip(*test_cases)
         except ValueError:
-            input, output = [], []
-        return {
-            'input': input,
-            'output': output,
-        }
+            test_cases = []
+        return list(test_cases)
 
     class Meta:
         unique_together = ('contest', '_order')
