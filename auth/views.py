@@ -92,7 +92,7 @@ class UserViewSet(viewsets.ModelViewSet):
             filename = fs.save(email_template.name, email_template)
             EmailTemplates.objects.create(template=filename)
 
-        link = f'https://{request.get_host()}/api/v1/users/{user.id}/activation/{activation_key.key}'
+        link = f'https://{request.get_host()}/api/users/{user.id}/activation/{activation_key.key}'
         html_message = render_to_string(filename, {'link': link})
 
         fail_msg = send_message('Registration', html_message, user)
@@ -136,7 +136,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 filename = fs.save(email_template.name, email_template)
                 EmailTemplates.objects.create(template=filename)
 
-            link = f'https://{request.get_host()}/api/v1/users/{user.id}/activation/{activation_key.key}'
+            link = f'https://{request.get_host()}/api/users/{user.id}/activation/{activation_key.key}'
             html_message = render_to_string(filename, {'link': link})
 
             fail_msg = send_message('Password Change', html_message, user)
@@ -173,7 +173,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 filename = fs.save(email_template.name, email_template)
                 EmailTemplates.objects.create(template=filename)
 
-            link = f'https://{request.get_host()}/api/v1/users/{user.id}/activation/{activation_key.key}'
+            link = f'https://{request.get_host()}/api/users/{user.id}/activation/{activation_key.key}'
             html_message = render_to_string(filename, {'link': link})
 
             fail_msg = send_message('Email Change', html_message, user, email)
