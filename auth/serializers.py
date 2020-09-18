@@ -11,9 +11,11 @@ class TimestampField(serializers.Field):
 class BasicUserSerializer(serializers.ModelSerializer):
     date_joined = TimestampField(
         required=False,
+        read_only=True,
     )
     last_login = TimestampField(
         required=False,
+        read_only=True,
     )
 
     class Meta:
@@ -26,7 +28,7 @@ class BasicUserSerializer(serializers.ModelSerializer):
             'date_joined',
             'last_login',
         ]
-        read_only_fields = ['id', 'date_joined', 'last_login']
+        read_only_fields = ['id']
         extra_kwargs = {
             'email': {'write_only': True},
             'password': {'write_only': True, 'required': False},
