@@ -404,3 +404,15 @@ class SolutionTestCase(APITestCase):
         response = client.get(f'/{settings.CODE_DIR}{self.create_solution_response.data["code"].split("/")[-1]}')
         print(f'/{settings.CODE_DIR}{self.create_solution_response.data["code"].split("/")[-1]}')
         print(response)
+
+    def test_speedy1(self):
+        data = File(open('contest/tests/src/one.ssf', 'rb'))
+        upload_file = SimpleUploadedFile('one.ssf', data.read(), content_type='multipart/form-data')
+
+        response = self.authorize(self.first_user).post(
+            '/api/solutions/',
+            data={'code': upload_file, 'lang': 'speedy1', 'task': 1},
+            content_disposition="attachment; filename=one.ssf"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['details']['status'][2], 'WA')

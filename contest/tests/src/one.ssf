@@ -1,0 +1,9 @@
+func main args
+var a input strtoint
+var b input strtoint
+if a 1 = b 1 = &
+` 3 output
+else
+` a b + output
+end
+end
