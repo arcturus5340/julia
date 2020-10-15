@@ -1,0 +1,18 @@
+func main args
+# fibonacci (example program)
+` 'enter number:' output input strtoint fibo1 output
+end
+
+func fibo1 a
+var op1 $1
+var op2 $1
+loop
+while a $1 >
+` op2 op1 op2 + set
+` op1 op2 op1 - set
+` a a $1 - set
+#continue
+#break
+end
+push op1
+end

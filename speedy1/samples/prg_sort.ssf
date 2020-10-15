@@ -1,0 +1,36 @@
+var nums1 $0 array
+
+func main args
+` 'enter null terminating integer array:' output
+var nums1 $0 array
+loop
+var curnum1 input strtoint
+while curnum1 $0 !=
+` nums1 curnum1 push_back
+end
+` 'sorted:' output
+` nums1 sort1
+end
+
+func sort1 ar1
+var i $0
+var l ar1 length $1 -
+loop
+while i l <
+if ar1 i [g] ar1 i $1 + [g] <
+var t1 ar1 i [g]
+` ar1 i ar1 i $1 + [g] [s]
+` ar1 i $1 + t1 [s]
+if i $0 !=
+` i i $1 - set
+else
+end
+else
+` i i $1 + set
+end
+end
+` i $-1 set
+for i l $1
+` ar1 i [g] output
+end
+end

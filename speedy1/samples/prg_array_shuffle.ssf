@@ -1,0 +1,21 @@
+func main args
+` 'enter null terminating integer array:' output
+var nums1 0 array
+loop
+var curnum1 input strtoint
+while curnum1 0 !=
+` nums1 curnum1 push_back
+end
+var nums2 0 array
+loop
+while nums1 length 0 >
+var r1 random nums1 length %
+` nums2 nums1 r1 [g] push_back
+` nums1 r1 r1 1 + remove
+end
+var i -1
+var len nums2 length 1 -
+for i len $1
+` nums2 i [g] output
+end
+end

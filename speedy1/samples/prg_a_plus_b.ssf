@@ -1,0 +1,8 @@
+func main args
+` 'input A and B:' output
+var a 0
+var b 0
+` a input strtoint set
+` b input strtoint set
+` a b + output
+end

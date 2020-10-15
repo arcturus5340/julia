@@ -1,0 +1,13 @@
+func main args
+` 'enter string:' output
+var a input clone
+var len a length 1 -
+var i -1
+for i len $1
+if a clone i [g] tochar 96 > a clone i [g] tochar 123 < &
+` a i a clone i [g] tochar 32 - [s]
+else
+end
+end
+` a output
+end

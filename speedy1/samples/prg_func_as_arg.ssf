@@ -1,0 +1,22 @@
+func main args
+` 'enter integer:' output
+var a input strtoint
+` +sqr_int1 a layer1 output
+` +sqr_float1 a layer1 output
+end
+
+func layer1 a b
+` b a call
+end
+
+func sqr_int1 a
+var ret1 0
+` ret1 a a * set
+push ret1
+end
+
+func sqr_float1 a
+var ret1 0
+` ret1 a inttofloat a inttofloat * set
+push ret1
+end

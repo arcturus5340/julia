@@ -1,0 +1,24 @@
+type point x y
+
+func main args
+var curPoint1 point
+var curPoint2 point
+` 'enter-first point coords.' output
+` curPoint1 point.x input strtoint set
+` curPoint1 point.y input strtoint set
+` 'enter-second point coords.' output
+` curPoint2 point.x input strtoint set
+` curPoint2 point.y input strtoint set
+var res1 point
+` res1 curPoint1 curPoint2 addpoints1 set
+` 'result of "add" function:' output
+` res1 point.x read output
+` res1 point.y read output
+end
+
+func addpoints1 a b
+var ret1 point
+` ret1 point.x a point.x read b point.x read + set
+` ret1 point.y a point.y read b point.y read + set
+push ret1
+end

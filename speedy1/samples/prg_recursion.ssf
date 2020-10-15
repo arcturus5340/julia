@@ -1,0 +1,17 @@
+func main args
+` 'enter number:' output
+` input strtoint factorial1 output
+end
+
+func factorial1 a
+var ret1 1
+if a 1 <=
+` ret1 1 set skip
+else
+push a
+` a 1 - factorial1
+pop a
+` a * ret1 rev-set
+end
+push ret1
+end

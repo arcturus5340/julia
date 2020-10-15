@@ -1,0 +1,21 @@
+func main args
+var m1 0
+var s1 0
+loop
+` s1 s1 1 + set
+if s1 60 =
+` s1 0 set
+` m1 m1 1 + set
+else
+end
+while m1 60 !=
+var str1 ''
+if m1 10 <
+` str1 str1 '0' s+ set
+else
+end
+` str1 str1 clone m1 inttostr clone ':' s+ s1 inttostr clone s+ s+ set
+` str1 output
+` 'pause' system
+end
+end

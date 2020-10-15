@@ -1,0 +1,20 @@
+func main args
+` 'enter string: ' output
+var str1 input
+` str1 ispalindrome1 output
+end
+
+func ispalindrome1 a
+var ret1 $1
+var i $-1
+var len a length $1 -
+var len2 len $1 | $1 - $2 /
+for i len2 $1
+if a i [g] a len i - [g] !=
+` ret1 $0 set
+break
+else
+end
+end
+push ret1
+end

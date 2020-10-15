@@ -1,0 +1,74 @@
+cmds
+-2 undefined
+-1 empty
+0 var var_id var_value (replace with 'set')
+1 while break_line condition *
+2 function_intro args_vars
+3 set (`) var value *
+4 type records_count
+5 break break_line
+6 loop_end_or_else_or_goto meaning: jump *
+7 call absorbs last element in stack
+8 if else+1 condition *
+9 push args_vars *
+10 pop args_vars *
+11 type param_count (introducing: array)
+12 func_exit *
+13 for break_line from to step
+14 :
+
+types
+-1 - undefined
+0 - var *
+1 - function *
+2 - int *
+3 - float *
+4 - string *
+5 - array
+6 - record *
+7 - single
+8 - boolean *
+9 - array offset *
+10 - function as argument *
+
+internal functions
+-1 output element
+-2 input element
+-3 > op1 op2
+-4 + op1 op2
+-5 - op1 op2
+-6 = op1 op2
+-7 array array_size
+-8 skip
+-9 strtoint string
+-10 length array_or_string
+-11 [g] array index
+-12 ` args
+-13 [s] array index value
+-14 system string
+-15 call var
+-16 clone var
+-17 push_back array value
+-18 s+ string1 string2
+-19 * op1 op2
+-20 / op1 op2
+-21 % op1 op2
+-22 != op1 op2
+-23 & op1 op2
+-24 | op1 op2
+-25 ^ op1 op2
+-26 ! op1
+-27 >= op1 op2
+-28 < op1 op2
+-29 <= op1 op2
+-30 remove array index1 index2
+-31 substr string from length
+-32 inttostr int
+-33 .read record
+-34 insert array position value
+-35 indexof string substring
+-36 rev-set value var
+-37 tochar str
+-38 inttofloat value
+-39 floattoint value
+-40 random
