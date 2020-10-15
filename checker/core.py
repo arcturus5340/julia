@@ -32,6 +32,7 @@ class Checker:
         'cpp14': '{0}.exec',
         'java': 'java Main Main.class',
         'nasm': '{0}.exec',
+        'speedy1': 'speedy1/speedy1 {0}',
         'pabc': 'mono {0}.exe',
         'php': 'php {0}',
         'python2': 'python2 {0}',
