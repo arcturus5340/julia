@@ -2,3 +2,6 @@
 venv/
 julia/config.yml
 *.pyc
+auth/migrations/
+contest/migrations/
+rating/migrations/
