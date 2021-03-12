@@ -7,6 +7,7 @@ import itertools
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
 
+
 class Contest(models.Model):
     title = models.CharField(
         max_length=128,

@@ -13,7 +13,6 @@ from contest.permissions import ReadOnly
 
 from checker.core import Checker
 from django.utils import timezone
-from django.contrib import auth
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -134,7 +133,8 @@ class SolutionViewSet(viewsets.ModelViewSet):
         return Solution.objects.order_by('id')
 
     def create(self, request, *args, **kwargs):
-        if not Task.objects.filter(contest__start_time__lte=timezone.now(), id=int(request.POST.get('task'))).exists():
+        task_id = int(request.POST.get('task'))
+        if not Task.objects.filter(contest__start_time__lte=timezone.now(), id=task_id).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if 'code' not in request.FILES:
@@ -142,6 +142,7 @@ class SolutionViewSet(viewsets.ModelViewSet):
 
         if not {'lang', 'task'}.issubset(request.data):
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -150,7 +151,6 @@ class SolutionViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            task_id = int(request.POST['task'])
             task = Task.objects.get(id=task_id)
         except exceptions.ObjectDoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)

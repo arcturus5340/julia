@@ -3,14 +3,15 @@ from contest.models import Contest, Task, Solution, Result, TestCase
 from django.conf import settings
 import time
 import datetime
-from django.utils import datetime_safe
+
 
 class TimestampDurationInSecondsField(serializers.DurationField):
     def to_native(self, value):
-        return value*1000
+        return value * 1000
 
     def to_representation(self, value):
         return int(value.total_seconds())
+
 
 class TimestampDateTimeField(serializers.IntegerField):
     def to_native(self, value):
@@ -40,7 +41,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields  = ['id', 'title', 'content', 'contest', 'tl', 'ml', 'samples', 'test_cases', '_order']
+        fields = ['id', 'title', 'content', 'contest', 'tl', 'ml', 'samples', 'test_cases', '_order']
         read_only_fields = ['id', 'samples']
         extra_kwargs = {
             'samples': {'source': 'get_samples'},
@@ -72,6 +73,7 @@ class ContestSerializer(serializers.ModelSerializer):
             'title': {'required': True},
             'description': {'required': True},
         }
+
 
 class SolutionSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(
