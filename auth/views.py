@@ -233,7 +233,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(methods=['POST'], detail=True, url_path='activation/(?P<key>[0-9a-f]{32})')
+    @action(methods=['GET'], detail=True, url_path='activation/(?P<key>[0-9a-f]{32})')
     def activation(self, request, pk, key):
         activation_obj = Activation.objects.filter(user__id=pk, key=key).first()
         if not activation_obj:
