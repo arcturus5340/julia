@@ -67,9 +67,12 @@ class ContestViewSet(viewsets.ModelViewSet):
     @action(methods=['GET'], detail=True)
     def results(self, request, pk, *args, **kwargs):
         queryset = Result.objects.filter(contest_id=pk).order_by('id')
-        queryset = sorted(queryset, key=lambda result: (sum(x for x in result.decision_time if x)))
-        queryset = sorted(queryset, key=lambda result: (sum(x for x in result.attempts if x > 0)))
-        queryset = sorted(queryset, key=lambda result: (len([x for x in result.attempts if x > 0])), reverse=True)
+        # TODO: Optimize sorting
+        queryset = sorted(queryset, key=lambda result: (
+            -len([x for x in result.attempts if x > 0]),
+            sum(x for x in result.attempts if x > 0),
+            sum(x for x in result.decision_time if x),
+        ))
 
         page = self.paginate_queryset(queryset)
         if page is not None:
