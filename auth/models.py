@@ -5,6 +5,7 @@ from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 
+
 class Activation(models.Model):
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
@@ -27,6 +28,9 @@ class Activation(models.Model):
         blank=True,
         null=True,
     )
+
+    class Meta:
+        db_table = 'auth_activation'
 
 
 class EmailTemplates(models.Model):
