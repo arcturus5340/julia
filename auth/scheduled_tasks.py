@@ -13,7 +13,7 @@ def delete_old_email_templates():
 
 
 def delete_unverified_users():
-    User.objects.exclude(groups__name='Verified Users').delete()
+    auth.get_user_model().objects.exclude(groups__name='Verified Users').delete()
 
 
 def start():
