@@ -42,7 +42,6 @@ def send_message(subject, html_message, user, email=None):
 class UserViewSet(viewsets.ModelViewSet):
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend, filters.SearchFilter]
     parser_classes = (MultiPartParser, JSONParser)
-    # queryset = auth.get_user_model().objects.order_by('id')
     filterset_fields = ['username']
     search_fields = ['username']
 
@@ -50,7 +49,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return auth.get_user_model().objects.filter(groups__name='Verified Users').order_by('id')
 
     def get_serializer_class(self):
-        if self.request.auth:
+        if self.request.user.is_authenticated:
             return serializers.FullUserSerializer
         return serializers.BasicUserSerializer
 
@@ -82,7 +81,7 @@ class UserViewSet(viewsets.ModelViewSet):
             filename = 'default_email_template.html'
         else:
             email_template = request.FILES['email_template']
-            if not re.search(r'{{\s*link\s*}}' , email_template.read().decode()):
+            if not re.search(r'{{\s*link\s*}}', email_template.read().decode()):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
             fs = FileSystemStorage(
@@ -142,9 +141,10 @@ class UserViewSet(viewsets.ModelViewSet):
             fail_msg = send_message('Password Change', html_message, user)
             if fail_msg:
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # TODO: Return status 201 ???
 
         email = request.data.pop('email', None)
-        if isinstance(email, list): email = email.pop() # QueryDict handle
+        if isinstance(email, list): email = email.pop()  # TODO: QueryDict handle
         if email:
             if Activation.objects.filter(user=user, is_email_change=True).exists():
                 return Response(status=status.HTTP_429_TOO_MANY_REQUESTS)
@@ -179,6 +179,7 @@ class UserViewSet(viewsets.ModelViewSet):
             fail_msg = send_message('Email Change', html_message, user, email)
             if fail_msg:
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # TODO: Return status 201 ???
 
         response = super().update(request, *args, **kwargs)
         if 'partial' in kwargs:

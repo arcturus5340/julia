@@ -43,6 +43,7 @@ class BasicUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+
 class FullUserSerializer(BasicUserSerializer):
     class Meta(BasicUserSerializer.Meta):
         extra_kwargs = BasicUserSerializer.Meta.extra_kwargs.copy()
