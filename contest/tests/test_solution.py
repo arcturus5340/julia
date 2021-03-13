@@ -8,37 +8,38 @@ from django.contrib import auth
 from django.contrib.auth.models import Group
 from contest.models import Contest, Task, TestCase, Solution
 
-import os
 import datetime
 
+
 class SolutionTestCase(APITestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         verified_users_group = Group.objects.create(name='Verified Users')
-        self.first_user = auth.get_user_model().objects.create(
+        cls.first_user = auth.get_user_model().objects.create(
             username='TestUsername1',
             email='TestEmail1',
         )
-        self.first_user.set_password('TestPassword1')
-        self.first_user.text_password = 'TestPassword1'
-        self.first_user.groups.add(verified_users_group)
-        self.first_user.save()
-        self.second_user = auth.get_user_model().objects.create(
+        cls.first_user.set_password('TestPassword1')
+        cls.first_user.text_password = 'TestPassword1'
+        cls.first_user.groups.add(verified_users_group)
+        cls.first_user.save()
+        cls.second_user = auth.get_user_model().objects.create(
             username='TestUsername2',
             email='TestEmail2',
         )
-        self.second_user.set_password('TestPassword2')
-        self.second_user.text_password = 'TestPassword2'
-        self.second_user.groups.add(verified_users_group)
-        self.second_user.save()
-        self.admin_user = auth.get_user_model().objects.create(
+        cls.second_user.set_password('TestPassword2')
+        cls.second_user.text_password = 'TestPassword2'
+        cls.second_user.groups.add(verified_users_group)
+        cls.second_user.save()
+        cls.admin_user = auth.get_user_model().objects.create(
             username='TestAdminUsername',
             email='TestAdminEmail',
             is_staff=True,
         )
-        self.admin_user.set_password('TestAdminPassword')
-        self.admin_user.text_password = 'TestAdminPassword'
-        self.admin_user.groups.add(verified_users_group)
-        self.admin_user.save()
+        cls.admin_user.set_password('TestAdminPassword')
+        cls.admin_user.text_password = 'TestAdminPassword'
+        cls.admin_user.groups.add(verified_users_group)
+        cls.admin_user.save()
         contest = Contest.objects.create(
             title='TestContest',
             description='TestDescription',
@@ -68,17 +69,18 @@ class SolutionTestCase(APITestCase):
             input='1 1',
             output='2',
         )
-        self.create_solution_response = self.create_solution()
-        self.list_result_keys = ('id', 'author', 'task', 'status', 'dispatch_time')
-        self.retrieve_result_keys = ('id', 'author', 'task', 'status', 'dispatch_time')
+        cls.create_solution_response = cls.create_solution(cls)
+        cls.list_result_keys = ('id', 'author', 'task', 'status', 'dispatch_time')
+        cls.retrieve_result_keys = ('id', 'author', 'task', 'status', 'dispatch_time')
 
     def tearDown(self):
-        for file in os.listdir(settings.CODE_ROOT):
-            if file.startswith('TestUsername1'):
-                os.remove(f'{settings.CODE_ROOT}{file}')
+        # for file in os.listdir(settings.CODE_ROOT):
+        #     if file.startswith('TestUsername1'):
+        #         os.remove(f'{settings.CODE_ROOT}{file}')
+        pass
 
-    @staticmethod
-    def authorize(user):
+    @classmethod
+    def authorize(cls, user):
         sign_in_data = {
             'username': user.username,
             'password': user.text_password,
@@ -90,11 +92,11 @@ class SolutionTestCase(APITestCase):
         client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
         return client
 
-    def create_solution(self):
+    def create_solution(cls):
         data = File(open('contest/tests/src/one.py', 'rb'))
         upload_file = SimpleUploadedFile('one.py', data.read(), content_type='multipart/form-data')
 
-        response = self.authorize(self.first_user).post(
+        response = cls.authorize(cls.first_user).post(
             '/api/solutions/',
             data={'code': upload_file, 'lang': 'python3', 'task': 1},
             content_disposition="attachment; filename=one.py"
@@ -225,7 +227,7 @@ class SolutionTestCase(APITestCase):
             content_disposition="attachment; filename=one.py"
         )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['details'], expected_response['details'])
 
     def test_unauthorized_retrieve(self):
@@ -400,10 +402,7 @@ class SolutionTestCase(APITestCase):
 
     def test_code_fetch_during_contest(self):
         client = self.authorize(self.first_user)
-        print(self.create_solution_response)
         response = client.get(f'/{settings.CODE_DIR}{self.create_solution_response.data["code"].split("/")[-1]}')
-        print(f'/{settings.CODE_DIR}{self.create_solution_response.data["code"].split("/")[-1]}')
-        print(response)
 
     def test_speedy1(self):
         data = File(open('contest/tests/src/one.ssf', 'rb'))
@@ -414,5 +413,5 @@ class SolutionTestCase(APITestCase):
             data={'code': upload_file, 'lang': 'speedy1', 'task': 1},
             content_disposition="attachment; filename=one.ssf"
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['details']['status'][2], 'WA')
