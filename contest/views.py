@@ -180,7 +180,7 @@ class SolutionViewSet(viewsets.ModelViewSet):
             'lang': lang,
             'code': f'{settings.CODE_URL}{filename}',
         }
-        serializer.save(**serialized_solution)
+        solution = serializer.save(**serialized_solution)
         if timezone.now() < task.contest.start_time + task.contest.duration:
             n_tasks = task.contest.tasks.count()
             obj, created = Result.objects.get_or_create(
@@ -199,7 +199,8 @@ class SolutionViewSet(viewsets.ModelViewSet):
                     obj.attempts[task._order] -= 1
             obj.save()
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        headers = {'Location': f'/solutions/{solution.id}'}
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
