@@ -9,6 +9,7 @@ from django.contrib.auth.models import Group
 from contest.models import Contest, Task, TestCase, Solution
 
 import datetime
+import os
 
 
 class SolutionTestCase(APITestCase):
@@ -74,10 +75,9 @@ class SolutionTestCase(APITestCase):
         cls.retrieve_result_keys = ('id', 'author', 'task', 'status', 'dispatch_time')
 
     def tearDown(self):
-        # for file in os.listdir(settings.CODE_ROOT):
-        #     if file.startswith('TestUsername1'):
-        #         os.remove(f'{settings.CODE_ROOT}{file}')
-        pass
+        for file in os.listdir(settings.CODE_ROOT):
+            if file.startswith('TestUsername1'):
+                os.remove(f'{settings.CODE_ROOT}{file}')
 
     @classmethod
     def authorize(cls, user):

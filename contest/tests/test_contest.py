@@ -10,7 +10,8 @@ import datetime
 
 
 class ContestTestCase(APITestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         verified_users_group = Group.objects.create(name='Verified Users')
         contest1 = Contest.objects.create(
             title='TestTitle1',
@@ -37,25 +38,25 @@ class ContestTestCase(APITestCase):
             output='0',
             task=task,
         )
-        self.user =auth.get_user_model().objects.create(
+        cls.user =auth.get_user_model().objects.create(
             username='TestUsername',
             email='TestEmail',
         )
-        self.user.set_password('TestPassword')
-        self.user.text_password = 'TestPassword'
-        self.user.groups.add(verified_users_group)
-        self.user.save()
-        self.admin = auth.get_user_model().objects.create(
+        cls.user.set_password('TestPassword')
+        cls.user.text_password = 'TestPassword'
+        cls.user.groups.add(verified_users_group)
+        cls.user.save()
+        cls.admin = auth.get_user_model().objects.create(
             username='TestAdminUsername',
             email='TestAdminEmail',
             is_staff=True,
         )
-        self.admin.set_password('TestAdminPassword')
-        self.admin.text_password = 'TestAdminPassword'
-        self.admin.groups.add(verified_users_group)
-        self.admin.save()
-        self.result_keys = ('id', 'title', 'description', 'tasks', 'start_time', 'duration')
-        self.task_result_keys = ('id', 'title', 'content', 'contest', 'tl', 'ml', 'samples')
+        cls.admin.set_password('TestAdminPassword')
+        cls.admin.text_password = 'TestAdminPassword'
+        cls.admin.groups.add(verified_users_group)
+        cls.admin.save()
+        cls.result_keys = ('id', 'title', 'description', 'tasks', 'start_time', 'duration')
+        cls.task_result_keys = ('id', 'title', 'content', 'contest', 'tl', 'ml', 'samples')
 
     @staticmethod
     def authorize(user):
