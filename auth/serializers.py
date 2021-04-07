@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from django.contrib import auth
+from django.core import exceptions
+import django.contrib.auth.password_validation as validators
 import time
 
 
@@ -42,6 +44,21 @@ class BasicUserSerializer(serializers.ModelSerializer):
         user.set_password(validates_data['password'])
         user.save()
         return user
+
+    def validate(self, data):
+        user = auth.get_user_model()(**data)
+        password = data.get('password')
+        errors = dict()
+        try:
+            validators.validate_password(password=password, user=user)
+
+        except exceptions.ValidationError as e:
+            errors['password'] = list(e.messages)
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        return super(BasicUserSerializer, self).validate(data)
 
 
 class FullUserSerializer(BasicUserSerializer):
