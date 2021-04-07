@@ -17,6 +17,9 @@ class Contest(models.Model):
     start_time = UnixTimeStampField(auto_now=True)
     duration = models.DurationField(default=timezone.timedelta(hours=2))
 
+    def __str__(self):
+        return f"{self.title}"
+
     class Meta:
         db_table = 'contest'
 
@@ -47,8 +50,12 @@ class Task(models.Model):
             test_cases = []
         return list(test_cases)
 
+    def __str__(self):
+        return f"{self.title}"
+
     class Meta:
         unique_together = ('contest', '_order')
+        ordering = ('_order', )
 
 
 class TestCase(models.Model):
@@ -58,6 +65,9 @@ class TestCase(models.Model):
         Task,
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return f"{self.input}"
 
     class Meta:
         db_table = 'contest_test_case'
