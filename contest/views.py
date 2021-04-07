@@ -3,7 +3,7 @@ from django.core.files.storage import FileSystemStorage
 import django_filters.rest_framework
 from django.core import exceptions
 from rest_framework import filters, permissions, status, viewsets
-from rest_framework.parsers import JSONParser, MultiPartParser
+from rest_framework.parsers import JSONParser, MultiPartParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
@@ -96,7 +96,6 @@ class ContestViewSet(viewsets.ModelViewSet):
             queryset = []
         else:
             queryset = self.get_object().tasks.order_by('id')
-
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = serializers.TaskSerializer(page, many=True)
@@ -107,7 +106,7 @@ class ContestViewSet(viewsets.ModelViewSet):
 
 
 class SolutionViewSet(viewsets.ModelViewSet):
-    parser_classes = (MultiPartParser, JSONParser)
+    parser_classes = (MultiPartParser, JSONParser, FileUploadParser)
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_fields = ['author', 'task', 'status']
 
@@ -136,7 +135,7 @@ class SolutionViewSet(viewsets.ModelViewSet):
         return Solution.objects.order_by('id')
 
     def create(self, request, *args, **kwargs):
-        task_id = int(request.POST.get('task'))
+        task_id = int(request.data.get('task'))
         if not Task.objects.filter(contest__start_time__lte=timezone.now(), id=task_id).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -149,7 +148,7 @@ class SolutionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        lang = request.POST['lang']
+        lang = request.data['lang']
         if lang not in Checker.SUPPORTED_LANGUAGES:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -164,7 +163,7 @@ class SolutionViewSet(viewsets.ModelViewSet):
             location=settings.CODE_ROOT,
             base_url=settings.CODE_URL,
         )
-        filename = fs.save(f'{author.username}_{timezone.now().strftime("%Y.%m.%d_%H.%M.%S")}', code)
+        filename = fs.save(f'{author.username}_{task.id}_{timezone.now().strftime("%Y.%m.%d_%H.%M.%S")}', code)
 
         checker = Checker(f'{settings.CODE_URL}{filename}', lang, tl=task.tl, ml=task.ml)
         test_cases = TestCase.objects.filter(task=task).values_list('input', 'output')

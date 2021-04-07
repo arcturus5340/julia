@@ -16,6 +16,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
+
 from auth import serializers
 from auth.models import Activation, EmailTemplates
 from auth.permissions import IsAdmin, IsOwner
@@ -188,26 +189,25 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def reset_password(self, request, *args, **kwargs):
-        if 'password' not in request.data or not ({'username', 'email'} & request.data.keys()):
+        if not ({'username', 'email'} & request.data.keys()):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         user = auth.get_user_model().objects.filter(
             Q(username=request.data.get('username')) | Q(email=request.data.get('email'))
         ).first()
         if not user:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        if Activation.objects.filter(user=user, is_password_change=True).exists():
+        if Activation.objects.filter(user=user).exists():
             return Response(status=status.HTTP_429_TOO_MANY_REQUESTS)
 
         try:
             activation_key = Activation.objects.create(
                 user=user,
                 key=uuid.uuid4().hex,
-                is_password_change=True,
-                tmp_data=make_password(request.data['password']),
+                tmp_data='Password Reset',
             )
-        except Exception:
+        except Exception as e:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         if 'email_template' not in request.data:
@@ -224,13 +224,28 @@ class UserViewSet(viewsets.ModelViewSet):
             filename = fs.save(email_template.name, email_template)
             EmailTemplates.objects.create(template=filename)
 
-        link = f'https://{request.get_host()}/activation/{user.username}/{activation_key.key}'
+        link = f'{user.id}_{activation_key.key}'
         html_message = render_to_string(filename, {'link': link})
 
-        fail_msg = send_message('Password Change', html_message, user)
+        fail_msg = send_message('Password Reset', html_message, user)
         if fail_msg:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['POST'], detail=True, url_path='reset_password/(?P<key>[0-9a-f]{32})/confirm')
+    def reset_password_confirm(self, request, pk, key):
+        if 'password' not in request.data.keys():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        activation_obj = Activation.objects.filter(user__id=pk, key=key).first()
+        if not activation_obj:
+            return Response(status=status.HTTP_418_IM_A_TEAPOT)
+
+        user = auth.get_user_model().objects.get(id=pk)
+        user.password = make_password(request.data['password'])
+        user.save()
+        activation_obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['GET'], detail=True, url_path='activation/(?P<key>[0-9a-f]{32})')

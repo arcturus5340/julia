@@ -6,13 +6,14 @@ from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
 from django.contrib import auth
 from django.contrib.auth.models import Group
-from contest.models import Contest, Task, TestCase, Solution
+from contest.models import Contest, Task, TestCase, Solution, Result
 
 import datetime
 import os
 
 
 class SolutionTestCase(APITestCase):
+
     @classmethod
     def setUpTestData(cls):
         verified_users_group = Group.objects.create(name='Verified Users')
@@ -70,7 +71,7 @@ class SolutionTestCase(APITestCase):
             input='1 1',
             output='2',
         )
-        cls.create_solution_response = cls.create_solution(cls)
+        cls.create_solution_response = cls.create_solution()
         cls.list_result_keys = ('id', 'author', 'task', 'status', 'dispatch_time')
         cls.retrieve_result_keys = ('id', 'author', 'task', 'status', 'dispatch_time')
 
@@ -92,6 +93,7 @@ class SolutionTestCase(APITestCase):
         client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
         return client
 
+    @classmethod
     def create_solution(cls):
         data = File(open('contest/tests/src/one.py', 'rb'))
         upload_file = SimpleUploadedFile('one.py', data.read(), content_type='multipart/form-data')

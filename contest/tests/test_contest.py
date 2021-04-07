@@ -189,7 +189,6 @@ class ContestTestCase(APITestCase):
 
         client = self.authorize(self.admin)
         response = client.post('/api/contests/', data=new_contest_data, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Contest.objects.count(), 4)
         self.assertEqual(Contest.objects.get(id=4).title, 'NewTestTitle')
