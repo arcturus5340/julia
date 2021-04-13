@@ -163,7 +163,15 @@ class SolutionViewSet(viewsets.ModelViewSet):
             location=settings.CODE_ROOT,
             base_url=settings.CODE_URL,
         )
-        filename = fs.save(f'{author.username}_{task.id}_{timezone.now().strftime("%Y.%m.%d_%H.%M.%S")}', code)
+        if lang == 'c':
+            title = f'{author.username}_{task.id}_{timezone.now().strftime("%Y.%m.%d_%H.%M.%S")}.c'
+        elif lang.startswith('cpp'):
+            title = f'{author.username}_{task.id}_{timezone.now().strftime("%Y.%m.%d_%H.%M.%S")}.cpp'
+        elif lang == 'pabc':
+            title = f'{author.username}_{task.id}_{timezone.now().strftime("%Y.%m.%d_%H.%M.%S")}.pas'
+        else:
+            title = f'{author.username}_{task.id}_{timezone.now().strftime("%Y.%m.%d_%H.%M.%S")}'
+        filename = fs.save(title, code)
 
         checker = Checker(f'{settings.CODE_URL}{filename}', lang, tl=task.tl, ml=task.ml)
         test_cases = TestCase.objects.filter(task=task).values_list('input', 'output')
@@ -180,7 +188,7 @@ class SolutionViewSet(viewsets.ModelViewSet):
             'code': f'{settings.CODE_URL}{filename}',
         }
         solution = serializer.save(**serialized_solution)
-        if timezone.now() < task.contest.start_time + task.contest.duration:
+        if (timezone.now() < task.contest.start_time + task.contest.duration) and (serialized_solution['status'] != 'CE'):
             n_tasks = task.contest.tasks.count()
             obj, created = Result.objects.get_or_create(
                 user=author,
@@ -194,7 +202,7 @@ class SolutionViewSet(viewsets.ModelViewSet):
                 if serialized_solution['status'] == 'OK':
                     obj.attempts[task._order] = (-obj.attempts[task._order] or 1)
                     obj.decision_time[task._order] = int((timezone.now() - task.contest.start_time).total_seconds())
-                elif serialized_solution['status'] != 'CE':
+                else:
                     obj.attempts[task._order] -= 1
             obj.save()
 
