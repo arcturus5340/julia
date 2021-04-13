@@ -1,1 +1,0 @@
-web: gunicorn julia.wsgi
