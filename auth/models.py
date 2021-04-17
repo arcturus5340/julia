@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator, MaxLengthValidator
-from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.utils.translation import gettext_lazy as _
 
 
@@ -13,6 +13,7 @@ class Activation(models.Model):
     )
     key = models.CharField(
         max_length=32,
+        unique=True,
     )
     created = models.DateTimeField(
         auto_now=True,
@@ -46,14 +47,20 @@ class EmailTemplates(models.Model):
 class User(AbstractUser):
     username = models.CharField(
         'username',
-        max_length=150,
+        max_length=32,
         unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
-        validators=[UnicodeUsernameValidator(), MinLengthValidator(3), MaxLengthValidator(32)],
+        help_text=_('Required. 32 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[ASCIIUsernameValidator(), MinLengthValidator(3), MaxLengthValidator(32)],
         error_messages={
             'unique': 'A user with that username already exists.',
         },
     )
+    email = models.EmailField(
+        _('email address'),
+        blank=True,
+        unique=True,
+    )
+
 
     def __str__(self):
         return f"{self.username}"

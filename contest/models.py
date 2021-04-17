@@ -6,15 +6,19 @@ from django.contrib.auth.models import User
 import itertools
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils import timezone
+from datetime import datetime
 
 
 class Contest(models.Model):
     title = models.CharField(
         max_length=128,
+        unique=True,
         validators=[MinLengthValidator(3), MaxLengthValidator(64)],
     )
-    description = models.TextField()
-    start_time = UnixTimeStampField(auto_now=True)
+    description = models.TextField(
+        unique=True,
+    )
+    start_time = UnixTimeStampField(default=datetime.now)
     duration = models.DurationField(default=timezone.timedelta(hours=2))
 
     def __str__(self):
@@ -27,9 +31,12 @@ class Contest(models.Model):
 class Task(models.Model):
     title = models.CharField(
         max_length=64,
+        unique=True,
         validators=[MinLengthValidator(3), MaxLengthValidator(64)],
     )
-    content = models.TextField()
+    content = models.TextField(
+        unique=True,
+    )
     contest = models.ForeignKey(
         Contest,
         on_delete=models.PROTECT,
@@ -71,6 +78,7 @@ class TestCase(models.Model):
 
     class Meta:
         db_table = 'contest_test_case'
+        unique_together = ('input', 'output', 'task')
 
 
 class Solution(models.Model):
@@ -106,3 +114,6 @@ class Result(models.Model):
     )
     attempts = JSONField()
     decision_time = JSONField()
+
+    class Meta:
+        unique_together = ('user', 'contest')
