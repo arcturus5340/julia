@@ -78,6 +78,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 EMAIL_TEMPLATES_URL = f'{MEDIA_URL}email_templates/'
 EMAIL_TEMPLATES_ROOT = f'{MEDIA_ROOT}email_templates/'
 
+TEMPLATES_URL = 'templates/'
+TEMPLATES_ROOT = os.path.join(BASE_DIR, TEMPLATES_URL)
+
 CODE_DIR = 'code/'
 CODE_URL = f'{MEDIA_URL}code/'
 CODE_ROOT = f'{MEDIA_ROOT}code/'
@@ -85,7 +88,7 @@ CODE_ROOT = f'{MEDIA_ROOT}code/'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [EMAIL_TEMPLATES_ROOT],
+        'DIRS': [EMAIL_TEMPLATES_ROOT, TEMPLATES_ROOT],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -225,3 +228,70 @@ with open("julia/config.yml", "r") as yml_file:
         'CAPTURE_OUTGOING_REQUESTS': False,
         'IDENTIFY_USER': identifyUser,
     }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s %(levelname)-8s [%(name)-12s]: %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(levelname)-8s [%(name)-12s]: %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': 'julia.log'
+        },
+        'mail_admins': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.security.csrf': {
+            'handlers': ['file'],
+            'propagate': True,
+        },
+        'django.security.DisallowedHost': {
+            'handlers': ['file'],
+            'propagate': True,
+        },
+        'django.security.DisallowedRedirect': {
+            'handlers': ['file'],
+            'propagate': True,
+        },
+        'django.security.RequestDataTooBig': {
+            'handlers': ['file'],
+            'propagate': True,
+        },
+        'django.security.SuspiciousFileOperation': {
+            'handlers': ['file'],
+            'propagate': True,
+        },
+        'django.security.TooManyFieldsSent': {
+            'handlers': ['file'],
+            'propagate': True,
+        },
+
+    },
+}
