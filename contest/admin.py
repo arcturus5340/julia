@@ -1,14 +1,20 @@
 from django.contrib import admin
+from django.forms import widgets
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.html import format_html
 from .models import Contest, Task, TestCase
+from unixtimestampfield.fields import UnixTimeStampField
 
 
 @admin.register(Contest)
 class ContestAdmin(admin.ModelAdmin):
     list_display = ('title', 'description', 'start_time', 'duration', 'tasks')
     search_fields = ('title', 'description')
+
+    formfield_overrides = {
+        UnixTimeStampField: { 'widget': widgets.DateTimeInput(attrs={'type': 'datetime-local'}) },
+    }
 
     def tasks(self, obj):
         count = Task.objects.filter(contest=obj).count()
