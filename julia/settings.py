@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'rating.apps.RatingConfig',
     'rest_framework',
     'rest_framework.authtoken',
+    'social_django',
+    'rest_social_auth',
     'corsheaders',
 ]
 
@@ -60,15 +62,27 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'moesifdjango.middleware.moesif_middleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CONN_MAX_AGE = 60
+
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 AUTH_USER_MODEL = 'custom_auth.User'
 
 AUTHENTICATION_BACKENDS = [
     'auth.backends.VerificationBackend',
+    'social_core.backends.github.GithubOAuth2'
 ]
+
+with open("julia/config.yml", "r") as yml_file:
+    config = yaml.load(yml_file, Loader=yaml.Loader)
+    SOCIAL_AUTH_GITHUB_KEY = config['social']['github']['key']
+    SOCIAL_AUTH_GITHUB_SECRET = config['social']['github']['secret']
 
 ROOT_URLCONF = 'julia.urls'
 
@@ -96,6 +110,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
