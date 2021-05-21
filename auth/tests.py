@@ -31,8 +31,8 @@ class UserTestCase(APITestCase):
         )
         self.second_user.set_password('TestPassword2')
         self.second_user.text_password = 'TestPassword2'
-        self.second_user.save()
         self.second_user.groups.add(verified_users_group)
+        self.second_user.save()
 
         self.admin_user = auth.get_user_model().objects.create(
             username='TestAdminUsername',
@@ -56,7 +56,7 @@ class UserTestCase(APITestCase):
 
         client = APIClient()
         response = client.post('/api/token-auth', data=sign_in_data, format='json')
-        token = response.data['token']
+        token = response.data['access']
         client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
         return client
 
@@ -114,7 +114,7 @@ class UserTestCase(APITestCase):
 
     def test_list_search(self):
         client = APIClient()
-        response = client.get('/api/users/?search=1')
+        response = client.get('/api/users/?search={}'.format(self.first_user.username))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 1)
@@ -124,7 +124,7 @@ class UserTestCase(APITestCase):
         upload_file = SimpleUploadedFile('email_template.html', data.read(), content_type='multipart/form-data')
         sign_up_data = {
             'username': 'SignUpTestUsername',
-            'password': 'SignUpTestPassword',
+            'password': 'st@ngpa$$wort',
             'email': 'signup@test.email',
             'email_template': upload_file,
         }
@@ -188,7 +188,7 @@ class UserTestCase(APITestCase):
     def test_create_without_template(self):
         sign_up_data = {
             'username': 'SignUpTestUsername',
-            'password': 'SignUpTestPassword',
+            'password': 'str0ngpa$$wort',
             'email': 'signup@test.email',
         }
 
@@ -203,28 +203,28 @@ class UserTestCase(APITestCase):
 
     def test_unauthorized_retrieve(self):
         client = APIClient()
-        response = client.get('/api/users/1/')
+        response = client.get('/api/users/{}/'.format(self.first_user.id))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(tuple(response.data.keys()), self.basic_result_keys)
 
     def test_authorized_retrieve(self):
         client = self.authorize(self.second_user)
-        response = client.get('/api/users/1/')
+        response = client.get('/api/users/{}/'.format(self.first_user.id))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(tuple(response.data.keys()), self.full_result_keys)
 
     def test_owner_retrieve(self):
         client = self.authorize(self.first_user)
-        response = client.get('/api/users/1/')
+        response = client.get('/api/users/{}/'.format(self.first_user.id))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(tuple(response.data.keys()), self.full_result_keys)
 
     def test_admin_retrieve(self):
         client = self.authorize(self.admin_user)
-        response = client.get('/api/users/1/')
+        response = client.get('/api/users/{}/'.format(self.first_user.id))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(tuple(response.data.keys()), self.full_result_keys)
@@ -241,11 +241,11 @@ class UserTestCase(APITestCase):
         }
 
         client = APIClient()
-        response = client.patch('/api/users/1/', data=updates, format='json')
+        response = client.patch('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertNotEqual(auth.get_user_model().objects.get(id=1).username, 'NewUsername1')
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'TestEmail1')
+        self.assertNotEqual(auth.get_user_model().objects.get(id=self.first_user.id).username, 'NewUsername1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'TestEmail1')
 
     def test_authorized_partial_update(self):
         updates = {
@@ -253,11 +253,11 @@ class UserTestCase(APITestCase):
         }
 
         client = self.authorize(self.second_user)
-        response = client.patch('/api/users/1/', data=updates, format='json')
+        response = client.patch('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertNotEqual(auth.get_user_model().objects.get(id=1).username, 'NewUsername1')
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'TestEmail1')
+        self.assertNotEqual(auth.get_user_model().objects.get(id=self.first_user.id).username, 'NewUsername1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'TestEmail1')
 
     def test_owner_partial_update(self):
         updates = {
@@ -265,11 +265,11 @@ class UserTestCase(APITestCase):
         }
 
         client = self.authorize(self.first_user)
-        response = client.patch('/api/users/1/', data=updates, format='json')
+        response = client.patch('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(auth.get_user_model().objects.get(id=1).username, 'NewUsername1')
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'TestEmail1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).username, 'NewUsername1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'TestEmail1')
         self.assertEqual(tuple(response.data.keys()), self.full_result_keys)
 
     def test_admin_partial_update(self):
@@ -278,11 +278,11 @@ class UserTestCase(APITestCase):
         }
 
         client = self.authorize(self.admin_user)
-        response = client.patch('/api/users/1/', data=updates, format='json')
+        response = client.patch('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(auth.get_user_model().objects.get(id=1).username, 'NewUsername1')
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'TestEmail1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).username, 'NewUsername1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'TestEmail1')
         self.assertEqual(tuple(response.data.keys()), self.full_result_keys)
 
     def test_unauthorized_reset_password(self):
@@ -300,7 +300,7 @@ class UserTestCase(APITestCase):
             content_disposition='attachment; filename=email_template.html',
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=1)).exists())
+        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=self.first_user.id)).exists())
 
         os.remove(f'{settings.EMAIL_TEMPLATES_ROOT}email_template.html')
 
@@ -321,7 +321,7 @@ class UserTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertFalse(Activation.objects.filter(user=auth.get_user_model().objects.get(id=1)).exists())
+        self.assertFalse(Activation.objects.filter(user=auth.get_user_model().objects.get(id=self.first_user.id)).exists())
 
     def test_owner_reset_password(self):
         data = File(open('media/email_templates/default_email_template.html', 'rb'))
@@ -340,7 +340,7 @@ class UserTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertFalse(Activation.objects.filter(user=auth.get_user_model().objects.get(id=1)).exists())
+        self.assertFalse(Activation.objects.filter(user=auth.get_user_model().objects.get(id=self.first_user.id)).exists())
 
     def test_admin_reset_password(self):
         data = File(open('media/email_templates/default_email_template.html', 'rb'))
@@ -359,7 +359,7 @@ class UserTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertFalse(Activation.objects.filter(user=auth.get_user_model().objects.get(id=1)).exists())
+        self.assertFalse(Activation.objects.filter(user=auth.get_user_model().objects.get(id=self.first_user.id)).exists())
 
     def test_reset_password_without_template(self):
         updates = {
@@ -370,7 +370,7 @@ class UserTestCase(APITestCase):
         response = client.post('/api/users/reset_password/', data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=1)).exists())
+        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=self.first_user.id)).exists())
 
     def test_unauthorized_reset_password_by_email(self):
         data = File(open('media/email_templates/default_email_template.html', 'rb'))
@@ -389,7 +389,7 @@ class UserTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=1)).exists())
+        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=self.first_user.id)).exists())
 
         os.remove(f'{settings.EMAIL_TEMPLATES_ROOT}email_template.html')
 
@@ -411,7 +411,7 @@ class UserTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=1)).exists())
+        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=self.first_user.id)).exists())
 
         os.remove(f'{settings.EMAIL_TEMPLATES_ROOT}email_template.html')
 
@@ -422,11 +422,11 @@ class UserTestCase(APITestCase):
             'password': 'NewPassword',
         }
         client = APIClient()
-        response = client.put('/api/users/1/', data=updates, format='json')
+        response = client.put('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertNotEqual(auth.get_user_model().objects.get(id=1).username, 'NewUsername1')
-        self.assertNotEqual(auth.get_user_model().objects.get(id=1).email, 'new@email.com')
+        self.assertNotEqual(auth.get_user_model().objects.get(id=self.first_user.id).username, 'NewUsername1')
+        self.assertNotEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'new@email.com')
 
     def test_authorized_update(self):
         updates = {
@@ -436,11 +436,11 @@ class UserTestCase(APITestCase):
         }
 
         client = self.authorize(self.second_user)
-        response = client.put('/api/users/1/', data=updates, format='json')
+        response = client.put('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertNotEqual(auth.get_user_model().objects.get(id=1).username, 'NewUsername1')
-        self.assertNotEqual(auth.get_user_model().objects.get(id=1).email, 'new@email.com')
+        self.assertNotEqual(auth.get_user_model().objects.get(id=self.first_user.id).username, 'NewUsername1')
+        self.assertNotEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'new@email.com')
 
     def test_owner_update(self):
         updates = {
@@ -449,19 +449,16 @@ class UserTestCase(APITestCase):
             'password': 'NewPassword',
         }
         client = self.authorize(self.first_user)
-        response = client.put('/api/users/1/', data=updates, format='json')
+        response = client.put('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertIsNone(response.data)
-        self.assertEqual(auth.get_user_model().objects.get(id=1).username, 'NewUsername1')
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'TestEmail1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).username, 'NewUsername1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'TestEmail1')
 
         client = self.authorize(self.first_user, username='NewUsername1')
         activation_obj = Activation.objects.filter(user=self.first_user).first()
-        response = client.post(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
-        activation_obj = Activation.objects.filter(user=self.first_user).first()
-        response = client.post(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
+        response = client.get(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'new@email.com')
 
     def test_admin_update(self):
         updates = {
@@ -470,43 +467,38 @@ class UserTestCase(APITestCase):
             'password': 'NewPassword',
         }
         client = self.authorize(self.admin_user)
-        response = client.put('/api/users/1/', data=updates, format='json')
-
+        response = client.put('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertIsNone(response.data)
-        self.assertEqual(auth.get_user_model().objects.get(id=1).username, 'NewUsername1')
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'TestEmail1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).username, 'NewUsername1')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'TestEmail1')
 
         activation_obj = Activation.objects.filter(user=self.first_user).first()
-        response = client.post(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
-        activation_obj = Activation.objects.filter(user=self.first_user).first()
-        response = client.post(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
+        response = client.get(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'new@email.com')
 
     def test_unauthorized_destroy(self):
         client = APIClient()
-        response = client.delete('/api/users/1/')
+        response = client.delete('/api/users/{}/'.format(self.first_user.id))
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_authorized_destroy(self):
         client = self.authorize(self.second_user)
-        response = client.delete('/api/users/1/')
+        response = client.delete('/api/users/{}/'.format(self.first_user.id))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_owner_destroy(self):
         client = self.authorize(self.first_user)
-        response = client.delete('/api/users/1/')
+        response = client.delete('/api/users/{}/'.format(self.first_user.id))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(auth.get_user_model().objects.filter(id=1).exists())
 
     def test_admin_destroy(self):
         client = self.authorize(self.admin_user)
-        response = client.delete('/api/users/1/')
-
+        response = client.delete('/api/users/{}/'.format(self.first_user.id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(auth.get_user_model().objects.filter(id=1).exists())
 
@@ -522,7 +514,7 @@ class UserTestCase(APITestCase):
     def test_detail_options(self):
         allowed_headers = ('Allow', 'GET, PUT, PATCH, DELETE, HEAD, OPTIONS')
         client = APIClient()
-        response = client.options('/api/users/1/')
+        response = client.options('/api/users/{}/'.format(self.first_user.id))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response._headers['allow'], allowed_headers)
@@ -530,7 +522,7 @@ class UserTestCase(APITestCase):
     def test_verification_activation(self):
         sign_up_data = {
             'username': 'SignUpTestUsername',
-            'password': 'SignUpTestPassword',
+            'password': 'blahasdblah',
             'email': 'signup@test.email',
         }
 
@@ -541,9 +533,9 @@ class UserTestCase(APITestCase):
         self.assertEqual(tuple(response.data.keys()), self.basic_result_keys)
 
         new_user = auth.get_user_model().objects.get(id=response.data['id'])
-        new_user.text_password = 'SignUpTestPassword'
+        new_user.text_password = 'blahasdblah'
         activation_obj = Activation.objects.filter(user=new_user).first()
-        response = client.post(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
+        response = client.get(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.authorize(new_user)
@@ -558,10 +550,10 @@ class UserTestCase(APITestCase):
         response = client.post('/api/users/reset_password/', data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=1)).exists())
+        self.assertTrue(Activation.objects.filter(user=auth.get_user_model().objects.get(id=self.first_user.id)).exists())
 
         activation_obj = Activation.objects.filter(user=self.first_user).first()
-        response = client.post(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
+        response = client.post(f'/api/users/{activation_obj.user.id}/reset_password/{activation_obj.key}/confirm/', data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.authorize(self.first_user, password='NewPassword1')
@@ -572,15 +564,15 @@ class UserTestCase(APITestCase):
         }
 
         client = self.authorize(self.first_user)
-        response = client.patch('/api/users/1/', data=updates, format='json')
+        response = client.patch('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         activation_obj = Activation.objects.filter(user=self.first_user).first()
-        response = client.post(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
+        response = client.get(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'NewEmail1@server.net')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'NewEmail1@server.net')
 
     def test_admin_email_partial_update_activation(self):
         updates = {
@@ -588,15 +580,15 @@ class UserTestCase(APITestCase):
         }
 
         client = self.authorize(self.admin_user)
-        response = client.patch('/api/users/1/', data=updates, format='json')
+        response = client.patch('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         activation_obj = Activation.objects.filter(user=self.first_user).first()
-        response = client.post(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
+        response = client.get(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'NewEmail1@server.net')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'NewEmail1@server.net')
 
     def test_admin_email_partial_update_activation_with_template(self):
         data = File(open('media/email_templates/default_email_template.html', 'rb'))
@@ -608,7 +600,7 @@ class UserTestCase(APITestCase):
 
         client = self.authorize(self.admin_user)
         response = client.patch(
-            '/api/users/1/',
+            '/api/users/{}/'.format(self.first_user.id),
             data=updates,
             content_disposition='attachment; filename=email_template.html',
         )
@@ -616,10 +608,10 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         activation_obj = Activation.objects.filter(user=self.first_user).first()
-        response = client.post(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
+        response = client.get(f'/api/users/{activation_obj.user.id}/activation/{activation_obj.key}/')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(auth.get_user_model().objects.get(id=1).email, 'NewEmail1@server.net')
+        self.assertEqual(auth.get_user_model().objects.get(id=self.first_user.id).email, 'NewEmail1@server.net')
 
         os.remove(f'{settings.EMAIL_TEMPLATES_ROOT}email_template.html')
 
@@ -643,5 +635,5 @@ class UserTestCase(APITestCase):
     def test_empty_partial_update(self):
         updates = {}
         client = self.authorize(self.first_user)
-        response = client.patch('/api/users/1/', data=updates, format='json')
+        response = client.patch('/api/users/{}/'.format(self.first_user.id), data=updates, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
