@@ -12,7 +12,6 @@ import contest.urls
 from julia.static import secure_serve
 
 
-
 class ExtendableRouter(routers.DefaultRouter):
     def extend(self, router):
         self.registry.extend(router.registry)
@@ -27,11 +26,9 @@ urlpatterns = [
 
     path('api/token-auth', rest_framework_simplejwt.views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token-refresh', rest_framework_simplejwt.views.TokenRefreshView.as_view(), name='token_refresh'),
-
+    path('api/auth/', include('rest_social_auth.urls_jwt_pair')),
     path('api/', include(router.urls)),
-    path('api/oauth/', include('social_django.urls', namespace='social')),
-    path('api/login/', include('rest_social_auth.urls_jwt_pair')),
+
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'))
 
-    # path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ] + static(settings.CODE_DIR, document_root=settings.CODE_ROOT, view=secure_serve)
