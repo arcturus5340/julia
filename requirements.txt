@@ -43,7 +43,7 @@ rest-social-auth==6.0.1
 six==1.15.0
 social-auth-app-django==4.0.0
 social-auth-core==4.1.0
-sqlparse==0.4.1
+sqlparse==0.4.2
 typed-ast==1.4.2
 typing-extensions==3.7.4.3
 tzlocal==2.1
